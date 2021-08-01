@@ -13,10 +13,17 @@ namespace Bountyhunter.Commands
 
         }
 
+        public override string ArgumentDescription()
+        {
+            return "";
+        }
+
         public override void HandleCommand(IMyPlayer player, string[] arguments)
         {
             Values.Save();
-            SendMessage(player, "Values saved.");
+            if(player != null) SendMessage(player, "Values saved.");
+            Bounties.Save();
+            if (player != null) SendMessage(player, "Bounties saved.");
         }
     }
 }

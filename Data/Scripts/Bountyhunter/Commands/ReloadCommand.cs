@@ -13,10 +13,17 @@ namespace Bountyhunter.Commands
 
         }
 
+        public override string ArgumentDescription()
+        {
+            return "";
+        }
+
         public override void HandleCommand(IMyPlayer player, string[] arguments)
         {
             Values.Load();
-            SendMessage(player, "Values loaded.");
+            if(player != null) SendMessage(player, "Values loaded.");
+            Bounties.Load();
+            if (player != null) SendMessage(player, "Bounties loaded.");
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Timers;
 using Bountyhunter.Commands;
 using Bountyhunter.Data.Proto;
 using Bountyhunter.Store;
+using Bountyhunter.Store.Proto;
 using Bountyhunter.Utils;
 using Sandbox.Common;
 using Sandbox.Common.ObjectBuilders;
@@ -15,10 +16,12 @@ using Sandbox.Game;
 using Sandbox.Game.Entities;
 using Sandbox.ModAPI;
 using Sandbox.ModAPI.Ingame;
+using VRage;
 using VRage.Game;
 using VRage.Game.Components;
 using VRage.Game.ModAPI;
 using VRage.ModAPI;
+using IMyCargoContainer = Sandbox.ModAPI.IMyCargoContainer;
 
 //using Sandbox.ModAPI.Ingame;
 
@@ -42,7 +45,11 @@ namespace Bountyhunter
 
         override public void SaveData()
         {
-            
+            AbstactCommandHandler saveHandler = CommandHandlers.Find(ch => ch is SaveCommand);
+            if(saveHandler != null)
+            {
+                saveHandler.HandleCommand(null, null);
+            }
         }
 
         // Initializers
@@ -53,15 +60,23 @@ namespace Bountyhunter
             AddMessageHandler( );
             if (MyAPIGateway.Multiplayer.IsServer ) 
             {
-                Values.Load();
 
-                //MyAPIGateway.Session.DamageSystem.RegisterDestroyHandler( 0, DeathHandler.DestroyHandler);      
+                //MyAPIGateway.Session.DamageSystem.RegisterDestroyHandler( 0, DeathHandler.DestroyHandler);  
+                MyVisualScriptLogicProvider.PrefabSpawnedDetailed += NewSpawn;
 
                 // CommandHandlers
                 CommandHandlers.Add(new RecalculateCommand());
                 CommandHandlers.Add(new SaveCommand());
                 CommandHandlers.Add(new ReloadCommand());
                 CommandHandlers.Add(new ValueCommand());
+                CommandHandlers.Add(new NewBountyCommand());
+                CommandHandlers.Add(new ClaimCommand());
+
+                AbstactCommandHandler reloadHandler = CommandHandlers.Find(ch => ch is ReloadCommand);
+                if (reloadHandler != null)
+                {
+                    reloadHandler.HandleCommand(null, null);
+                }
             }
 
             Logging.Instance.WriteLine(string.Format("Script Initialized"));
@@ -147,7 +162,6 @@ namespace Bountyhunter
                     return;
                 }
             }
-            // TODO Handle request
         }
 
         // Zeigt dem Spieler eine Dialog an
@@ -232,6 +246,64 @@ namespace Bountyhunter
             }
 
             base.UnloadData( );
+        }
+
+
+        IMyCubeGrid Grid = null;
+        List<IMySlimBlock> GridBlocks = new List<IMySlimBlock>();
+        List<IMyCargoContainer> Container = new List<IMyCargoContainer>();
+
+        private void NewSpawn(long entityId, string prefabName)
+        {
+            try
+            {
+                Grid = null;
+                Grid = MyAPIGateway.Entities.GetEntityById(entityId) as IMyCubeGrid;
+                if (Grid != null && Grid.Physics != null)
+                {
+                    Container.Clear();
+                    GridBlocks.Clear();
+                    Grid.GetBlocks(GridBlocks);
+
+                    foreach (var block in GridBlocks)
+                    {
+                        if (block.FatBlock != null && block.FatBlock is IMyCargoContainer)
+                        {
+                            var cargo = block.FatBlock as IMyCargoContainer;
+                            if (cargo != null && !cargo.MarkedForClose && cargo.IsWorking)
+                            {
+                                var inventory = cargo.GetInventory();
+                                if (cargo.GetInventory() != null)
+                                {
+                                    Container.Add(cargo);
+                                }
+                            }
+                        }
+                    }
+
+                    if (ClaimCommand.Lootboxes.Count > 0)
+                    {
+                        LootboxSpawn spawn = ClaimCommand.Lootboxes.Find(lb =>
+                        (Grid.BigOwners.Contains(lb.Owner.IdentityId) || Grid.SmallOwners.Contains(lb.Owner.IdentityId)) && prefabName == lb.PrefabName);
+                        if (spawn != null)
+                        {
+                            Logging.Instance.WriteLine(" Spawned Lootbox for " + spawn.Owner.DisplayName);
+                            ClaimCommand.Lootboxes.Remove(spawn);
+                            IMyInventory inven = Container[0].GetInventory();
+                            Container[0].DisplayName = spawn.Owner.DisplayName + " Bountyclaim";
+                            foreach (Item item in spawn.Items)
+                            {
+                                // TODO NOT WORKING FFS
+                                inven.AddItems((MyFixedPoint)item.Value, Utilities.GetItemBuilder(item.ItemId));
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Logging.Instance.WriteLine(e.ToString());
+            }
         }
     }
 }

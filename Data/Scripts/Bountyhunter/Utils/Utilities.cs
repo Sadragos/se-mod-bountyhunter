@@ -15,12 +15,18 @@ using IMySlimBlock = VRage.Game.ModAPI.IMySlimBlock;
 using VRage.Game.ModAPI.Interfaces;
 using Sandbox.Common.ObjectBuilders;
 using Bountyhunter.Data.Proto;
+using VRage.Game;
+using VRage.Game.ModAPI.Ingame;
+using IMyEntity = VRage.ModAPI.IMyEntity;
+using IMyCubeGrid = VRage.Game.ModAPI.IMyCubeGrid;
+using IMyInventory = VRage.Game.ModAPI.IMyInventory;
+using IMyInventoryItem = VRage.Game.ModAPI.IMyInventoryItem;
 
 namespace Bountyhunter.Utils
 {
     internal class Utilities
     {
-        public const string SC_ITEM = "MyObjectBuilder_PhysicalObject/SpaceCredit";
+        public static string SC_ITEM = "MyObjectBuilder_PhysicalObject/SpaceCredit";
 
 
         public static IMyIdentity EntityToIdentity(IMyEntity entity)
@@ -112,7 +118,7 @@ namespace Bountyhunter.Utils
             {
                 return;
             }
-            MyVisualScriptLogicProvider.SendChatMessageColored(message, VRageMath.Color.OrangeRed, (playerid != 0 ? "~" : "")+"Headhunt", playerid);
+            MyVisualScriptLogicProvider.SendChatMessageColored(message, VRageMath.Color.OrangeRed, (playerid != 0 ? "~" : "")+"Bountyhunt", playerid);
         }
 
         public static IMyIdentity GridToIdentity(IMyCubeGrid grid)
@@ -246,6 +252,91 @@ namespace Bountyhunter.Utils
             List<IMyPlayer> players = new List<IMyPlayer>();
             MyAPIGateway.Players.GetPlayers(players, i => i.DisplayName.ToLower().Equals(name.ToLower()));
             return players.FirstOrDefault();
+        }
+
+        public static IMyFaction GetFactionByTag(string tag)
+        {
+            return MyAPIGateway.Session.Factions.TryGetFactionByTag(tag);
+        }
+
+        public static bool TryTakeItem(IMyInventory inventory, string itemId, float amount)
+        {
+            List<IMyInventoryItem> items = inventory.GetItems();
+            foreach (IMyInventoryItem item in items)
+            {
+                if (item.Content.GetId().ToString().Equals(itemId))
+                {
+                    if ((float)item.Amount >= amount)
+                    {
+                        MyObjectBuilder_PhysicalObject builder = (MyObjectBuilder_PhysicalObject)item.Content;
+
+                        if (builder == null) continue;
+                        inventory.RemoveItemsOfType((VRage.MyFixedPoint)Math.Abs(amount), builder);
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        // Liefert zurück, wieviele Items ins Inventar gepackt wurden
+        public static float TryPutItem(IMyInventory inventory, string itemId, float amount, bool partial = true)
+        {
+            MyObjectBuilder_PhysicalObject builder = GetItemBuilder(itemId);
+            float volumeLeft = (float)inventory.MaxVolume - (float)inventory.CurrentVolume;
+            float volume = ItemVolume(itemId);
+            float totalVolume = volume * amount;
+            Logging.Instance.WriteLine("Adding " + amount + " " + itemId + " with a volume of " + totalVolume.ToString());
+            if(totalVolume <= volumeLeft)
+            {
+                Logging.Instance.WriteLine("- Everything fits ");
+                inventory.AddItems((VRage.MyFixedPoint)amount, builder);
+                return amount;
+            } 
+            if(totalVolume > volumeLeft && !partial)
+            {
+                Logging.Instance.WriteLine("- Doesnt fit ");
+                return 0;
+            }
+
+            // TODO Not Working
+            float maxAmountToAdd = (float) Math.Floor(volumeLeft / volume);
+            Logging.Instance.WriteLine("- Adding " + maxAmountToAdd + " with a volume of " + (maxAmountToAdd * volume));
+            inventory.AddItems((VRage.MyFixedPoint)maxAmountToAdd, builder);
+
+            return maxAmountToAdd;
+        }
+
+        public static MyObjectBuilder_PhysicalObject GetItemBuilder(string itemId)
+        {
+            string[] parts = itemId.Split('/');
+            string typeId = parts[0];
+            string subtypeId = parts[1];
+            switch (typeId)
+            {
+                case "MyObjectBuilder_Component":
+                    return new MyObjectBuilder_Component() { SubtypeName = subtypeId };
+                case "MyObjectBuilder_AmmoMagazine":
+                    return new MyObjectBuilder_AmmoMagazine() { SubtypeName = subtypeId };
+                case "MyObjectBuilder_Ingot":
+                    return new MyObjectBuilder_Ingot() { SubtypeName = subtypeId };
+                case "MyObjectBuilder_Ore":
+                    return new MyObjectBuilder_Ore() { SubtypeName = subtypeId };
+                case "MyObjectBuilder_PhysicalObject":
+                    return new MyObjectBuilder_PhysicalObject() { SubtypeName = subtypeId };
+                case "MyObjectBuilder_ConsumableItem":
+                    return new MyObjectBuilder_ConsumableItem() { SubtypeName = subtypeId };
+                default:
+                    Logging.Instance.WriteLine("No builder for " + itemId);
+                    return null;
+            }
+        }
+
+        public static float ItemVolume(string itemId, float amount = 1)
+        {
+            MyObjectBuilder_PhysicalObject builder = GetItemBuilder(itemId);
+            MyItemType type = new MyItemType(builder.TypeId, builder.SubtypeId);
+            return type.GetItemInfo().Volume * amount;
         }
     }
 }

@@ -26,6 +26,7 @@ namespace Bountyhunter.Commands
         public string CommandPrefix;
 
         public abstract void HandleCommand(IMyPlayer player, string[] arguments);
+        public abstract string ArgumentDescription();
 
         public bool HasRank(IMyPlayer player)
         {
@@ -85,6 +86,12 @@ namespace Bountyhunter.Commands
 
             }
             return new string[] { arguments };
+        }
+
+        protected void WrongArguments(IMyPlayer player)
+        {
+            SendMessage(player, "Wrong Arguments");
+            SendMessage(player, CommandPrefix + " " + ArgumentDescription());
         }
     }
 }

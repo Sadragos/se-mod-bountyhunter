@@ -27,6 +27,11 @@ namespace Bountyhunter.Commands
 
         }
 
+        public override string ArgumentDescription()
+        {
+            return "<grid/item/block> [searchtext]";
+        }
+
         public override void HandleCommand(IMyPlayer player, string[] arguments)
         {
             if (arguments.Length >= 1 && arguments[0].Equals("grid"))
@@ -40,14 +45,14 @@ namespace Bountyhunter.Commands
                     PointValue thread = Values.CalculateValue(ent as IMyCubeGrid, true);
 
                     SendMessage(player, "Value of " + name);
-                    SendMessage(player, "Empty " + thread.GridValue.ToString("0.000"));
-                    SendMessage(player, "Cargo " + thread.CargoValue.ToString("0.000"));
-                    SendMessage(player, "Total " + (thread.GridValue + thread.CargoValue).ToString("0.000"));
+                    SendMessage(player, "-> Empty " + thread.GridValue.ToString("0.000"));
+                    SendMessage(player, "-> Cargo " + thread.CargoValue.ToString("0.000"));
+                    SendMessage(player, "-> Total " + (thread.GridValue + thread.CargoValue).ToString("0.000"));
                 }
             }
             else if (arguments.Length >= 2 && arguments[0].Equals("item"))
             {
-                if (arguments[1].Length <= 2)
+                if (arguments[1].Length < 2)
                 {
                     SendMessage(player, "Please enter atelast two letters to search for.");
                 }
@@ -72,7 +77,7 @@ namespace Bountyhunter.Commands
             }
             else if (arguments.Length >= 2 && arguments[0].Equals("block"))
             {
-                if (arguments[1].Length <= 2)
+                if (arguments[1].Length < 2)
                 {
                     SendMessage(player, "Please enter atelast two letters to search for.");
                 }
@@ -94,6 +99,9 @@ namespace Bountyhunter.Commands
                         SendMessage(player, "and " + (items.Count - i - 1) + " more");
                     }
                 }
+            } else
+            {
+                WrongArguments(player);
             }
         }
     }

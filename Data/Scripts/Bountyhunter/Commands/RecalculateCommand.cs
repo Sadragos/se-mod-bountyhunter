@@ -26,6 +26,9 @@ namespace Bountyhunter.Commands
                 } else if (arguments[0].Equals("blocks"))
                 {
                     RecalculateBlocks(player);
+                } else
+                {
+                    WrongArguments(player);
                 }
             }
             else
@@ -33,6 +36,11 @@ namespace Bountyhunter.Commands
                 WrongArguments(player);
                 return;
             }
+        }
+
+        public override string ArgumentDescription()
+        {
+            return CommandPrefix + " <ores/components/blocks>";
         }
 
         private void RecalculateBlocks(IMyPlayer player)
@@ -51,12 +59,6 @@ namespace Bountyhunter.Commands
         {
             Values.CalculateOres();
             SendMessage(player, "Ores recalculated. Use /bh save to store changes.");
-        }
-
-        private void WrongArguments(IMyPlayer player)
-        {
-            SendMessage(player, "Wrong Arguments");
-            SendMessage(player, CommandPrefix + " recalculate <ores/components/blocks>");
         }
     }
 }

@@ -80,7 +80,7 @@ namespace Bountyhunter.Store
             var allDefs = MyDefinitionManager.Static.GetAllDefinitions();
 
 
-            // Blueprints auslesen
+            Logging.Instance.WriteLine("Loading Blueprints...");
             Dictionary<string, List<Item>> blueprints = new Dictionary<string, List<Item>>();
             foreach (var blueprint in MyDefinitionManager.Static.GetBlueprintDefinitions().OfType<MyBlueprintDefinition>())
             {
@@ -110,7 +110,7 @@ namespace Bountyhunter.Store
 
             }
 
-            // -> Ores/Ingots Umrechnen
+            Logging.Instance.WriteLine("Reversing Ore Quotas...");
             List<string> entries = new List<string>(blueprints.Keys);
             foreach(string bp in entries)
             {
@@ -124,11 +124,16 @@ namespace Bountyhunter.Store
                     {
                         new Item(bp, amount)
                     };
+                    if (blueprints.ContainsKey(key))
+                    {
+                        Logging.Instance.WriteLine("Warn: duplicate Blueprint for " + key);
+                        continue;
+                    }
                     blueprints.Add(key, reverse);
                 }
             }
 
-            // Find all missing Components
+            Logging.Instance.WriteLine("Find missing Components...");
             foreach (var componenet in allDefs.OfType<MyPhysicalItemDefinition>())
             {
                 string key = componenet.Id.ToString();
@@ -141,7 +146,7 @@ namespace Bountyhunter.Store
                 }
             }
 
-            // Find all Missing Blocks
+            Logging.Instance.WriteLine("Find missing Blocks...");
             foreach (var componenet in allDefs.OfType<MyCubeBlockDefinition>())
             {
                 string key = componenet.Id.ToString();
@@ -227,7 +232,7 @@ namespace Bountyhunter.Store
                 bi.Value = 0;
                 foreach(Item comp in bi.Components)
                 {
-                    bi.Value += ItemValue(bi.Components[0].ItemId) * comp.Value / MyAPIGateway.Session.SessionSettings.AssemblerEfficiencyMultiplier;
+                    bi.Value += ItemValue(comp.ItemId) * comp.Value / MyAPIGateway.Session.SessionSettings.AssemblerEfficiencyMultiplier;
                 }
             }
         }
@@ -258,7 +263,6 @@ namespace Bountyhunter.Store
             {
                 if (block.FatBlock == null) continue;
                 gridValue += BlockValue(block.FatBlock.BlockDefinition.ToString());
-                Logging.Instance.WriteLine("Got Value of " + block.FatBlock.BlockDefinition.ToString());
 
                 if (!includeCargo) continue;
                 if (!(block.FatBlock is IMyTerminalBlock)) continue;
@@ -280,10 +284,31 @@ namespace Bountyhunter.Store
             return new PointValue() { CargoValue = cargoValue, GridValue = gridValue };
         }
 
+        public static PointValue CalculateValue(IMyPlayer player, bool includeCargo = true)
+        {
+            PointValue value = new PointValue();
+            IMyEntity cache;
+            HashSet<long> grids = player.Grids;
+            foreach (long l in grids)
+            {
+                if (MyAPIGateway.Entities.TryGetEntityById(l, out cache) && cache is IMyCubeGrid)
+                {
+                    value.Add(CalculateValue(cache as IMyCubeGrid, includeCargo));
+                }
+            }
+            return value;
+        }
+
         public struct PointValue
         {
             public double CargoValue;
             public double GridValue;
+
+            public void Add(PointValue adder)
+            {
+                CargoValue += adder.CargoValue;
+                GridValue += adder.GridValue;
+            }
         }
     }
 }
