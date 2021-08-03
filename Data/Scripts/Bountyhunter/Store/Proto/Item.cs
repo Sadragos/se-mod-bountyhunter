@@ -16,13 +16,12 @@ namespace Bountyhunter.Store.Proto
 
         [ProtoMember(2)]
         [XmlAttribute]
-        public float Value;
+        public float Value = 0;
 
 
         public Item(string itemId)
         {
             ItemId = itemId;
-            Value = 0;
         }
 
         public Item(string itemId, float value) : this(itemId)

@@ -27,12 +27,26 @@ namespace Bountyhunter.Commands
             bounty.Client = player.DisplayName;
             bounty.Partial = true;
 
+            // Bounty Type
+            bounty.BountyType = arguments[0].ToLower().Equals("kill") ? EBountyType.Kill : EBountyType.Damage;
+
             // Target Type
-            bounty.TargetType = arguments[0].ToLower().Equals("player") ? ETargetType.Player : ETargetType.Faction;
+            ETargetType TargetType = arguments[1].ToLower().Equals("player") ? ETargetType.Player : ETargetType.Faction;
+
+            if (TargetType.Equals(ETargetType.Player) && !Config.Instance.EnablePlayerBounties)
+            {
+                SendMessage(player, "Bounties on Players are disabled.");
+                return;
+            }
+            else if (TargetType.Equals(ETargetType.Faction) && !Config.Instance.EnableFactionBounties)
+            {
+                SendMessage(player, "Bounties on Factions are disabled.");
+                return;
+            }
 
             // Validate Target
-            string targetString = arguments[1];
-            if(bounty.TargetType.Equals(ETargetType.Player))
+            string targetString = arguments[2];
+            if(TargetType.Equals(ETargetType.Player))
             {
                 IMyPlayer myPlayer = Utils.Utilities.GetPlayer(targetString);
                 if(myPlayer == null)
@@ -40,8 +54,7 @@ namespace Bountyhunter.Commands
                     SendMessage(player, "The Player " + targetString + " could not be found.");
                     return;
                 }
-                bounty.Target = myPlayer.DisplayName;
-            } else if (bounty.TargetType.Equals(ETargetType.Faction))
+            } else if (TargetType.Equals(ETargetType.Faction))
             {
                 IMyFaction myFaction = Utils.Utilities.GetFactionByTag(targetString);
                 if (myFaction == null)
@@ -49,20 +62,17 @@ namespace Bountyhunter.Commands
                     SendMessage(player, "No Faction with the Tag " + targetString + " could be found.");
                     return;
                 }
-                bounty.Target = myFaction.Tag;
             }
 
-            // Bounty Type
-            bounty.BountyType = arguments[2].ToLower().Equals("kill") ? EBountyType.Kill : EBountyType.Damage;
 
             // Payment
             Item rewardItem = new Item();
-            
-            if(!float.TryParse(arguments[3], out rewardItem.Value) || rewardItem.Value <= 0)
+            if(!float.TryParse(arguments[3], out rewardItem.Value) || Math.Floor(rewardItem.Value) <= 0)
             {
                 WrongArguments(player);
                 return;
             }
+            rewardItem.Value = (float)Math.Floor(rewardItem.Value);
 
             List<BountyItem> foundItems = Values.FindItemFuzzy(arguments[4]);
             if(foundItems.Count != 1)
@@ -72,6 +82,8 @@ namespace Bountyhunter.Commands
             }
             BountyItem payment = foundItems[0];
             rewardItem.ItemId = payment.ItemId;
+
+            // TODO Prüfen ob Item gesperrt ist
 
             if(!rewardItem.ItemId.StartsWith("MyObjectBuilder_Ingot") && !rewardItem.ItemId.StartsWith("MyObjectBuilder_Ore"))
             {
@@ -129,14 +141,28 @@ namespace Bountyhunter.Commands
 
 
             // Finally! Set the bounty!
-            Bounties.Instance.Bounties.Add(bounty);
-            SendMessage(player, "You set a bounty of " + rewardItem.Value + " " + payment.ToString() + " on " + bounty.Target);
+            // TODO Add bounty
+            switch(TargetType)
+            {
+                case ETargetType.Faction:
+                    Faction fTarget = Participants.GetFactionOrCreate(targetString);
+                    fTarget.Bounties.Add(bounty);
+                    break;
+
+                case ETargetType.Player:
+                    Hunter pTarget = Participants.GetPlayerOrCreate(targetString);
+                    pTarget.Bounties.Add(bounty);
+                    break;
+            }
+            Hunter me = Participants.GetPlayerOrCreate(player);
+            me.BountyPlaced += rewardItem.Value * payment.Value;
+            SendMessage(player, "You set a bounty of " + rewardItem.Value + " " + payment.ToString() + " on " + targetString);
 
         }
 
         public override string ArgumentDescription()
         {
-            return "<player/faction> <targetName> <kill/damage> <amount> <payment item> [amount of kills/damage]";
+            return "<kill/damage> <player/faction> <targetName> <amount> <payment item> [amount of kills/damage]";
         }
     }
 }

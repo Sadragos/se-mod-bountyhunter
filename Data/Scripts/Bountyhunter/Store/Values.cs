@@ -15,24 +15,28 @@ using static Sandbox.Definitions.MyCubeBlockDefinition;
 using ProtoBuf;
 using Bountyhunter.Store.Proto;
 using Bountyhunter.Utils;
+using Bountyhunter.Store.Proto.Files;
 
 namespace Bountyhunter.Store
 {
     public class Values
     {
 
-        public static ValuesDefinition Instance;
+        public static FileValues Instance;
+
+        public static Dictionary<string, BountyItem> Items = new Dictionary<string, BountyItem>();
+        public static Dictionary<string, Block> Blocks = new Dictionary<string, Block>();
 
 
         public static void Load()
         {
-            if (MyAPIGateway.Utilities.FileExistsInWorldStorage("ItemBlockValues.xml", typeof(ValuesDefinition)))
+            if (MyAPIGateway.Utilities.FileExistsInWorldStorage("ItemBlockValues.xml", typeof(FileValues)))
             {
                 try
                 {
-                    TextReader reader = MyAPIGateway.Utilities.ReadFileInWorldStorage("ItemBlockValues.xml", typeof(ValuesDefinition));
+                    TextReader reader = MyAPIGateway.Utilities.ReadFileInWorldStorage("ItemBlockValues.xml", typeof(FileValues));
                     var xmlData = reader.ReadToEnd();
-                    Instance = MyAPIGateway.Utilities.SerializeFromXML<ValuesDefinition>(xmlData);
+                    Instance = MyAPIGateway.Utilities.SerializeFromXML<FileValues>(xmlData);
                     reader.Dispose();
                     Logging.Instance.WriteLine("ItemBlockValues found and loaded");
                 }
@@ -43,15 +47,40 @@ namespace Bountyhunter.Store
             }
 
             ValidateData();
+            Instance2Dict();
+            Save();
         }
 
         private static void ValidateData()
         {
-            if (Instance == null) Instance = new ValuesDefinition();
+            if (Instance == null) Instance = new FileValues();
 
             PopulateMissing(Instance);
+        }
 
-            Save();
+        private static void Instance2Dict()
+        {
+            Blocks.Clear();
+            foreach (Block b in Instance.BlockValues)
+            {
+                if (Blocks.ContainsKey(b.BlockId))
+                {
+                    Logging.Instance.WriteLine("WARNING Duplicate BlockId " + b.BlockId);
+                    continue;
+                }
+                Blocks.Add(b.BlockId, b);
+            }
+
+            Items.Clear();
+            foreach (BountyItem i in Instance.ItemValues)
+            {
+                if (Items.ContainsKey(i.ItemId))
+                {
+                    Logging.Instance.WriteLine("WARNING Duplicate ItemId " + i.ItemId);
+                    continue;
+                }
+                Items.Add(i.ItemId, i);
+            }
         }
 
         public static void Save()
@@ -61,7 +90,7 @@ namespace Bountyhunter.Store
                 Logging.Instance.WriteLine("Serializing ItemBlockValues to XML... ");
                 string xml = MyAPIGateway.Utilities.SerializeToXML(Instance);
                 Logging.Instance.WriteLine("Writing ItemBlockValues to disk... ");
-                TextWriter writer = MyAPIGateway.Utilities.WriteFileInWorldStorage("ItemBlockValues.xml", typeof(ValuesDefinition));
+                TextWriter writer = MyAPIGateway.Utilities.WriteFileInWorldStorage("ItemBlockValues.xml", typeof(FileValues));
                 writer.Write(xml);
                 writer.Flush();
                 writer.Close();
@@ -72,11 +101,8 @@ namespace Bountyhunter.Store
             }
         }
 
-        private static void PopulateMissing(ValuesDefinition instance)
+        private static void PopulateMissing(FileValues instance)
         {
-            if (instance.ItemValues == null) instance.ItemValues = new List<BountyItem>();
-            if (instance.BlockValues == null) instance.BlockValues = new List<Block>();
-
             var allDefs = MyDefinitionManager.Static.GetAllDefinitions();
 
 
@@ -177,6 +203,7 @@ namespace Bountyhunter.Store
                     instance.BlockValues.Add(bv);
                 }
             }
+            Instance2Dict();
         }
 
         public static List<BountyItem> FindItemFuzzy(string itemId)
@@ -187,7 +214,9 @@ namespace Bountyhunter.Store
 
         public static BountyItem FindItem(string itemId)
         {
-            return Instance.ItemValues.Find(item => item.ItemId.Equals(itemId));
+            BountyItem result;
+            Items.TryGetValue(itemId, out result);
+            return result;
         }
 
         public static float ItemValue(string itemId)
@@ -203,9 +232,11 @@ namespace Bountyhunter.Store
             return Instance.BlockValues.FindAll(item => item.BlockId.ToUpper().Contains(itemId) || (item.Alias != null && item.Alias.Find(alias => alias.ToUpper().Contains(itemId)) != null));
         }
 
-        public static Block FindBlock(string itemId)
+        public static Block FindBlock(string blockId)
         {
-            return Instance.BlockValues.Find(item => item.BlockId.Equals(itemId));
+            Block result;
+            Blocks.TryGetValue(blockId, out result);
+            return result;
         }
 
         public static float BlockValue(string itemId)

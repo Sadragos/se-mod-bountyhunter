@@ -20,10 +20,12 @@ namespace Bountyhunter.Commands
 
         public override void HandleCommand(IMyPlayer player, string[] arguments)
         {
+            Config.Load();
+            if (player != null) SendMessage(player, "Config loaded.");
             Values.Load();
             if(player != null) SendMessage(player, "Values loaded.");
-            Bounties.Load();
-            if (player != null) SendMessage(player, "Bounties loaded.");
+            Participants.Load();
+            if (player != null) SendMessage(player, "Participants loaded.");
         }
     }
 }

@@ -14,42 +14,37 @@ namespace Bountyhunter.Store.Proto
         [ProtoMember(1)]
         [XmlAttribute]
         public string Client;
+
         [ProtoMember(2)]
         [XmlAttribute]
-        public string Target;
+        public string Timestamp = Utilities.CurrentTimestamp();
+
         [ProtoMember(3)]
         [XmlAttribute]
-        public ETargetType TargetType;
+        public bool HideClient = false;
+
         [ProtoMember(4)]
         [XmlAttribute]
-        public string Timestamp;
+        public EBountyType BountyType;
+
         [ProtoMember(5)]
         [XmlAttribute]
-        public bool HideClient;
+        public float Count = 1;
+
         [ProtoMember(6)]
         [XmlAttribute]
-        public EBountyType BountyType;
+        public bool Partial = true;
+
         [ProtoMember(7)]
         [XmlAttribute]
-        public float Count;
+        public float ClaimedCount = 0;
+
         [ProtoMember(8)]
         [XmlAttribute]
-        public bool Partial;
+        public float RemainingCurrency = 0;
+
         [ProtoMember(9)]
-        [XmlAttribute]
-        public float ClaimedCount;
-        [ProtoMember(10)]
-        [XmlAttribute]
-        public float RemainingCurrency;
-
-        [ProtoMember(11)]
-        public Item RewardItem;
-
-
-        public Bounty()
-        {
-            Timestamp = Utilities.CurrentTimestamp();
-        }
+        public Item RewardItem = new Item(Utilities.SC_ITEM);
 
         public void RecalculateRemainingCurrency()
         {

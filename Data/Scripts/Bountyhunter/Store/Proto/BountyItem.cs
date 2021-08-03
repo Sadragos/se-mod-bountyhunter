@@ -13,28 +13,20 @@ namespace Bountyhunter.Store.Proto
 
         [ProtoMember(3)]
         [XmlAttribute]
-        public bool AllowedAsBounty;
+        public bool AllowedAsBounty = true;
 
         [ProtoMember(4)]
-        public List<Item> Components;
+        public List<Item> Components = new List<Item>();
 
         [ProtoMember(5)]
-        public List<string> Alias;
+        public List<string> Alias = new List<string>();
 
         public BountyItem(string itemId)
         {
             ItemId = itemId;
-            AllowedAsBounty = true;
-            Value = 0;
-            Components = new List<Item>();
-            Alias = new List<string>();
         }
 
-        public BountyItem()
-        {
-            Components = new List<Item>();
-            Alias = new List<string>();
-        }
+        public BountyItem() { }
 
         public new string ToString()
         {

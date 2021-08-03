@@ -19,7 +19,9 @@ namespace Bountyhunter.Store.Proto
         public string Tag;
 
         [ProtoMember(3)]
-        public List<string> Members;
+        public List<string> Members = new List<string>();
 
+        [ProtoMember(4)]
+        public List<Bounty> Bounties = new List<Bounty>();
     }
 }

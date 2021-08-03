@@ -21,6 +21,8 @@ using IMyEntity = VRage.ModAPI.IMyEntity;
 using IMyCubeGrid = VRage.Game.ModAPI.IMyCubeGrid;
 using IMyInventory = VRage.Game.ModAPI.IMyInventory;
 using IMyInventoryItem = VRage.Game.ModAPI.IMyInventoryItem;
+using VRage;
+using Bountyhunter.Store;
 
 namespace Bountyhunter.Utils
 {
@@ -118,7 +120,7 @@ namespace Bountyhunter.Utils
             {
                 return;
             }
-            MyVisualScriptLogicProvider.SendChatMessageColored(message, VRageMath.Color.OrangeRed, (playerid != 0 ? "~" : "")+"Bountyhunt", playerid);
+            MyVisualScriptLogicProvider.SendChatMessageColored(message, Config.Instance.BroadcastNameRealColor, (playerid != 0 ? "~" : "")+ Config.Instance.BroadcastName, playerid);
         }
 
         public static IMyIdentity GridToIdentity(IMyCubeGrid grid)
@@ -280,32 +282,33 @@ namespace Bountyhunter.Utils
         }
 
         // Liefert zurück, wieviele Items ins Inventar gepackt wurden
-        public static float TryPutItem(IMyInventory inventory, string itemId, float amount, bool partial = true)
+        public static float TryPutItem(IMyInventory inventory, string itemId, float amount, bool partial = true, float max = 1000000)
         {
+            MyFixedPoint fixedAmount = MyFixedPoint.Floor((MyFixedPoint) amount);
             MyObjectBuilder_PhysicalObject builder = GetItemBuilder(itemId);
             float volumeLeft = (float)inventory.MaxVolume - (float)inventory.CurrentVolume;
             float volume = ItemVolume(itemId);
-            float totalVolume = volume * amount;
-            Logging.Instance.WriteLine("Adding " + amount + " " + itemId + " with a volume of " + totalVolume.ToString());
-            if(totalVolume <= volumeLeft)
+            float totalVolume = (float)fixedAmount * volume;
+            Logging.Instance.WriteLine("Adding " + fixedAmount + " " + itemId + " with a volume of " + totalVolume.ToString());
+            if (totalVolume <= volumeLeft)
             {
                 Logging.Instance.WriteLine("- Everything fits ");
-                inventory.AddItems((VRage.MyFixedPoint)amount, builder);
+                inventory.AddItems(fixedAmount, builder);
                 return amount;
-            } 
-            if(totalVolume > volumeLeft && !partial)
+            }
+            if (totalVolume > volumeLeft && !partial)
             {
                 Logging.Instance.WriteLine("- Doesnt fit ");
                 return 0;
             }
 
-            // TODO Not Working
-            float maxAmountToAdd = (float) Math.Floor(volumeLeft / volume);
-            Logging.Instance.WriteLine("- Adding " + maxAmountToAdd + " with a volume of " + (maxAmountToAdd * volume));
-            inventory.AddItems((VRage.MyFixedPoint)maxAmountToAdd, builder);
+            fixedAmount = MyFixedPoint.Ceiling((MyFixedPoint)Math.Min(max, (float)Math.Floor(volumeLeft / volume)));
+            Logging.Instance.WriteLine("- Adding " + fixedAmount + " with a volume of " + (fixedAmount * volume));
+            inventory.AddItems(fixedAmount, builder);
 
-            return maxAmountToAdd;
+            return (float) fixedAmount;
         }
+
 
         public static MyObjectBuilder_PhysicalObject GetItemBuilder(string itemId)
         {

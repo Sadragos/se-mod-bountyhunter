@@ -4,16 +4,17 @@ using ProtoBuf;
 using System.Xml.Serialization;
 using VRageMath;
 
-namespace Bountyhunter.Store.Proto
+namespace Bountyhunter.Store.Proto.Files
 {
     [ProtoContract]
     [Serializable]
-    public class ConfigDefinition
+    public class FileConfig
     {
         [ProtoMember(1)]
-        public string BroadcastName;
+        public string BroadcastName = "Bountyhunt";
+
         [ProtoMember(2)]
-        public string BroadcastNameColor;
+        public string BroadcastNameColor = "255,180,20";
 
         [ProtoIgnore]
         [XmlIgnore]
@@ -34,19 +35,27 @@ namespace Bountyhunter.Store.Proto
         }
 
         [ProtoMember(2)]
-        public bool EnableFactionBounties;
+        public bool EnableFactionBounties = true;
+
         [ProtoMember(3)]
-        public bool EnablePlayerBounties;
+        public bool EnablePlayerBounties = true;
 
         [ProtoMember(4)]
-        public bool EnableItemBounties;
-        [ProtoMember(5)]
-        public bool EnableCreditBounties;
-        [ProtoMember(6)]
-        public bool SpawnRewardDropPods;
+        public bool EnableItemBounties = true;
 
+        [ProtoMember(5)]
+        public bool EnableCreditBounties = true;
+
+        [ProtoMember(6)]
+        public bool CreditsAsItem = false;
 
         [ProtoMember(7)]
-        public string CurrencyName;
+        public bool SpawnRewardDropPods = false;
+
+
+        [ProtoMember(8)]
+        public string CurrencyName = "sc";
+
+
     }
 }

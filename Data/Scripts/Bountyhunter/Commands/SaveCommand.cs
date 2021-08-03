@@ -22,8 +22,10 @@ namespace Bountyhunter.Commands
         {
             Values.Save();
             if(player != null) SendMessage(player, "Values saved.");
-            Bounties.Save();
-            if (player != null) SendMessage(player, "Bounties saved.");
+            Participants.Save();
+            if (player != null) SendMessage(player, "Participants saved.");
+            Config.Save();
+            if (player != null) SendMessage(player, "Config saved.");
         }
     }
 }

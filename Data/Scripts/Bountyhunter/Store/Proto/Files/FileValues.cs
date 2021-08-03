@@ -14,18 +14,17 @@ using System.Xml.Serialization;
 using static Sandbox.Definitions.MyCubeBlockDefinition;
 using ProtoBuf;
 
-namespace Bountyhunter.Store.Proto
+namespace Bountyhunter.Store.Proto.Files
 {
     [ProtoContract]
     [Serializable]
-    public class BountiesDefinition
+    public class FileValues
     {
         [ProtoMember(1)]
-        public List<Bounty> Bounties;
+        public List<BountyItem> ItemValues = new List<BountyItem>();
 
-        public BountiesDefinition()
-        {
-            Bounties = new List<Bounty>();
-        }
+        [ProtoMember(2)]
+        public List<Block> BlockValues = new List<Block>();
+
     }
 }

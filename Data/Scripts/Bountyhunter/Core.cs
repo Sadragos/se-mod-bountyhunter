@@ -62,7 +62,7 @@ namespace Bountyhunter
             {
 
                 //MyAPIGateway.Session.DamageSystem.RegisterDestroyHandler( 0, DeathHandler.DestroyHandler);  
-                MyVisualScriptLogicProvider.PrefabSpawnedDetailed += NewSpawn;
+                MyVisualScriptLogicProvider.PrefabSpawnedDetailed += LootboxSpawner.NewSpawn;
 
                 // CommandHandlers
                 CommandHandlers.Add(new RecalculateCommand());
@@ -246,64 +246,6 @@ namespace Bountyhunter
             }
 
             base.UnloadData( );
-        }
-
-
-        IMyCubeGrid Grid = null;
-        List<IMySlimBlock> GridBlocks = new List<IMySlimBlock>();
-        List<IMyCargoContainer> Container = new List<IMyCargoContainer>();
-
-        private void NewSpawn(long entityId, string prefabName)
-        {
-            try
-            {
-                Grid = null;
-                Grid = MyAPIGateway.Entities.GetEntityById(entityId) as IMyCubeGrid;
-                if (Grid != null && Grid.Physics != null)
-                {
-                    Container.Clear();
-                    GridBlocks.Clear();
-                    Grid.GetBlocks(GridBlocks);
-
-                    foreach (var block in GridBlocks)
-                    {
-                        if (block.FatBlock != null && block.FatBlock is IMyCargoContainer)
-                        {
-                            var cargo = block.FatBlock as IMyCargoContainer;
-                            if (cargo != null && !cargo.MarkedForClose && cargo.IsWorking)
-                            {
-                                var inventory = cargo.GetInventory();
-                                if (cargo.GetInventory() != null)
-                                {
-                                    Container.Add(cargo);
-                                }
-                            }
-                        }
-                    }
-
-                    if (ClaimCommand.Lootboxes.Count > 0)
-                    {
-                        LootboxSpawn spawn = ClaimCommand.Lootboxes.Find(lb =>
-                        (Grid.BigOwners.Contains(lb.Owner.IdentityId) || Grid.SmallOwners.Contains(lb.Owner.IdentityId)) && prefabName == lb.PrefabName);
-                        if (spawn != null)
-                        {
-                            Logging.Instance.WriteLine(" Spawned Lootbox for " + spawn.Owner.DisplayName);
-                            ClaimCommand.Lootboxes.Remove(spawn);
-                            IMyInventory inven = Container[0].GetInventory();
-                            Container[0].DisplayName = spawn.Owner.DisplayName + " Bountyclaim";
-                            foreach (Item item in spawn.Items)
-                            {
-                                // TODO NOT WORKING FFS
-                                inven.AddItems((MyFixedPoint)item.Value, Utilities.GetItemBuilder(item.ItemId));
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Logging.Instance.WriteLine(e.ToString());
-            }
         }
     }
 }

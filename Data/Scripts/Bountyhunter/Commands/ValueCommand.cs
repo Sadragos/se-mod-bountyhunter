@@ -45,9 +45,9 @@ namespace Bountyhunter.Commands
                     PointValue thread = Values.CalculateValue(ent as IMyCubeGrid, true);
 
                     SendMessage(player, "Value of " + name);
-                    SendMessage(player, "-> Empty " + thread.GridValue.ToString("0.000"));
-                    SendMessage(player, "-> Cargo " + thread.CargoValue.ToString("0.000"));
-                    SendMessage(player, "-> Total " + (thread.GridValue + thread.CargoValue).ToString("0.000"));
+                    SendMessage(player, "-> Empty " + Formater.FormatCurrency(thread.GridValue));
+                    SendMessage(player, "-> Cargo " + Formater.FormatCurrency(thread.CargoValue));
+                    SendMessage(player, "-> Total " + Formater.FormatCurrency(thread.GridValue + thread.CargoValue));
                 }
             }
             else if (arguments.Length >= 2 && arguments[0].Equals("item"))
@@ -66,7 +66,7 @@ namespace Bountyhunter.Commands
                     int i = 0;
                     while (i < 10 && i < items.Count)
                     {
-                        SendMessage(player, items[i].ToString() + ": " + items[i].Value.ToString("0.0000"));
+                        SendMessage(player, items[i].ToString() + ": " + Formater.FormatCurrency(items[i].Value));
                         i++;
                     }
                     if (i < items.Count)
@@ -91,7 +91,7 @@ namespace Bountyhunter.Commands
                     int i = 0;
                     while (i < 10 && i < items.Count)
                     {
-                        SendMessage(player, items[i].ToString() + ": " + items[i].Value.ToString("0.0000"));
+                        SendMessage(player, items[i].ToString() + ": " + Formater.FormatCurrency(items[i].Value));
                         i++;
                     }
                     if (i < items.Count)
