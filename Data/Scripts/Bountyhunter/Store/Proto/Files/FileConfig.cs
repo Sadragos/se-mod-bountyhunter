@@ -56,6 +56,12 @@ namespace Bountyhunter.Store.Proto.Files
         [ProtoMember(8)]
         public string CurrencyName = "sc";
 
+        [ProtoMember(9)]
+        public bool PlaceBountiesOnSelf = false;
+        [ProtoMember(10)]
+        public bool PlaceBountiesOnAllies = false;
+        [ProtoMember(11)]
+        public bool ClaimBountiesFromAllies = false;
 
     }
 }
