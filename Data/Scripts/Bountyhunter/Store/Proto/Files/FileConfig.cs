@@ -44,22 +44,27 @@ namespace Bountyhunter.Store.Proto.Files
         public bool EnableItemBounties = true;
 
         [ProtoMember(5)]
-        public bool EnableCreditBounties = true;
+        public bool TakeCreditFromBank = true;
 
+        // TODO
         [ProtoMember(6)]
         public bool CreditsAsItem = false;
 
+        // TODO
         [ProtoMember(7)]
         public bool SpawnRewardDropPods = false;
 
 
         [ProtoMember(8)]
-        public string CurrencyName = "sc";
+        public string CurrencyName = "SC";
 
         [ProtoMember(9)]
-        public bool PlaceBountiesOnSelf = false;
+        public bool PlaceBountiesOnSelf = true;
+
         [ProtoMember(10)]
-        public bool PlaceBountiesOnAllies = false;
+        public bool PlaceBountiesOnAllies = true;
+
+        // TODO
         [ProtoMember(11)]
         public bool ClaimBountiesFromAllies = false;
 

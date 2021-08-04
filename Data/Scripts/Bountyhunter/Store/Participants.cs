@@ -24,8 +24,8 @@ namespace Bountyhunter.Store
 
         public static FileParticipants Instance;
 
-        public static Dictionary<string, Hunter> Players = new Dictionary<string, Hunter>();
-        public static Dictionary<string, Faction> Factions = new Dictionary<string, Faction>();
+        public static Dictionary<ulong, Hunter> Players = new Dictionary<ulong, Hunter>();
+        public static Dictionary<long, Faction> Factions = new Dictionary<long, Faction>();
 
 
         public static void Load()
@@ -86,30 +86,30 @@ namespace Bountyhunter.Store
             Factions.Clear();
             foreach (Faction f in Instance.Factions)
             {
-                if (Factions.ContainsKey(f.Tag))
+                if (Factions.ContainsKey(f.Id))
                 {
                     Logging.Instance.WriteLine("WARNING Duplicate Faction Tag " + f.Tag);
                     continue;
                 }
-                Factions.Add(f.Tag, f);
+                Factions.Add(f.Id, f);
             }
 
             Players.Clear();
             foreach (Hunter p in Instance.Players)
             {
-                if (Players.ContainsKey(p.Name))
+                if (Players.ContainsKey(p.Id))
                 {
                     Logging.Instance.WriteLine("WARNING Duplicate Playername " + p.Name);
                     continue;
                 }
-                Players.Add(p.Name, p);
+                Players.Add(p.Id, p);
             }
         }
 
-        public static Hunter GetPlayerOrCreate(IMyPlayer player)
+        public static Hunter GetPlayer(IMyPlayer player, bool create = true)
         {
             Hunter hunter;
-            if (!Players.TryGetValue(player.DisplayName, out hunter))
+            if (!Players.TryGetValue(player.SteamUserId, out hunter))
             {
                 // TODO Weitere Sachen wie Faction und so
                 hunter = new Hunter()
@@ -117,35 +117,36 @@ namespace Bountyhunter.Store
                     Id = player.SteamUserId,
                     Name = player.DisplayName
                 };
-                Players.Add(player.DisplayName, hunter);
+                if(create) Players.Add(player.SteamUserId, hunter);
             }
             return hunter;
         }
 
-        public static Hunter GetPlayerOrCreate(string player)
+        public static Hunter GetPlayer(string player, bool create = true)
         {
-            return GetPlayerOrCreate(Utilities.GetPlayer(player));
+            return GetPlayer(Utilities.GetPlayer(player), create);
         }
 
-        public static Faction GetFactionOrCreate(IMyFaction faction)
+        public static Faction GetFaction(IMyFaction faction, bool create = true)
         {
             Faction fact;
-            if (!Factions.TryGetValue(faction.Tag, out fact))
+            if (!Factions.TryGetValue(faction.FactionId, out fact))
             {
-                // TODO Weitere Sachen wie Faction und so
+                // TODO Weitere Sachen wie Mitglieder und so
                 fact = new Faction()
                 {
                     Tag = faction.Tag,
-                    Name = faction.Name
+                    Name = faction.Name,
+                    Id = faction.FactionId
                 };
-                Factions.Add(faction.Tag, fact);
+                if(create) Factions.Add(faction.FactionId, fact);
             }
             return fact;
         }
 
-        public static Faction GetFactionOrCreate(string faction)
+        public static Faction GetFaction(string faction, bool create = true)
         {
-            return GetFactionOrCreate(Utilities.GetFactionByTag(faction));
+            return GetFaction(Utilities.GetFactionByTag(faction), create);
         }
     }
 }

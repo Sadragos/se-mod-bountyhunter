@@ -32,5 +32,10 @@ namespace Bountyhunter.Store.Proto
         public Item()
         {
         }
+
+        public bool IsOre { get { return ItemId.StartsWith("MyObjectBuilder_Ore"); } }
+        public bool IsIngot { get { return ItemId.StartsWith("MyObjectBuilder_Ingot"); } }
+
+        public bool HasFractions { get { return IsOre || IsIngot; } }
     }
 }

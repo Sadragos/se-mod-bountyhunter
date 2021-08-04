@@ -23,6 +23,7 @@ using IMyInventory = VRage.Game.ModAPI.IMyInventory;
 using IMyInventoryItem = VRage.Game.ModAPI.IMyInventoryItem;
 using VRage;
 using Bountyhunter.Store;
+using VRageMath;
 
 namespace Bountyhunter.Utils
 {
@@ -340,6 +341,37 @@ namespace Bountyhunter.Utils
             MyObjectBuilder_PhysicalObject builder = GetItemBuilder(itemId);
             MyItemType type = new MyItemType(builder.TypeId, builder.SubtypeId);
             return type.GetItemInfo().Volume * amount;
+        }
+
+        public static List<IMyCubeGrid> GetGridsNearPlayer(IMyPlayer player, float range = 5)
+        {
+            List<IMyCubeGrid> grids = new List<IMyCubeGrid>();
+
+            BoundingSphereD sphere = new BoundingSphereD(player.GetPosition(), range);
+            foreach (IMyEntity ent in MyAPIGateway.Entities.GetEntitiesInSphere(ref sphere))
+            {
+                if (!(ent is IMyCubeGrid)) continue;
+                grids.Add(ent as IMyCubeGrid);
+            }
+
+            return grids;
+        }
+
+        public static List<IMyCargoContainer> GetCargoNearPlayer(IMyPlayer player, float range = 5)
+        {
+            List<IMyCargoContainer> containers = new List<IMyCargoContainer>();
+            foreach (MyCubeGrid grid in GetGridsNearPlayer(player, range))
+            {
+                foreach(MyCubeBlock block in grid.Inventories)
+                {
+                    if (!(block is IMyCargoContainer)) continue;
+                    if(block.OwnerId == player.IdentityId || block.GetUserRelationToOwner(player.IdentityId).HasFlag(MyRelationsBetweenPlayerAndBlock.FactionShare))
+                    {
+                        containers.Add(block as IMyCargoContainer);
+                    }
+                }
+            }
+            return containers;
         }
     }
 }

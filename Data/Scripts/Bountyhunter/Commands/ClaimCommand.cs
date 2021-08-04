@@ -25,26 +25,39 @@ namespace Bountyhunter.Commands
 
         public override void HandleCommand(IMyPlayer player, string[] arguments)
         {
+            Hunter hunter = Participants.GetPlayer(player);
             List<Item> rewards = new List<Item>();
             
             // TODO Temporary
+            foreach(Bounty b in Participants.GetPlayer(player).Bounties)
+            {
+                rewards.Add(b.RewardItem);
+            }
             if(rewards.Count == 0)
             {
                 SendMessage(player, "You don't have collected enough bounty to claim it.");
                 return;
             }
 
-            LootboxSpawner.SpawnLootBox(player, rewards);
+            if (Config.Instance.SpawnRewardDropPods)
+            {
+                
+                PayoutLootbox(player);
+            } else
+            {
+                PayoutInventory(player);
+            }
         }
 
-        private void PayoutInventory(IMyInventory inventory, List<Item> rewards)
+        private void PayoutLootbox(IMyPlayer player)
         {
-            foreach(Item it in rewards)
-            {
-                float valueToAdd = (float)Math.Floor(it.Value);
-                float added = Utils.Utilities.TryPutItem(inventory, it.ItemId, valueToAdd);
-                if (!added.Equals(valueToAdd)) break;
-            }
+            // TODO not working properly
+            //LootboxSpawner.SpawnLootBox(player);
+        }
+
+        private void PayoutInventory(IMyPlayer player)
+        {
+
         }
     }
 }

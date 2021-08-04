@@ -36,18 +36,15 @@ namespace Bountyhunter.Commands
         {
             if (arguments.Length >= 1 && arguments[0].Equals("grid"))
             {
-
-                BoundingSphereD sphere = new BoundingSphereD(player.GetPosition(), 20);
-                foreach (IMyEntity ent in MyAPIGateway.Entities.GetEntitiesInSphere(ref sphere))
+                foreach (IMyCubeGrid grid in Utilities.GetGridsNearPlayer(player))
                 {
-                    if (!(ent is IMyCubeGrid)) continue;
-                    string name = (ent as IMyCubeGrid).CustomName;
-                    PointValue thread = Values.CalculateValue(ent as IMyCubeGrid, true);
+                    string name = grid.CustomName;
+                    PointValue thread = CalculateValue(grid, true);
 
-                    SendMessage(player, "Value of " + name);
-                    SendMessage(player, "-> Empty " + Formater.FormatCurrency(thread.GridValue));
-                    SendMessage(player, "-> Cargo " + Formater.FormatCurrency(thread.CargoValue));
-                    SendMessage(player, "-> Total " + Formater.FormatCurrency(thread.GridValue + thread.CargoValue));
+                    SendMessage(player, "Value of " + name 
+                        + "\n-> Empty " + Formater.FormatCurrency(thread.GridValue)
+                        + "\n-> Cargo " + Formater.FormatCurrency(thread.CargoValue)
+                        + "\n-> Total " + Formater.FormatCurrency(thread.GridValue + thread.CargoValue));
                 }
             }
             else if (arguments.Length >= 2 && arguments[0].Equals("item"))
@@ -56,7 +53,7 @@ namespace Bountyhunter.Commands
                 {
                     SendMessage(player, "Please enter atelast two letters to search for.");
                 }
-                List<BountyItem> items = Values.FindItemFuzzy(arguments[1]);
+                List<BountyItem> items = FindItemFuzzy(arguments[1]);
                 if (items.Count == 0)
                 {
                     SendMessage(player, "Not Item with " + arguments[1] + " found.");
