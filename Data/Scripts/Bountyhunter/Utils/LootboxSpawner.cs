@@ -26,6 +26,8 @@ namespace Bountyhunter.Utils
             new PrefabSpawn("MassiveLootBox", 421000f * MyAPIGateway.Session.SessionSettings.BlocksInventorySizeMultiplier)
         };
         
+
+        public static float MaxBoxSize { get { return AvailableContainers.MaxBy(p => p.Capacity).Capacity;  } }
         
 
         public static void SpawnLootBox(IMyPlayer player, List<Item> itemList)

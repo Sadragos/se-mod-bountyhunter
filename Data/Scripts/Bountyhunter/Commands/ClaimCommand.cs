@@ -49,7 +49,26 @@ namespace Bountyhunter.Commands
             if (payout.Count == 0) return;
 
             List<Item> ToAdd = new List<Item>();
-            // TODO prepare box
+            float remainingVolume = LootboxSpawner.MaxBoxSize;
+            bool full = false;
+            foreach(Item item in payout)
+            {
+                float volume = Utilities.ItemVolume(item.ItemId);
+                float maxAmount = remainingVolume / volume;
+                float newValue = Math.Min(item.Value, maxAmount);
+                if (!item.HasFractions) newValue = (float)Math.Floor(newValue);
+                if(newValue <= maxAmount)
+                {
+                    full = true;
+                }
+                item.Value = newValue;
+                ToAdd.Add(item);
+                hunter.RemoveClaimable(item, newValue);
+                if(full)
+                {
+                    break;
+                }
+            }
             LootboxSpawner.SpawnLootBox(player, ToAdd);
         }
 
