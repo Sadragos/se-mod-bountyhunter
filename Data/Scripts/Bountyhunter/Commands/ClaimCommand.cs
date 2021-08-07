@@ -27,37 +27,116 @@ namespace Bountyhunter.Commands
         {
             Hunter hunter = Participants.GetPlayer(player);
             List<Item> rewards = new List<Item>();
-            
-            // TODO Temporary
-            foreach(Bounty b in Participants.GetPlayer(player).Bounties)
+
+            bool creditsPaid = false;
+            if (!Config.Instance.CreditsAsItem)
             {
-                rewards.Add(b.RewardItem);
-            }
-            if(rewards.Count == 0)
-            {
-                SendMessage(player, "You don't have collected enough bounty to claim it.");
-                return;
+                creditsPaid = PayCredits(player, hunter);
             }
 
             if (Config.Instance.SpawnRewardDropPods)
             {
-                
-                PayoutLootbox(player);
+                PayoutLootbox(player, hunter);
             } else
             {
-                PayoutInventory(player);
+                PayoutInventory(player, hunter, creditsPaid);
             }
         }
 
-        private void PayoutLootbox(IMyPlayer player)
+        private void PayoutLootbox(IMyPlayer player, Hunter hunter)
         {
             // TODO not working properly
             //LootboxSpawner.SpawnLootBox(player);
         }
 
-        private void PayoutInventory(IMyPlayer player)
+        private void PayoutInventory(IMyPlayer player, Hunter hunter, bool creditsPaid)
         {
+            List<Item> payout = GetPayout(hunter);
+            if (payout.Count == 0 && !creditsPaid)
+            {
+                Utilities.ShowChatMessage("You dont have enough Bounty collected.", player.IdentityId);
+            }
+            if (payout.Count == 0) return;
 
+            List<NamedInventory> inventories = Utilities.GetInventoriesNearPlayer(player);
+            if(inventories.Count == 0)
+            {
+                Utilities.ShowChatMessage("Could't find Inventory to deposit Items.", player.IdentityId);
+                return;
+            }
+
+            int currentInventoryIndex = 0;
+            NamedInventory currentInventory = inventories[currentInventoryIndex];
+
+            StringBuilder builder = new StringBuilder("Items paid out:");
+
+            foreach(Item item in payout)
+            {
+                while(item.Value >= 0.001 && currentInventoryIndex < inventories.Count)
+                {
+                    float amount = Utilities.TryPutItem(currentInventory.Inventory, item.ItemId, item.Value);
+                    if (amount > 0)
+                    {
+                        builder.Append("\n -> ");
+                        builder.Append(Formater.FormatNumber(amount));
+                        builder.Append(" ");
+                        builder.Append(Values.Items[item.ItemId].ToString());
+                        builder.Append(" into ");
+                        builder.Append(currentInventory.Name);
+                    }
+
+                    if (amount < item.Value-0.000001)
+                    {
+                        currentInventoryIndex++;
+                        if(currentInventoryIndex >= inventories.Count)
+                        {
+                            builder.Append("\nthere is more, that could not fit into any Inventory near you.");
+                        } else
+                        {
+                            currentInventory = inventories[currentInventoryIndex];
+                        }
+                    }
+
+                    if (amount > 0)
+                    {
+                        item.Value -= amount;
+                        hunter.RemoveClaimable(item, amount);
+                    }
+                }
+            }
+            Utilities.ShowChatMessage(builder.ToString(), player.IdentityId);
+        }
+
+        private List<Item> GetPayout(Hunter hunter)
+        {
+            List<Item> payout = new List<Item>();
+            foreach(Item item in hunter.ClaimableBounty)
+            {
+                if (!Config.Instance.CreditsAsItem && item.ItemId.Equals(Utilities.SC_ITEM)) continue;
+                if (item.Value < 1 && !item.HasFractions) continue;
+                payout.Add(new Item(item.ItemId, (float)(item.HasFractions ? item.Value : Math.Floor(item.Value))));
+            }
+            return payout;
+        }
+
+        private bool PayCredits(IMyPlayer player, Hunter hunter)
+        {
+            foreach (Item item in hunter.ClaimableBounty)
+            {
+                if (item.ItemId.Equals(Utilities.SC_ITEM))
+                {
+                    long amount = (long)Math.Floor(item.Value);
+                    if (amount > 1)
+                    {
+                        Utilities.PayPlayer(player, amount);
+                        hunter.RemoveClaimable(item, amount);
+                        Utilities.ShowChatMessage(Formater.FormatNumber(amount) + " Credits paid to your Account.");
+                        return true;
+                    }
+                    break;
+                }
+            }
+            return false;
         }
     }
 }

@@ -200,7 +200,7 @@ namespace Bountyhunter.Commands
             me.BountyPlaced += rewardItem.Value * payment.Value;
             // TODO Statistik für Faction setzen
             // TODO Ankündigen
-            SendMessage(player, "You set a bounty of " + rewardItem.Value + " " + payment.ToString() + " on " + targetString + ". " + takenFrom);
+            SendMessage(player, "You set a bounty of " + Formater.FormatNumber(rewardItem.Value) + " " + payment.ToString() + " on " + targetString + ". " + takenFrom);
 
         }
 

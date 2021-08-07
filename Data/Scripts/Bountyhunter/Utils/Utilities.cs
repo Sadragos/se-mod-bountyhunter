@@ -285,7 +285,11 @@ namespace Bountyhunter.Utils
         // Liefert zurück, wieviele Items ins Inventar gepackt wurden
         public static float TryPutItem(IMyInventory inventory, string itemId, float amount, bool partial = true, float max = 1000000)
         {
-            MyFixedPoint fixedAmount = MyFixedPoint.Floor((MyFixedPoint) amount);
+            MyFixedPoint fixedAmount = (MyFixedPoint) amount;
+            if(!(itemId.StartsWith("MyObjectBuilder_Ore") || itemId.StartsWith("MyObjectBuilder_Ingot")))
+            {
+                fixedAmount = MyFixedPoint.Floor(fixedAmount);
+            }
             MyObjectBuilder_PhysicalObject builder = GetItemBuilder(itemId);
             float volumeLeft = (float)inventory.MaxVolume - (float)inventory.CurrentVolume;
             float volume = ItemVolume(itemId);
@@ -372,6 +376,42 @@ namespace Bountyhunter.Utils
                 }
             }
             return containers;
+        }
+
+        public static List<NamedInventory> GetInventoriesNearPlayer(IMyPlayer player, bool includePlayer = true, float range = 5)
+        {
+            List<NamedInventory> inventories = new List<NamedInventory>();
+            if (includePlayer && player.Character != null && player.Character.GetInventory() != null)
+            {
+                inventories.Add(new NamedInventory(player.Character.GetInventory(), "your Inventory"));
+            }
+
+            foreach (MyCubeGrid grid in GetGridsNearPlayer(player, range))
+            {
+                foreach (MyCubeBlock block in grid.Inventories)
+                {
+                    if (!(block is IMyCargoContainer)) continue;
+                    if (block.OwnerId == player.IdentityId || block.GetUserRelationToOwner(player.IdentityId).HasFlag(MyRelationsBetweenPlayerAndBlock.FactionShare))
+                    {
+                        string name = (block as IMyCargoContainer).CustomName;
+                        inventories.Add(new NamedInventory(block.GetInventory(), name));
+                    }
+                }
+            }
+
+            return inventories;
+        }
+    }
+
+    public struct NamedInventory
+    {
+        public IMyInventory Inventory;
+        public string Name;
+
+        public NamedInventory(IMyInventory inventory, string name)
+        {
+            this.Inventory = inventory;
+            this.Name = name;
         }
     }
 }

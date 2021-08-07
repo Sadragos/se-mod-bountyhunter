@@ -51,5 +51,17 @@ namespace Bountyhunter.Store.Proto
         [XmlAttribute]
         public double BountyClaimed = 0;
 
+        internal void RemoveClaimable(Item item, float amount)
+        {
+            foreach(Item bounty in ClaimableBounty)
+            {
+                if(bounty.ItemId.Equals(item.ItemId))
+                {
+                    bounty.Value -= amount;
+                    if (bounty.Value <= 0) ClaimableBounty.Remove(bounty);
+                    break;
+                }
+            }
+        }
     }
 }
