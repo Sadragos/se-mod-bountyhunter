@@ -45,8 +45,12 @@ namespace Bountyhunter.Commands
 
         private void PayoutLootbox(IMyPlayer player, Hunter hunter)
         {
-            // TODO not working properly
-            //LootboxSpawner.SpawnLootBox(player);
+            List<Item> payout = GetPayout(hunter);
+            if (payout.Count == 0) return;
+
+            List<Item> ToAdd = new List<Item>();
+            // TODO prepare box
+            LootboxSpawner.SpawnLootBox(player, ToAdd);
         }
 
         private void PayoutInventory(IMyPlayer player, Hunter hunter, bool creditsPaid)

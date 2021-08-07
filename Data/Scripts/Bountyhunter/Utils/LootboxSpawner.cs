@@ -26,7 +26,6 @@ namespace Bountyhunter.Utils
             new PrefabSpawn("MassiveLootBox", 421000f * MyAPIGateway.Session.SessionSettings.BlocksInventorySizeMultiplier)
         };
         
-
         
 
         public static void SpawnLootBox(IMyPlayer player, List<Item> itemList)
@@ -73,7 +72,7 @@ namespace Bountyhunter.Utils
 
             if (free)
             {
-                // TODO bountie / rewards entfernen
+                
                 Lootboxes.Add(new LootboxSpawn()
                 {
                     Items = itemList,
@@ -111,15 +110,16 @@ namespace Bountyhunter.Utils
         {
             if (Lootboxes.Count == 0) return;
 
-            LootboxSpawn spawn = Lootboxes.Find(lb => (Grid.BigOwners.Contains(lb.Owner.IdentityId) || Grid.SmallOwners.Contains(lb.Owner.IdentityId)) && prefabName == lb.Prefab.Name);
-            if (spawn == null) return;
-
             try
             {
                 Grid = null;
                 Grid = MyAPIGateway.Entities.GetEntityById(entityId) as IMyCubeGrid;
                 if (Grid != null && Grid.Physics != null)
                 {
+                    LootboxSpawn spawn = Lootboxes.Find(lb => (Grid.BigOwners.Contains(lb.Owner.IdentityId) || Grid.SmallOwners.Contains(lb.Owner.IdentityId)) && lb.Prefab.Name.Equals(prefabName));
+                    if (spawn == null) return;
+
+                    Logging.Instance.WriteLine(" found Bountybox for " + spawn.Owner.DisplayName);
                     Container.Clear();
                     GridBlocks.Clear();
                     Grid.GetBlocks(GridBlocks);
@@ -140,7 +140,6 @@ namespace Bountyhunter.Utils
                         }
                     }
 
-                    Logging.Instance.WriteLine(" found Bountybox for " + spawn.Owner.DisplayName);
                     Lootboxes.Remove(spawn);
                     Container[0].CustomName = spawn.Owner.DisplayName + " Bountybox";
 
