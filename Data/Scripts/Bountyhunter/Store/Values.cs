@@ -21,15 +21,18 @@ namespace Bountyhunter.Store
 {
     public class Values
     {
+        public static string SC_ITEM = "MyObjectBuilder_PhysicalObject/SpaceCredit";
+        public static string COMPUTER_ITEM = "MyObjectBuilder_Component/Computer";
 
         public static FileValues Instance;
 
-        public static Dictionary<string, BountyItem> Items = new Dictionary<string, BountyItem>();
-        public static Dictionary<string, Block> Blocks = new Dictionary<string, Block>();
+        public static Dictionary<string, ItemConfig> Items = new Dictionary<string, ItemConfig>();
+        public static Dictionary<string, BlockConfig> Blocks = new Dictionary<string, BlockConfig>();
 
 
         public static void Load()
         {
+            bool initNewConfig = true;
             if (MyAPIGateway.Utilities.FileExistsInWorldStorage("ItemBlockValues.xml", typeof(FileValues)))
             {
                 try
@@ -39,6 +42,7 @@ namespace Bountyhunter.Store
                     Instance = MyAPIGateway.Utilities.SerializeFromXML<FileValues>(xmlData);
                     reader.Dispose();
                     Logging.Instance.WriteLine("ItemBlockValues found and loaded");
+                    initNewConfig = false;
                 }
                 catch (Exception e)
                 {
@@ -47,8 +51,32 @@ namespace Bountyhunter.Store
             }
 
             ValidateData();
+            if(initNewConfig)
+            {
+                InitalValues();
+                CalculateOres();
+                CalculateComponent();
+                CalculateBlocks();
+                Logging.Instance.WriteLine("Initialized new Config with default values.");
+            }
             Instance2Dict();
             Save();
+        }
+
+        private static void InitalValues()
+        {
+            Instance.ItemValues.Find(item => item.ItemId.Equals(SC_ITEM)).Value = 1;
+            Instance.ItemValues.Find(item => item.ItemId.Equals("MyObjectBuilder_Ingot/Stone")).Value = 0.25f;
+            Instance.ItemValues.Find(item => item.ItemId.Equals("MyObjectBuilder_Ingot/Iron")).Value = 0.14f;
+            Instance.ItemValues.Find(item => item.ItemId.Equals("MyObjectBuilder_Ingot/Nickel")).Value = 0.3f;
+            Instance.ItemValues.Find(item => item.ItemId.Equals("MyObjectBuilder_Ingot/Cobalt")).Value = 1.9f;
+            Instance.ItemValues.Find(item => item.ItemId.Equals("MyObjectBuilder_Ingot/Magnesium")).Value = 55.8f;
+            Instance.ItemValues.Find(item => item.ItemId.Equals("MyObjectBuilder_Ingot/Silicon")).Value = 0.16f;
+            Instance.ItemValues.Find(item => item.ItemId.Equals("MyObjectBuilder_Ingot/Silver")).Value = 6f;
+            Instance.ItemValues.Find(item => item.ItemId.Equals("MyObjectBuilder_Ingot/Gold")).Value = 52f;
+            Instance.ItemValues.Find(item => item.ItemId.Equals("MyObjectBuilder_Ingot/Platinum")).Value = 300f;
+            Instance.ItemValues.Find(item => item.ItemId.Equals("MyObjectBuilder_Ingot/Uranium")).Value = 150f;
+            Instance.ItemValues.Find(item => item.ItemId.Equals("MyObjectBuilder_Ore/Ice")).Value = 0.1f;
         }
 
         private static void ValidateData()
@@ -61,7 +89,7 @@ namespace Bountyhunter.Store
         private static void Instance2Dict()
         {
             Blocks.Clear();
-            foreach (Block b in Instance.BlockValues)
+            foreach (BlockConfig b in Instance.BlockValues)
             {
                 if (Blocks.ContainsKey(b.BlockId))
                 {
@@ -72,7 +100,7 @@ namespace Bountyhunter.Store
             }
 
             Items.Clear();
-            foreach (BountyItem i in Instance.ItemValues)
+            foreach (ItemConfig i in Instance.ItemValues)
             {
                 if (Items.ContainsKey(i.ItemId))
                 {
@@ -128,7 +156,7 @@ namespace Bountyhunter.Store
 
                 foreach (MyBlueprintDefinitionBase.Item comp in blueprint.Prerequisites)
                 {
-                    Item item = new Item(comp.Id.ToString(), (float)comp.Amount * multi);
+                    Item item = new Item(comp.Id.ToString(), ((float)comp.Amount * multi) / MyAPIGateway.Session.SessionSettings.AssemblerEfficiencyMultiplier);
                     components.Add(item);
                 }
 
@@ -165,7 +193,7 @@ namespace Bountyhunter.Store
                 string key = componenet.Id.ToString();
                 if (instance.ItemValues.Find(t => t.ItemId.Equals(key)) == null)
                 {
-                    BountyItem item = new BountyItem(key);
+                    ItemConfig item = new ItemConfig(key);
                     item.Alias.Add(componenet.DisplayNameText);
                     if(!key.StartsWith("MyObjectBuilder_Ingot")) blueprints.TryGetValue(key, out item.Components);
                     instance.ItemValues.Add(item);
@@ -178,7 +206,8 @@ namespace Bountyhunter.Store
                 string key = componenet.Id.ToString();
                 if (instance.BlockValues.Find(t => t.BlockId.Equals(key)) == null)
                 {
-                    Block bv = new Block(key);
+                    // TODO Terminal Blöcke filtern
+                    BlockConfig bv = new BlockConfig(key);
                     bv.Alias.Add(componenet.DisplayNameText);
 
                     foreach (Component comp in componenet.Components)
@@ -195,7 +224,7 @@ namespace Bountyhunter.Store
                     // Calculate Value of Block based on Components
                     foreach (Item iv in bv.Components)
                     {
-                        BountyItem ivWorth = instance.ItemValues.Find(t => t.ItemId.Equals(iv.ItemId));
+                        ItemConfig ivWorth = instance.ItemValues.Find(t => t.ItemId.Equals(iv.ItemId));
                         if (ivWorth == null) continue;
                         bv.Value += iv.Value * ivWorth.Value;
                     }
@@ -206,49 +235,49 @@ namespace Bountyhunter.Store
             Instance2Dict();
         }
 
-        public static List<BountyItem> FindItemFuzzy(string itemId)
+        public static List<ItemConfig> FindItemFuzzy(string itemId)
         {
             itemId = itemId.ToUpper();
             return Instance.ItemValues.FindAll(item => item.ItemId.ToUpper().Contains(itemId) || (item.Alias != null && item.Alias.Find(alias => alias.ToUpper().Contains(itemId)) != null));
         }
 
-        public static BountyItem FindItem(string itemId)
+        public static ItemConfig FindItem(string itemId)
         {
-            BountyItem result;
+            ItemConfig result;
             Items.TryGetValue(itemId, out result);
             return result;
         }
 
         public static float ItemValue(string itemId)
         {
-            BountyItem bi = FindItem(itemId);
+            ItemConfig bi = FindItem(itemId);
             if (bi == null) return 0;
             return bi.Value;
         }
 
-        public static List<Block> FindBlockFuzzy(string itemId)
+        public static List<BlockConfig> FindBlockFuzzy(string itemId)
         {
             itemId = itemId.ToUpper();
             return Instance.BlockValues.FindAll(item => item.BlockId.ToUpper().Contains(itemId) || (item.Alias != null && item.Alias.Find(alias => alias.ToUpper().Contains(itemId)) != null));
         }
 
-        public static Block FindBlock(string blockId)
+        public static BlockConfig FindBlock(string blockId)
         {
-            Block result;
+            BlockConfig result;
             Blocks.TryGetValue(blockId, out result);
             return result;
         }
 
         public static float BlockValue(string itemId)
         {
-            Block bl = FindBlock(itemId);
+            BlockConfig bl = FindBlock(itemId);
             if (bl == null) return 0;
             return bl.Value;
         }
 
         public static void CalculateOres()
         {
-            foreach(BountyItem bi in Instance.ItemValues)
+            foreach(ItemConfig bi in Instance.ItemValues)
             {
                 if (!bi.ItemId.StartsWith("MyObjectBuilder_Ore") || bi.Components == null || bi.Components.Count == 0) continue;
                 bi.Value = bi.Components[0].Value * ItemValue(bi.Components[0].ItemId);
@@ -257,26 +286,26 @@ namespace Bountyhunter.Store
 
         public static void CalculateComponent()
         {
-            foreach (BountyItem bi in Instance.ItemValues)
+            foreach (ItemConfig bi in Instance.ItemValues)
             {
                 if (bi.ItemId.StartsWith("MyObjectBuilder_Ore") || bi.ItemId.StartsWith("MyObjectBuilder_Ingot") || bi.Components == null) continue;
                 bi.Value = 0;
                 foreach(Item comp in bi.Components)
                 {
-                    bi.Value += ItemValue(comp.ItemId) * comp.Value / MyAPIGateway.Session.SessionSettings.AssemblerEfficiencyMultiplier;
+                    bi.Value += ItemValue(comp.ItemId) * comp.Value;
                 }
             }
         }
 
         public static void CalculateBlocks()
         {
-            foreach (Block bl in Instance.BlockValues)
+            foreach (BlockConfig bl in Instance.BlockValues)
             {
                 if (bl.Components == null) continue;
                 bl.Value = 0;
                 foreach (Item comp in bl.Components)
                 {
-                    BountyItem valueComponent = FindItem(comp.ItemId);
+                    ItemConfig valueComponent = FindItem(comp.ItemId);
                     if (valueComponent == null) continue;
                     bl.Value += valueComponent.Value * comp.Value;
                 }

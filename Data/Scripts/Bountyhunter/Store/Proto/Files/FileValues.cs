@@ -21,10 +21,10 @@ namespace Bountyhunter.Store.Proto.Files
     public class FileValues
     {
         [ProtoMember(1)]
-        public List<BountyItem> ItemValues = new List<BountyItem>();
+        public List<ItemConfig> ItemValues = new List<ItemConfig>();
 
         [ProtoMember(2)]
-        public List<Block> BlockValues = new List<Block>();
+        public List<BlockConfig> BlockValues = new List<BlockConfig>();
 
     }
 }
