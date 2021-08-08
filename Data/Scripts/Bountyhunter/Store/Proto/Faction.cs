@@ -27,5 +27,10 @@ namespace Bountyhunter.Store.Proto
 
         [ProtoMember(5)]
         public List<Bounty> Bounties = new List<Bounty>();
+
+        internal void CleanupBonties()
+        {
+            Bounties.RemoveAll(b => b.RewardItem.Claimed >= b.RewardItem.Value - Config.Instance.FloatAmountBuffer);
+        }
     }
 }

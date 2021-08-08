@@ -77,5 +77,8 @@ namespace Bountyhunter.Store.Proto.Files
 
         [ProtoMember(15)]
         public bool CountSuicides = false;
+
+        [ProtoMember(16)]
+        public float FloatAmountBuffer = 0.000001f;
     }
 }

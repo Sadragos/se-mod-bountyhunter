@@ -108,7 +108,7 @@ namespace Bountyhunter.Commands
                         builder.Append(currentInventory.Name);
                     }
 
-                    if (amount < item.Value-0.000001)
+                    if (amount < item.Value-Config.Instance.FloatAmountBuffer)
                     {
                         currentInventoryIndex++;
                         if(currentInventoryIndex >= inventories.Count)

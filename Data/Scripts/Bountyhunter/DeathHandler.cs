@@ -39,10 +39,10 @@ namespace Bountyhunter
 
         private static void HandleBlockDeath(IMyTerminalBlock myTerminalBlock, MyDamageInformation info)
         {
-            // TODO
+            Logging.Instance.WriteLine("Block died " + myTerminalBlock.DisplayName);
 
-            KillerInfo attacker = GetKiller(info);
-            
+           
+
         }
 
         private static void HandlePlayerDeath(IMyCharacter myCharacter, MyDamageInformation info)
@@ -53,7 +53,6 @@ namespace Bountyhunter
             IdentityInfo victim = GetIdentity(identity);
 
             KillerInfo attacker = GetKiller(info);
-            Logging.Instance.WriteLine("Git Killer");
 
             string reason = null;
 
@@ -77,11 +76,9 @@ namespace Bountyhunter
                 else if (attacker.Entity is IMyCubeGrid) reason = "Grid";
                 else reason = "Fall";
             }
-            Logging.Instance.WriteLine("Reason " + reason);
 
-            if (reason.Equals("Suicide") || (attacker.Info.Player != null && attacker.Info.Player.IdentityId.Equals(attacker.Info.Player.IdentityId)))
+            if (reason.Equals("Suicide") || (attacker.Info.Player != null && attacker.Info.Player.IdentityId.Equals(identity.IdentityId)))
             {
-                // Selbstverschuldeter Tod oder NPC
                 attacker.IsAllied = true;
                 attacker.IsSameFaction = true;
                 attacker.Selfinflicted = true;
@@ -90,7 +87,6 @@ namespace Bountyhunter
             {
                 if (attacker.Info.Faction.FactionId.Equals(victim.Faction.FactionId))
                 {
-                    // Selbe oder verbündete Fraktion
                     attacker.IsAllied = true;
                     attacker.IsSameFaction = true;
                 } else if(attacker.Info.Faction.IsFriendly(victim.Identity.IdentityId))
@@ -99,10 +95,41 @@ namespace Bountyhunter
                 }
             }
 
+            // TODO message an den claimer
             float bounty = 0;
-            if(victim.Hunter.Bounties.Count > 0)
+            if (!attacker.Selfinflicted && attacker.Info.Hunter != null && (!attacker.IsAllied || Config.Instance.ClaimBountiesFromAllies))
             {
-                // TODO Get bounties
+                if (victim.Hunter.Bounties.Count > 0)
+                {
+                    foreach(Bounty b in victim.Hunter.Bounties)
+                    {
+                        if(b.BountyType.Equals(EBountyType.Kill))
+                        {
+                            float percent = 1 / b.Count;
+                            float amount = percent * b.RewardItem.Value;
+                            b.RewardItem.Claimed += amount;
+                            attacker.Info.Hunter.AddClaimable(b.RewardItem, amount);
+                        }
+                    }
+                    victim.Hunter.CleanupBonties();
+                }
+                if (victim.Faction != null) {
+                    Faction faction = Participants.GetFaction(victim.Faction);
+                    if(faction.Bounties.Count > 0)
+                    {
+                        foreach (Bounty b in faction.Bounties)
+                        {
+                            if (b.BountyType.Equals(EBountyType.Kill))
+                            {
+                                float percent = 1 / b.Count;
+                                float amount = percent * b.RewardItem.Value;
+                                b.RewardItem.Claimed += amount;
+                                attacker.Info.Hunter.AddClaimable(b.RewardItem, amount);
+                            }
+                        }
+                        faction.CleanupBonties();
+                    }
+                }
             }
 
             

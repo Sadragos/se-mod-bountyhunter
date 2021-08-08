@@ -2,6 +2,7 @@
 using ProtoBuf;
 using System.Xml.Serialization;
 using System.Collections.Generic;
+using Bountyhunter.Utils;
 
 namespace Bountyhunter.Store.Proto
 {
@@ -53,25 +54,40 @@ namespace Bountyhunter.Store.Proto
 
         internal void RemoveClaimable(Item item, float amount)
         {
-            foreach(Item bounty in ClaimableBounty)
+            foreach (Item bounty in ClaimableBounty)
             {
-                if(bounty.ItemId.Equals(item.ItemId))
+                if (bounty.ItemId.Equals(item.ItemId))
                 {
                     bounty.Value -= amount;
                     if (bounty.Value <= 0) ClaimableBounty.Remove(bounty);
-                    break;
+                    return;
                 }
             }
         }
 
+        internal void AddClaimable(Item item, float amount)
+        {
+            foreach (Item bounty in ClaimableBounty)
+            {
+                if (bounty.ItemId.Equals(item.ItemId))
+                {
+                    bounty.Value += amount;
+                    return;
+                }
+            }
+            ClaimableBounty.Add(new Item(item.ItemId, amount));
+            BountyClaimed += Values.ItemValue(item.ItemId) * amount;
+        }
+
         internal void AddDeath(string reason, string killer, float claimedBounty = 0)
         {
+            Logging.Instance.WriteLine("Death " + reason + " " + killer + " " + claimedBounty);
             Deaths++;
             while (DeathList.Count >= Config.Instance.DeathListEntries)
             {
                 DeathList.RemoveAt(DeathList.Count - 1);
             }
-            DeathList.Insert(0, new Death(killer, Utils.Utilities.CurrentTimestamp(), reason, claimedBounty));
+            DeathList.Insert(0, new Death(killer, Utilities.CurrentTimestamp(), reason, claimedBounty));
         }
 
         internal void AddKill(string reason, string victim, float claimedBounty = 0)
@@ -81,7 +97,13 @@ namespace Bountyhunter.Store.Proto
             {
                 KillList.RemoveAt(KillList.Count - 1);
             }
-            KillList.Insert(0, new Death(victim, Utils.Utilities.CurrentTimestamp(), reason, claimedBounty));
+            KillList.Insert(0, new Death(victim, Utilities.CurrentTimestamp(), reason, claimedBounty));
         }
+
+        internal void CleanupBonties()
+        {
+            Bounties.RemoveAll(b => b.RewardItem.Claimed >= b.RewardItem.Value - Config.Instance.FloatAmountBuffer);
+        }
+
     }
 }
