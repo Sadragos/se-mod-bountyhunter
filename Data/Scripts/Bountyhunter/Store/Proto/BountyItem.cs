@@ -10,28 +10,25 @@ namespace Bountyhunter.Store.Proto
     [Serializable]
     public class BountyItem : Item
     {
-
         [ProtoMember(3)]
         [XmlAttribute]
-        public bool AllowedAsBounty = true;
+        public float Claimed = 0;
 
         [ProtoMember(4)]
-        public List<Item> Components = new List<Item>();
+        [XmlAttribute]
+        public float Worth = 0;
 
-        [ProtoMember(5)]
-        public List<string> Alias = new List<string>();
-
-        public BountyItem(string itemId)
+        public BountyItem(string itemId) : base(itemId)
         {
-            ItemId = itemId;
         }
 
-        public BountyItem() { }
-
-        public new string ToString()
+        public BountyItem()
         {
-            if (Alias != null && Alias.Count > 0) return Alias[0];
-            return ItemId.Replace("MyObjectBuilder_", "");
+        }
+
+        public void RecalculateWorth()
+        {
+            Worth = (Value - Claimed) * Values.ItemValue(ItemId);
         }
     }
 }

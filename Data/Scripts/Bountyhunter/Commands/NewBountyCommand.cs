@@ -80,7 +80,7 @@ namespace Bountyhunter.Commands
 
 
             // Payment
-            Item rewardItem = new Item();
+            BountyItem rewardItem = new BountyItem();
             if(!float.TryParse(arguments[3], out rewardItem.Value) || Math.Floor(rewardItem.Value) <= 0)
             {
                 WrongArguments(player);
@@ -88,16 +88,16 @@ namespace Bountyhunter.Commands
             }
             rewardItem.Value = (float)Math.Floor(rewardItem.Value);
 
-            List<BountyItem> foundItems = Values.FindItemFuzzy(arguments[4]);
+            List<ItemConfig> foundItems = Values.FindItemFuzzy(arguments[4]);
             if(foundItems.Count != 1)
             {
                 SendMessage(player, "Found none or too many Items matching " + arguments[4]+".");
                 return;
             }
-            BountyItem payment = foundItems[0];
+            ItemConfig payment = foundItems[0];
             rewardItem.ItemId = payment.ItemId;
 
-            bool isCredits = rewardItem.ItemId.Equals(Utils.Utilities.SC_ITEM);
+            bool isCredits = rewardItem.ItemId.Equals(Values.SC_ITEM);
 
             if(!isCredits && !Config.Instance.EnableItemBounties)
             {
@@ -115,7 +115,7 @@ namespace Bountyhunter.Commands
                 rewardItem.Value = (float)Math.Round(rewardItem.Value);
             }
             bounty.RewardItem = rewardItem;
-            bounty.RecalculateRemainingCurrency();
+            bounty.RecalculateWorth();
 
             // Get Count / requirement
             if(arguments.Length == 6)

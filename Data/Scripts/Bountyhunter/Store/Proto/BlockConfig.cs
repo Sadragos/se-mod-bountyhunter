@@ -7,7 +7,7 @@ namespace Bountyhunter.Store.Proto
 {
     [ProtoContract]
     [Serializable]
-    public class Block
+    public class BlockConfig
     {
 
         [ProtoMember(1)]
@@ -24,7 +24,7 @@ namespace Bountyhunter.Store.Proto
         [ProtoMember(4)]
         public List<string> Alias;
 
-        public Block(string blockId)
+        public BlockConfig(string blockId)
         {
             BlockId = blockId;
             Value = 0;
@@ -32,7 +32,7 @@ namespace Bountyhunter.Store.Proto
             Alias = new List<string>();
         }
 
-        public Block()
+        public BlockConfig()
         {
         }
 

@@ -46,11 +46,9 @@ namespace Bountyhunter.Store.Proto.Files
         [ProtoMember(5)]
         public bool TakeCreditFromBank = true;
 
-        // TODO
         [ProtoMember(6)]
         public bool CreditsAsItem = false;
 
-        // TODO
         [ProtoMember(7)]
         public bool SpawnRewardDropPods = false;
 
@@ -68,5 +66,16 @@ namespace Bountyhunter.Store.Proto.Files
         [ProtoMember(11)]
         public bool ClaimBountiesFromAllies = false;
 
+        [ProtoMember(12)]
+        public int DeathListEntries = 10;
+
+        [ProtoMember(13)]
+        public bool KillFeed = true;
+
+        [ProtoMember(14)]
+        public bool IncludeBountiesInKillFeed = true;
+
+        [ProtoMember(15)]
+        public bool CountSuicides = false;
     }
 }

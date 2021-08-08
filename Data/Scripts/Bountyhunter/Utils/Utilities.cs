@@ -29,8 +29,6 @@ namespace Bountyhunter.Utils
 {
     internal class Utilities
     {
-        public static string SC_ITEM = "MyObjectBuilder_PhysicalObject/SpaceCredit";
-
 
         public static IMyIdentity EntityToIdentity(IMyEntity entity)
         {

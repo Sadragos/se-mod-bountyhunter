@@ -31,10 +31,10 @@ namespace Bountyhunter.Store.Proto
         public int Deaths = 0;
 
         [ProtoMember(6)]
-        public List<Kill> KillList = new List<Kill>();
+        public List<Death> KillList = new List<Death>();
 
         [ProtoMember(7)]
-        public List<Kill> DeathList = new List<Kill>();
+        public List<Death> DeathList = new List<Death>();
 
         [ProtoMember(8)]
         public List<Item> ClaimableBounty = new List<Item>();
@@ -62,6 +62,26 @@ namespace Bountyhunter.Store.Proto
                     break;
                 }
             }
+        }
+
+        internal void AddDeath(string reason, string killer, float claimedBounty = 0)
+        {
+            Deaths++;
+            while (DeathList.Count >= Config.Instance.DeathListEntries)
+            {
+                DeathList.RemoveAt(DeathList.Count - 1);
+            }
+            DeathList.Insert(0, new Death(killer, Utils.Utilities.CurrentTimestamp(), reason, claimedBounty));
+        }
+
+        internal void AddKill(string reason, string victim, float claimedBounty = 0)
+        {
+            Kills++;
+            while (KillList.Count >= Config.Instance.DeathListEntries)
+            {
+                KillList.RemoveAt(KillList.Count - 1);
+            }
+            KillList.Insert(0, new Death(victim, Utils.Utilities.CurrentTimestamp(), reason, claimedBounty));
         }
     }
 }

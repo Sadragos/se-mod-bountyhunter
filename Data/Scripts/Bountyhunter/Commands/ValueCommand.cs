@@ -53,7 +53,7 @@ namespace Bountyhunter.Commands
                 {
                     SendMessage(player, "Please enter atelast two letters to search for.");
                 }
-                List<BountyItem> items = FindItemFuzzy(arguments[1]);
+                List<ItemConfig> items = FindItemFuzzy(arguments[1]);
                 if (items.Count == 0)
                 {
                     SendMessage(player, "Not Item with " + arguments[1] + " found.");
@@ -78,7 +78,7 @@ namespace Bountyhunter.Commands
                 {
                     SendMessage(player, "Please enter atelast two letters to search for.");
                 }
-                List<Block> items = Values.FindBlockFuzzy(arguments[1]);
+                List<BlockConfig> items = Values.FindBlockFuzzy(arguments[1]);
                 if (items.Count == 0)
                 {
                     SendMessage(player, "Not Item with " + arguments[1] + " found.");

@@ -36,19 +36,12 @@ namespace Bountyhunter.Store.Proto
         public bool Partial = true;
 
         [ProtoMember(7)]
-        [XmlAttribute]
-        public float ClaimedCount = 0;
+        public BountyItem RewardItem = new BountyItem(Values.SC_ITEM);
 
-        [ProtoMember(8)]
-        [XmlAttribute]
-        public float RemainingCurrency = 0;
 
-        [ProtoMember(9)]
-        public Item RewardItem = new Item(Utilities.SC_ITEM);
-
-        public void RecalculateRemainingCurrency()
+        public void RecalculateWorth()
         {
-            RemainingCurrency = (Count - ClaimedCount / Count) * Values.ItemValue(RewardItem.ItemId) * RewardItem.Value;
+            RewardItem.RecalculateWorth();
         }
     }
 
