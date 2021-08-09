@@ -80,5 +80,8 @@ namespace Bountyhunter.Store.Proto.Files
 
         [ProtoMember(16)]
         public float FloatAmountBuffer = 0.000001f;
+
+        [ProtoMember(17)]
+        public float MinPayout = 0.01f;
     }
 }

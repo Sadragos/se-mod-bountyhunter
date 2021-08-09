@@ -7,30 +7,24 @@ namespace Bountyhunter.Store.Proto
 {
     [ProtoContract]
     [Serializable]
-    public class Faction
+    public class Faction : Participant<long>
     {
-
-        [ProtoMember(1)]
-        [XmlAttribute]
-        public string Name;
-
-        [ProtoMember(2)]
-        [XmlAttribute]
-        public string Tag;
-
-        [ProtoMember(3)]
-        [XmlAttribute]
-        public long Id;
-
-        [ProtoMember(4)]
+        [ProtoMember(14)]
         public List<string> Members = new List<string>();
 
-        [ProtoMember(5)]
-        public List<Bounty> Bounties = new List<Bounty>();
-
-        internal void CleanupBonties()
+        [ProtoIgnore]
+        [XmlIgnore]
+        public List<Hunter> Hunters
         {
-            Bounties.RemoveAll(b => b.RewardItem.Claimed >= b.RewardItem.Value - Config.Instance.FloatAmountBuffer);
+            get
+            {
+                List<Hunter> result = new List<Hunter>();
+                foreach(Hunter hunter in Participants.Players.Values)
+                {
+                    if (hunter.FactionTag.Equals(FactionTag)) result.Add(hunter);
+                }
+                return result;
+            }
         }
     }
 }

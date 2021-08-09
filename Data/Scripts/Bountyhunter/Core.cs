@@ -71,6 +71,7 @@ namespace Bountyhunter
                 CommandHandlers.Add(new ValueCommand());
                 CommandHandlers.Add(new NewBountyCommand());
                 CommandHandlers.Add(new ClaimCommand());
+                CommandHandlers.Add(new RankingCommand());
 
                 AbstactCommandHandler reloadHandler = CommandHandlers.Find(ch => ch is ReloadCommand);
                 if (reloadHandler != null)
@@ -189,12 +190,13 @@ namespace Bountyhunter
 
         public void UpdateBeforeEverySecond()
         {
-            // TODO
+            
         }
 
         public void UpdateBeforeEveryMinute()
         {
             DeathHandler.UpdateIdentityCache();
+            Participants.RefreshAllFactions();
         }
 
         // Overrides
@@ -213,11 +215,13 @@ namespace Bountyhunter
                 } else if(interval % 60 == 0)
                 {
                     UpdateBeforeEverySecond();
-                } else if(interval % 3600 == 0)
-                {
-                    UpdateBeforeEveryMinute();
-                    interval = 0;
+                    if (interval % 3600 == 0)
+                    {
+                        UpdateBeforeEveryMinute();
+                        interval = 0;
+                    }
                 }
+                interval++;
 
             }
             catch ( Exception ex )

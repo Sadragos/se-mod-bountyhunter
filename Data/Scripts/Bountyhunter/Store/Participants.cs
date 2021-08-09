@@ -16,6 +16,7 @@ using ProtoBuf;
 using Bountyhunter.Store.Proto;
 using Bountyhunter.Utils;
 using Bountyhunter.Store.Proto.Files;
+using VRage.Game;
 
 namespace Bountyhunter.Store
 {
@@ -88,7 +89,7 @@ namespace Bountyhunter.Store
             {
                 if (Factions.ContainsKey(f.Id))
                 {
-                    Logging.Instance.WriteLine("WARNING Duplicate Faction Tag " + f.Tag);
+                    Logging.Instance.WriteLine("WARNING Duplicate Faction Tag " + f.FactionTag);
                     continue;
                 }
                 Factions.Add(f.Id, f);
@@ -135,7 +136,7 @@ namespace Bountyhunter.Store
                 // TODO Weitere Sachen wie Mitglieder und so
                 fact = new Faction()
                 {
-                    Tag = faction.Tag,
+                    FactionTag = faction.Tag,
                     Name = faction.Name,
                     Id = faction.FactionId
                 };
@@ -147,6 +148,42 @@ namespace Bountyhunter.Store
         public static Faction GetFaction(string faction, bool create = true)
         {
             return GetFaction(Utilities.GetFactionByTag(faction), create);
+        }
+
+        public static void RefreshAllFactions()
+        {
+            foreach(Faction fact in Factions.Values)
+            {
+                fact.Members.Clear();
+                IMyFaction myFaction = MyAPIGateway.Session.Factions.TryGetFactionById(fact.Id);
+                if (myFaction == null)
+                {
+                    Factions.Remove(fact.Id);
+                    continue;
+                }
+                fact.Name = myFaction.Name;
+                fact.FactionTag = myFaction.Tag;
+            }
+
+            foreach(Hunter hunter in Players.Values)
+            {
+                IMyPlayer player = Utilities.GetPlayer(hunter.Id);
+                if(player == null)
+                {
+                    Players.Remove(hunter.Id);
+                    continue;
+                }
+                hunter.Name = player.DisplayName;
+                IMyFaction faction = MyAPIGateway.Session.Factions.TryGetPlayerFaction(player.IdentityId);
+                if(faction == null)
+                {
+                    hunter.FactionTag = null;
+                } else
+                {
+                    hunter.FactionTag = faction.Tag;
+                    GetFaction(faction).Members.Add(hunter.Name);
+                }
+            }
         }
     }
 }

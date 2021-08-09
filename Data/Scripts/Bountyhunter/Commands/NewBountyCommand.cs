@@ -184,21 +184,29 @@ namespace Bountyhunter.Commands
 
 
             // Finally! Set the bounty!
-            switch(TargetType)
+            float bountyValue = rewardItem.Value * payment.Value;
+            switch (TargetType)
             {
                 case ETargetType.Faction:
                     Faction fTarget = Participants.GetFaction(targetString);
                     fTarget.Bounties.Add(bounty);
+                    fTarget.BountyReceived += bountyValue;
                     break;
 
                 case ETargetType.Player:
                     Hunter pTarget = Participants.GetPlayer(targetString);
                     pTarget.Bounties.Add(bounty);
+                    pTarget.BountyReceived += bountyValue;
                     break;
             }
             
-            me.BountyPlaced += rewardItem.Value * payment.Value;
-            // TODO Statistik für Faction setzen
+            me.BountyPlaced += bountyValue;
+            
+            if(!string.IsNullOrEmpty(me.FactionTag))
+            {
+                Participants.GetFaction(me.FactionTag).BountyPlaced += bountyValue;
+            }
+
             // TODO Ankündigen
             SendMessage(player, "You set a bounty of " + Formater.FormatNumber(rewardItem.Value) + " " + payment.ToString() + " on " + targetString + ". " + takenFrom);
 

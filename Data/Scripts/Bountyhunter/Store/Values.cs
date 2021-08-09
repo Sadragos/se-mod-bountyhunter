@@ -206,7 +206,10 @@ namespace Bountyhunter.Store
                 string key = componenet.Id.ToString();
                 if (instance.BlockValues.Find(t => t.BlockId.Equals(key)) == null)
                 {
-                    // TODO Terminal Blöcke filtern
+                    if (componenet.PCU <= 1) continue; // Armor and so on only has 1 PCU and is not worth the hassle.
+                    componenet.GetObjectBuilder();
+                    
+
                     BlockConfig bv = new BlockConfig(key);
                     bv.Alias.Add(componenet.DisplayNameText);
 

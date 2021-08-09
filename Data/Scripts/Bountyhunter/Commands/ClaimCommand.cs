@@ -135,6 +135,7 @@ namespace Bountyhunter.Commands
             List<Item> payout = new List<Item>();
             foreach(Item item in hunter.ClaimableBounty)
             {
+                if (item.Value < Config.Instance.MinPayout) continue;
                 if (!Config.Instance.CreditsAsItem && item.ItemId.Equals(Values.SC_ITEM)) continue;
                 if (item.Value < 1 && !item.HasFractions) continue;
                 payout.Add(new Item(item.ItemId, (float)(item.HasFractions ? item.Value : Math.Floor(item.Value))));
@@ -149,7 +150,7 @@ namespace Bountyhunter.Commands
                 if (item.ItemId.Equals(Values.SC_ITEM))
                 {
                     long amount = (long)Math.Floor(item.Value);
-                    if (amount > 1)
+                    if (amount > Config.Instance.MinPayout)
                     {
                         Utilities.PayPlayer(player, amount);
                         hunter.RemoveClaimable(item, amount);

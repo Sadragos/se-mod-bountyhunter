@@ -8,49 +8,12 @@ namespace Bountyhunter.Store.Proto
 {
     [ProtoContract]
     [Serializable]
-    public class Hunter
+    public class Hunter : Participant<ulong>
     {
 
-        [ProtoMember(1)]
-        [XmlAttribute]
-        public string Name;
-
-        [ProtoMember(2)]
-        [XmlAttribute]
-        public ulong Id;
-
-        [ProtoMember(3)]
-        [XmlAttribute]
-        public string FactionTag;
-
-        [ProtoMember(4)]
-        [XmlAttribute]
-        public int Kills = 0;
-
-        [ProtoMember(5)]
-        [XmlAttribute]
-        public int Deaths = 0;
-
-        [ProtoMember(6)]
-        public List<Death> KillList = new List<Death>();
-
-        [ProtoMember(7)]
-        public List<Death> DeathList = new List<Death>();
-
-        [ProtoMember(8)]
+        [ProtoMember(14)]
         public List<Item> ClaimableBounty = new List<Item>();
 
-        [ProtoMember(9)]
-        public List<Bounty> Bounties = new List<Bounty>();
-
-
-        [ProtoMember(10)]
-        [XmlAttribute]
-        public double BountyPlaced = 0;
-
-        [ProtoMember(11)]
-        [XmlAttribute]
-        public double BountyClaimed = 0;
 
         internal void RemoveClaimable(Item item, float amount)
         {
@@ -65,45 +28,23 @@ namespace Bountyhunter.Store.Proto
             }
         }
 
-        internal void AddClaimable(Item item, float amount)
+        internal float AddClaimable(Item item, float amount)
         {
+            bool added = false;
             foreach (Item bounty in ClaimableBounty)
             {
                 if (bounty.ItemId.Equals(item.ItemId))
                 {
                     bounty.Value += amount;
-                    return;
+                    added = true;
+                    break;
                 }
             }
-            ClaimableBounty.Add(new Item(item.ItemId, amount));
-            BountyClaimed += Values.ItemValue(item.ItemId) * amount;
-        }
+            if(!added) ClaimableBounty.Add(new Item(item.ItemId, amount));
 
-        internal void AddDeath(string reason, string killer, float claimedBounty = 0)
-        {
-            Logging.Instance.WriteLine("Death " + reason + " " + killer + " " + claimedBounty);
-            Deaths++;
-            while (DeathList.Count >= Config.Instance.DeathListEntries)
-            {
-                DeathList.RemoveAt(DeathList.Count - 1);
-            }
-            DeathList.Insert(0, new Death(killer, Utilities.CurrentTimestamp(), reason, claimedBounty));
+            float value = Values.ItemValue(item.ItemId) * amount;
+            BountyClaimed += value;
+            return value;
         }
-
-        internal void AddKill(string reason, string victim, float claimedBounty = 0)
-        {
-            Kills++;
-            while (KillList.Count >= Config.Instance.DeathListEntries)
-            {
-                KillList.RemoveAt(KillList.Count - 1);
-            }
-            KillList.Insert(0, new Death(victim, Utilities.CurrentTimestamp(), reason, claimedBounty));
-        }
-
-        internal void CleanupBonties()
-        {
-            Bounties.RemoveAll(b => b.RewardItem.Claimed >= b.RewardItem.Value - Config.Instance.FloatAmountBuffer);
-        }
-
     }
 }
