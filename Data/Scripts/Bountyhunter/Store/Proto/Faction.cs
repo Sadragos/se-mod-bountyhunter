@@ -2,14 +2,19 @@
 using ProtoBuf;
 using System.Xml.Serialization;
 using System.Collections.Generic;
+using Bountyhunter.Utils;
 
 namespace Bountyhunter.Store.Proto
 {
     [ProtoContract]
     [Serializable]
-    public class Faction : Participant<long>
+    public class Faction : Participant
     {
-        [ProtoMember(14)]
+        [ProtoMember(1)]
+        [XmlAttribute]
+        public long Id;
+
+        [ProtoMember(12)]
         public List<string> Members = new List<string>();
 
         [ProtoIgnore]

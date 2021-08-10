@@ -12,23 +12,24 @@ namespace Bountyhunter.Store.Proto
     {
         [ProtoMember(1)]
         [XmlAttribute]
-        public string opponent;
+        public string Opponent;
         [ProtoMember(2)]
         [XmlAttribute]
-        public string time;
+        public string Time;
         [ProtoMember(3)]
         [XmlAttribute]
-        public string reason;
+        public string Reason;
         [ProtoMember(4)]
         [XmlAttribute]
-        public float claimedBounty;
+        public float ClaimedBounty;
+
 
         public Death(string opponent, string time, string reason, float claimedBounty)
         {
-            this.opponent = opponent;
-            this.time = time;
-            this.reason = reason;
-            this.claimedBounty = claimedBounty;
+            this.Opponent = opponent;
+            this.Time = time;
+            this.Reason = reason;
+            this.ClaimedBounty = claimedBounty;
         }
 
         public Death()

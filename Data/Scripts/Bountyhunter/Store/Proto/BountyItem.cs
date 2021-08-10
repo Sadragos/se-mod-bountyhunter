@@ -28,7 +28,11 @@ namespace Bountyhunter.Store.Proto
 
         public void RecalculateWorth()
         {
-            Worth = (Value - Claimed) * Values.ItemValue(ItemId);
+            Worth = Remaining * Values.ItemValue(ItemId);
         }
+
+        [XmlIgnore]
+        [ProtoIgnore]
+        public float Remaining {  get { return Value - Claimed;  } }
     }
 }

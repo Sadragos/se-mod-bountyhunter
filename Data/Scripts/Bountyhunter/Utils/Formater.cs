@@ -9,7 +9,6 @@ namespace Bountyhunter.Utils
     {
         public static string FormatNumber(double value)
         {
-            // TODO even numbers
             if (value >= 10000000) return (value / 1000000).ToString("0.0") + "m";
             if (value >= 1000000) return (value / 1000000).ToString("0.00") + "m";
             if (value >= 100000) return (value / 1000).ToString("0") + "k";

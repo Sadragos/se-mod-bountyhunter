@@ -10,7 +10,6 @@ using VRageMath;
 
 namespace Bountyhunter.Utils
 {
-    // TODO Spawning is crashing the game right now
     class LootboxSpawner
     {
         public static List<LootboxSpawn> Lootboxes = new List<LootboxSpawn>();

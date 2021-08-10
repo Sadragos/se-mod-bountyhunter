@@ -3,19 +3,15 @@ using ProtoBuf;
 using System.Xml.Serialization;
 using System.Collections.Generic;
 using Bountyhunter.Utils;
-
+using System.Linq;
 
 namespace Bountyhunter.Store.Proto
 {
-    public class Participant<IDType>
+    public class Participant
     {
-        [ProtoMember(1)]
-        [XmlAttribute]
-        public string Name;
-
         [ProtoMember(2)]
         [XmlAttribute]
-        public IDType Id;
+        public string Name;
 
         [ProtoMember(3)]
         [XmlAttribute]
@@ -30,55 +26,28 @@ namespace Bountyhunter.Store.Proto
         public int Deaths = 0;
 
         [ProtoMember(6)]
-        public List<Death> KillList = new List<Death>();
-
-        [ProtoMember(7)]
-        public List<Death> DeathList = new List<Death>();
-
-        [ProtoMember(8)]
         public List<Bounty> Bounties = new List<Bounty>();
 
-        [ProtoMember(9)]
+        [ProtoMember(7)]
         [XmlAttribute]
         public double BountyPlaced = 0;
 
-        [ProtoMember(10)]
+        [ProtoMember(8)]
         [XmlAttribute]
         public double BountyClaimed = 0;
 
-        [ProtoMember(11)]
+        [ProtoMember(9)]
         [XmlAttribute]
         public double BountyReceived = 0;
 
 
-        [ProtoMember(12)]
+        [ProtoMember(10)]
         [XmlAttribute]
         public double DamageDone = 0;
 
-        [ProtoMember(13)]
+        [ProtoMember(11)]
         [XmlAttribute]
         public double DamageReceived = 0;
-
-        internal void AddDeath(string reason, string killer, float claimedBounty = 0)
-        {
-            Deaths++;
-            while (DeathList.Count >= Config.Instance.DeathListEntries)
-            {
-                DeathList.RemoveAt(DeathList.Count - 1);
-            }
-            DeathList.Insert(0, new Death(killer, Utilities.CurrentTimestamp(), reason, claimedBounty));
-        }
-
-        internal void AddKill(string reason, string victim, float claimedBounty = 0)
-        {
-            Kills++;
-            while (KillList.Count >= Config.Instance.DeathListEntries)
-            {
-                KillList.RemoveAt(KillList.Count - 1);
-            }
-            KillList.Insert(0, new Death(victim, Utilities.CurrentTimestamp(), reason, claimedBounty));
-            BountyClaimed += claimedBounty;
-        }
 
         internal float ClaimBounty(Hunter attacker, EBountyType type, float value = 1)
         {
@@ -92,6 +61,7 @@ namespace Bountyhunter.Store.Proto
                     float percent = value / b.Count;
                     float amount = Math.Min(percent * b.RewardItem.Value, b.RewardItem.Value - b.RewardItem.Claimed);
                     b.RewardItem.Claimed += amount;
+                    b.RewardItem.RecalculateWorth();
                     result += attacker.AddClaimable(b.RewardItem, amount);
                     if(b.RewardItem.Claimed >= b.RewardItem.Value - Config.Instance.FloatAmountBuffer)
                     {
@@ -105,6 +75,56 @@ namespace Bountyhunter.Store.Proto
         internal void CleanupBonties()
         {
             Bounties.RemoveAll(b => b.RewardItem.Claimed >= b.RewardItem.Value - Config.Instance.FloatAmountBuffer);
+        }
+
+        [ProtoIgnore]
+        [XmlIgnore]
+        public float KillDeathRatio
+        {
+            get
+            {
+                if (Deaths == 0) return Kills;
+                if (Kills == 0) return 0;
+                return Kills / Deaths;
+            }
+        }
+
+        [ProtoIgnore]
+        [XmlIgnore]
+        public double DamageRatio
+        {
+            get
+            {
+                if (DamageReceived == 0) return DamageDone;
+                if (DamageDone == 0) return 0;
+                return DamageDone / DamageReceived;
+            }
+        }
+
+        [ProtoIgnore]
+        [XmlIgnore]
+        public float BountyWorth
+        {
+            get
+            {
+                return Bounties.Sum(b => b.RewardItem.Worth);
+            }
+        }
+
+        public new string ToString()
+        {
+            if (string.IsNullOrEmpty(FactionTag)) return Name;
+            return "[" + FactionTag + "] " + Name;
+        }
+
+        internal List<Death> GetDeathList()
+        {
+            return new List<Death>();
+        }
+
+        internal List<Death> GetKillList()
+        {
+            return new List<Death>();
         }
     }
 }

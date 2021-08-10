@@ -62,7 +62,6 @@ namespace Bountyhunter.Store.Proto.Files
         [ProtoMember(10)]
         public bool PlaceBountiesOnAllies = true;
 
-        // TODO
         [ProtoMember(11)]
         public bool ClaimBountiesFromAllies = false;
 
@@ -83,5 +82,14 @@ namespace Bountyhunter.Store.Proto.Files
 
         [ProtoMember(17)]
         public float MinPayout = 0.01f;
+
+        [ProtoMember(18)]
+        public bool AnnouncyBounties = true;
+
+        [ProtoMember(19)]
+        public bool AnnouncyBountiesDeatils = true;
+
+        [ProtoMember(20)]
+        public int DamageBlockMessageBatchingSeconds = 20;
     }
 }

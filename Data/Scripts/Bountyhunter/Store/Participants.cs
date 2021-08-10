@@ -112,13 +112,12 @@ namespace Bountyhunter.Store
             Hunter hunter;
             if (!Players.TryGetValue(player.SteamUserId, out hunter))
             {
-                // TODO Weitere Sachen wie Faction und so
                 hunter = new Hunter()
                 {
                     Id = player.SteamUserId,
                     Name = player.DisplayName
                 };
-                if(create) Players.Add(player.SteamUserId, hunter);
+                if (create) Players.Add(player.SteamUserId, hunter);
             }
             return hunter;
         }
@@ -130,10 +129,11 @@ namespace Bountyhunter.Store
 
         public static Faction GetFaction(IMyFaction faction, bool create = true)
         {
+            if (faction == null) return null;
+
             Faction fact;
             if (!Factions.TryGetValue(faction.FactionId, out fact))
             {
-                // TODO Weitere Sachen wie Mitglieder und so
                 fact = new Faction()
                 {
                     FactionTag = faction.Tag,

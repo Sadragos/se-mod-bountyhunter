@@ -32,10 +32,10 @@ namespace Bountyhunter.Commands
             bounty.Partial = true;
 
             // Bounty Type
-            bounty.BountyType = arguments[0].ToLower().Equals("kill") ? EBountyType.Kill : EBountyType.Damage;
+            bounty.BountyType = arguments[0].ToLower().Equals("kill") || arguments[0].ToLower().Equals("k") ? EBountyType.Kill : EBountyType.Damage;
 
             // Target Type
-            ETargetType TargetType = arguments[1].ToLower().Equals("player") ? ETargetType.Player : ETargetType.Faction;
+            ETargetType TargetType = arguments[1].ToLower().Equals("player") || arguments[1].ToLower().Equals("p") ? ETargetType.Player : ETargetType.Faction;
 
             if (TargetType.Equals(ETargetType.Player) && !Config.Instance.EnablePlayerBounties)
             {
@@ -63,10 +63,11 @@ namespace Bountyhunter.Commands
                     SendMessage(player, "You can't place a bounty on yourself.");
                     return;
                 }
+                targetString = targetPlayer.DisplayName;
             } else if (TargetType.Equals(ETargetType.Faction))
             {
                 IMyFaction targetFaction = Utils.Utilities.GetFactionByTag(targetString);
-                if (targetFaction == null)
+                if (targetFaction == null || targetFaction.IsEveryoneNpc())
                 {
                     SendMessage(player, "No Faction with the Tag " + targetString + " could be found.");
                     return;
@@ -76,6 +77,7 @@ namespace Bountyhunter.Commands
                     SendMessage(player, "You are not at war with this Faction and can't set a bounty.");
                     return;
                 }
+                targetString = targetFaction.Tag;
             }
 
 
@@ -185,16 +187,19 @@ namespace Bountyhunter.Commands
 
             // Finally! Set the bounty!
             float bountyValue = rewardItem.Value * payment.Value;
+            bool existingBounties = false;
             switch (TargetType)
             {
                 case ETargetType.Faction:
                     Faction fTarget = Participants.GetFaction(targetString);
+                    existingBounties = fTarget.Bounties.Count > 0;
                     fTarget.Bounties.Add(bounty);
                     fTarget.BountyReceived += bountyValue;
                     break;
 
                 case ETargetType.Player:
                     Hunter pTarget = Participants.GetPlayer(targetString);
+                    existingBounties = pTarget.Bounties.Count > 0;
                     pTarget.Bounties.Add(bounty);
                     pTarget.BountyReceived += bountyValue;
                     break;
@@ -207,8 +212,37 @@ namespace Bountyhunter.Commands
                 Participants.GetFaction(me.FactionTag).BountyPlaced += bountyValue;
             }
 
-            // TODO Ankündigen
             SendMessage(player, "You set a bounty of " + Formater.FormatNumber(rewardItem.Value) + " " + payment.ToString() + " on " + targetString + ". " + takenFrom);
+
+            if(Config.Instance.AnnouncyBounties)
+            {
+                string message = "";
+                string clientName = bounty.HideClient ? "Anonymous" : bounty.Client;
+
+                if (existingBounties)
+                {
+                    message = clientName + " has increased the bounty on " + targetString;
+                    if(Config.Instance.AnnouncyBountiesDeatils)
+                    {
+                        message += " by " + bounty.RewardItem.Value + " " + payment.ToString() + " (" + Formater.FormatCurrency(bountyValue) + ").";
+                    } else
+                    {
+                        message += ".";
+                    }
+                }
+                else
+                {
+                    message = clientName + " has placed a new bounty ";
+                    if (Config.Instance.AnnouncyBountiesDeatils)
+                    {
+                        message += " of " + bounty.RewardItem.Value + " " + payment.ToString() + " (" + Formater.FormatCurrency(bountyValue) + ")";
+                    }
+
+                    message += " on " + targetString + ".";
+                }
+
+                Utilities.ShowChatMessage(message);
+            }
 
         }
 

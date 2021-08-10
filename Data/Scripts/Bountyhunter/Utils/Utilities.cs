@@ -122,6 +122,17 @@ namespace Bountyhunter.Utils
             MyVisualScriptLogicProvider.SendChatMessageColored(message, Config.Instance.BroadcastNameRealColor, (playerid != 0 ? "~" : "")+ Config.Instance.BroadcastName, playerid);
         }
 
+        public static void ShowDialog(ulong steamId, string title, string content)
+        {
+            ClientServerMessage item = new ClientServerMessage()
+            {
+                Type = "dialog",
+                Message = content,
+                DialogTitle = title
+            };
+            SendMessageToClient(item, steamId);
+        }
+
         public static IMyIdentity GridToIdentity(IMyCubeGrid grid)
         {
             if (grid == null) { return null; }

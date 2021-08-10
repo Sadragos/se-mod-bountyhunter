@@ -72,6 +72,7 @@ namespace Bountyhunter
                 CommandHandlers.Add(new NewBountyCommand());
                 CommandHandlers.Add(new ClaimCommand());
                 CommandHandlers.Add(new RankingCommand());
+                CommandHandlers.Add(new ShowCommand());
 
                 AbstactCommandHandler reloadHandler = CommandHandlers.Find(ch => ch is ReloadCommand);
                 if (reloadHandler != null)
@@ -190,7 +191,7 @@ namespace Bountyhunter
 
         public void UpdateBeforeEverySecond()
         {
-            
+            DeathHandler.CheckPendingMessages();
         }
 
         public void UpdateBeforeEveryMinute()

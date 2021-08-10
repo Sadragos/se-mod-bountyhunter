@@ -8,8 +8,17 @@ namespace Bountyhunter.Store.Proto
 {
     [ProtoContract]
     [Serializable]
-    public class Hunter : Participant<ulong>
+    public class Hunter : Participant
     {
+        [ProtoMember(1)]
+        [XmlAttribute]
+        public ulong Id;
+
+        [ProtoMember(12)]
+        public List<Death> KillList = new List<Death>();
+
+        [ProtoMember(13)]
+        public List<Death> DeathList = new List<Death>();
 
         [ProtoMember(14)]
         public List<Item> ClaimableBounty = new List<Item>();
@@ -45,6 +54,37 @@ namespace Bountyhunter.Store.Proto
             float value = Values.ItemValue(item.ItemId) * amount;
             BountyClaimed += value;
             return value;
+        }
+
+        internal void AddDeath(string reason, string killer, float claimedBounty = 0)
+        {
+            Deaths++;
+            while (DeathList.Count >= Config.Instance.DeathListEntries)
+            {
+                DeathList.RemoveAt(DeathList.Count - 1);
+            }
+            DeathList.Insert(0, new Death(killer, Utilities.CurrentTimestamp(), reason, claimedBounty));
+        }
+
+        internal void AddKill(string reason, string victim, float claimedBounty = 0)
+        {
+            Kills++;
+            while (KillList.Count >= Config.Instance.DeathListEntries)
+            {
+                KillList.RemoveAt(KillList.Count - 1);
+            }
+            KillList.Insert(0, new Death(victim, Utilities.CurrentTimestamp(), reason, claimedBounty));
+            BountyClaimed += claimedBounty;
+        }
+
+        internal new List<Death> GetDeathList()
+        {
+            return DeathList;
+        }
+
+        internal new List<Death> GetKillList()
+        {
+            return KillList;
         }
     }
 }
