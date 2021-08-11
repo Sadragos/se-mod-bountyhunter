@@ -25,7 +25,7 @@ namespace Bountyhunter.Store
 
         public static FileParticipants Instance;
 
-        public static Dictionary<ulong, Hunter> Players = new Dictionary<ulong, Hunter>();
+        public static Dictionary<long, Hunter> Players = new Dictionary<long, Hunter>();
         public static Dictionary<long, Faction> Factions = new Dictionary<long, Faction>();
 
 
@@ -107,24 +107,24 @@ namespace Bountyhunter.Store
             }
         }
 
-        public static Hunter GetPlayer(IMyPlayer player, bool create = true)
+        public static Hunter GetPlayer(IMyIdentity player, bool create = true)
         {
             Hunter hunter;
-            if (!Players.TryGetValue(player.SteamUserId, out hunter))
+            if (!Players.TryGetValue(player.IdentityId, out hunter))
             {
                 hunter = new Hunter()
                 {
-                    Id = player.SteamUserId,
+                    Id = player.IdentityId,
                     Name = player.DisplayName
                 };
-                if (create) Players.Add(player.SteamUserId, hunter);
+                if (create) Players.Add(player.IdentityId, hunter);
             }
             return hunter;
         }
 
         public static Hunter GetPlayer(string player, bool create = true)
         {
-            return GetPlayer(Utilities.GetPlayer(player), create);
+            return GetPlayer(Utilities.GetPlayerIdentity(player), create);
         }
 
         public static Faction GetFaction(IMyFaction faction, bool create = true)
@@ -167,7 +167,7 @@ namespace Bountyhunter.Store
 
             foreach(Hunter hunter in Players.Values)
             {
-                IMyPlayer player = Utilities.GetPlayer(hunter.Id);
+                IMyIdentity player = Utilities.GetPlayerIdentity(hunter.Id);
                 if(player == null)
                 {
                     Players.Remove(hunter.Id);

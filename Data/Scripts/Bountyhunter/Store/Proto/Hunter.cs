@@ -10,10 +10,6 @@ namespace Bountyhunter.Store.Proto
     [Serializable]
     public class Hunter : Participant
     {
-        [ProtoMember(1)]
-        [XmlAttribute]
-        public ulong Id;
-
         [ProtoMember(12)]
         public List<Death> KillList = new List<Death>();
 
@@ -77,12 +73,12 @@ namespace Bountyhunter.Store.Proto
             BountyClaimed += claimedBounty;
         }
 
-        internal new List<Death> GetDeathList()
+        public new List<Death> GetDeathList()
         {
             return DeathList;
         }
 
-        internal new List<Death> GetKillList()
+        public new List<Death> GetKillList()
         {
             return KillList;
         }

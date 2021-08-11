@@ -9,6 +9,10 @@ namespace Bountyhunter.Store.Proto
 {
     public class Participant
     {
+        [ProtoMember(1)]
+        [XmlAttribute]
+        public long Id;
+
         [ProtoMember(2)]
         [XmlAttribute]
         public string Name;
@@ -59,7 +63,7 @@ namespace Bountyhunter.Store.Proto
                 if(b.BountyType.Equals(type))
                 {
                     float percent = value / b.Count;
-                    float amount = Math.Min(percent * b.RewardItem.Value, b.RewardItem.Value - b.RewardItem.Claimed);
+                    float amount = Math.Min(percent * b.RewardItem.Value, b.RewardItem.Remaining);
                     b.RewardItem.Claimed += amount;
                     b.RewardItem.RecalculateWorth();
                     result += attacker.AddClaimable(b.RewardItem, amount);
@@ -117,12 +121,12 @@ namespace Bountyhunter.Store.Proto
             return "[" + FactionTag + "] " + Name;
         }
 
-        internal List<Death> GetDeathList()
+        public List<Death> GetDeathList()
         {
             return new List<Death>();
         }
 
-        internal List<Death> GetKillList()
+        public List<Death> GetKillList()
         {
             return new List<Death>();
         }

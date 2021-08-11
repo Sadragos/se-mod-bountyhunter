@@ -25,7 +25,7 @@ namespace Bountyhunter.Commands
                 WrongArguments(player);
                 return;
             }
-            Hunter me = Participants.GetPlayer(player);
+            Hunter me = Participants.GetPlayer(player.Identity);
 
             Bounty bounty = new Bounty();
             bounty.Client = player.DisplayName;
@@ -52,13 +52,13 @@ namespace Bountyhunter.Commands
             string targetString = arguments[2];
             if(TargetType.Equals(ETargetType.Player))
             {
-                IMyPlayer targetPlayer = Utils.Utilities.GetPlayer(targetString);
+                IMyIdentity targetPlayer = Utils.Utilities.GetPlayerIdentity(targetString);
                 if(targetPlayer == null)
                 {
                     SendMessage(player, "The Player " + targetString + " could not be found.");
                     return;
                 }
-                if(!Config.Instance.PlaceBountiesOnSelf && targetPlayer.SteamUserId.Equals(player.SteamUserId))
+                if(!Config.Instance.PlaceBountiesOnSelf && targetPlayer.IdentityId.Equals(player.IdentityId))
                 {
                     SendMessage(player, "You can't place a bounty on yourself.");
                     return;

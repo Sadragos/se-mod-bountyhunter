@@ -1,6 +1,7 @@
 ﻿using Bountyhunter.Store;
 using Bountyhunter.Store.Proto;
 using Bountyhunter.Utils;
+using Sandbox.ModAPI;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -35,7 +36,7 @@ namespace Bountyhunter.Commands
 
         private void ShowPlayer(IMyPlayer player, string v)
         {
-            IMyPlayer p = Utilities.GetPlayer(v);
+            IMyIdentity p = Utilities.GetPlayerIdentity(v);
             if(p == null)
             {
                 SendMessage(player, "No player with that name found");
@@ -85,8 +86,13 @@ namespace Bountyhunter.Commands
             Utilities.ShowDialog(player.SteamUserId, title, builder.ToString());
         }
 
-        private void AddDeaths(StringBuilder builder, Participant particiant)
+        private void AddDeaths(StringBuilder builder, Hunter particiant)
         {
+            if (particiant.GetKillList().Count == 0)
+            {
+                builder.Append(">> NO KILLS FOUND\n\n");
+                return;
+            }
             builder.Append(">> KILLS\n");
             foreach(Death d in particiant.GetKillList())
             {
@@ -110,8 +116,13 @@ namespace Bountyhunter.Commands
             builder.Append("\n");
         }
 
-        private void AddKills(StringBuilder builder, Participant particiant)
+        private void AddKills(StringBuilder builder, Hunter particiant)
         {
+            if (particiant.GetDeathList().Count == 0)
+            {
+                builder.Append(">> NO DEATHS FOUND\n\n");
+                return;
+            }
             builder.Append(">> DEATHS\n");
             foreach (Death d in particiant.GetDeathList())
             {
@@ -162,7 +173,12 @@ namespace Bountyhunter.Commands
 
         private void AddBounties(StringBuilder builder, Participant participant)
         {
-            builder.Append(">> Bounties (");
+            if(participant.Bounties.Count == 0)
+            {
+                builder.Append(">> NO BOUNTIES FOUND\n\n");
+                return;
+            }
+            builder.Append(">> BOUNTIES (");
             builder.Append(Formater.FormatCurrency(participant.BountyWorth));
             builder.Append(")\n");
             foreach(Bounty b in participant.Bounties)

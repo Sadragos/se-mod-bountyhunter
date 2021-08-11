@@ -30,6 +30,14 @@ namespace Bountyhunter.Utils
     internal class Utilities
     {
 
+        public static IMyIdentity SlimToIdentity(IMySlimBlock block)
+        {
+            long owner = 0;
+            if (block.CubeGrid != null) owner = block.CubeGrid.BigOwners.FirstOrDefault();
+            if (owner == 0) owner = block.BuiltBy;
+            return CubeBlockBuiltByToIdentity(owner);
+        }
+
         public static IMyIdentity EntityToIdentity(IMyEntity entity)
         {
             if (entity == null) { return null; }
@@ -120,6 +128,11 @@ namespace Bountyhunter.Utils
                 return;
             }
             MyVisualScriptLogicProvider.SendChatMessageColored(message, Config.Instance.BroadcastNameRealColor, (playerid != 0 ? "~" : "")+ Config.Instance.BroadcastName, playerid);
+        }
+
+        public static void ShowNotification(string message, long playerid = 0, int delay = 3000)
+        {
+            MyVisualScriptLogicProvider.ShowNotification(message, delay, MyFontEnum.White, playerid);
         }
 
         public static void ShowDialog(ulong steamId, string title, string content)
@@ -263,6 +276,20 @@ namespace Bountyhunter.Utils
         {
             List<IMyPlayer> players = new List<IMyPlayer>();
             MyAPIGateway.Players.GetPlayers(players, i => i.DisplayName.ToLower().Equals(name.ToLower()));
+            return players.FirstOrDefault();
+        }
+
+        public static IMyIdentity GetPlayerIdentity(string name)
+        {
+            List<IMyIdentity> players = new List<IMyIdentity>();
+            MyAPIGateway.Players.GetAllIdentites(players, i => i.DisplayName.ToLower().Equals(name.ToLower()));
+            return players.FirstOrDefault();
+        }
+
+        public static IMyIdentity GetPlayerIdentity(long id)
+        {
+            List<IMyIdentity> players = new List<IMyIdentity>();
+            MyAPIGateway.Players.GetAllIdentites(players, i => i.IdentityId.Equals(id));
             return players.FirstOrDefault();
         }
 

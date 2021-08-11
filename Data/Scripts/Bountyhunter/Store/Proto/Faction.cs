@@ -10,10 +10,6 @@ namespace Bountyhunter.Store.Proto
     [Serializable]
     public class Faction : Participant
     {
-        [ProtoMember(1)]
-        [XmlAttribute]
-        public long Id;
-
         [ProtoMember(12)]
         public List<string> Members = new List<string>();
 

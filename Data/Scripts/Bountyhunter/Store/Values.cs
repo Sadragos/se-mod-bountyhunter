@@ -16,6 +16,7 @@ using ProtoBuf;
 using Bountyhunter.Store.Proto;
 using Bountyhunter.Utils;
 using Bountyhunter.Store.Proto.Files;
+using VRage.Game;
 
 namespace Bountyhunter.Store
 {
@@ -29,6 +30,7 @@ namespace Bountyhunter.Store
         public static Dictionary<string, ItemConfig> Items = new Dictionary<string, ItemConfig>();
         public static Dictionary<string, BlockConfig> Blocks = new Dictionary<string, BlockConfig>();
 
+        public static object CubeSize { get; private set; }
 
         public static void Load()
         {
@@ -206,12 +208,10 @@ namespace Bountyhunter.Store
                 string key = componenet.Id.ToString();
                 if (instance.BlockValues.Find(t => t.BlockId.Equals(key)) == null)
                 {
-                    if (componenet.PCU <= 1) continue; // Armor and so on only has 1 PCU and is not worth the hassle.
-                    componenet.GetObjectBuilder();
-                    
-
+                    // TODO TerminalBlocks filtern
+                    string prefix = "[" + (componenet.CubeSize.Equals(MyCubeSize.Large) ? "L" : "S") +"] ";
                     BlockConfig bv = new BlockConfig(key);
-                    bv.Alias.Add(componenet.DisplayNameText);
+                    bv.Alias.Add(prefix + componenet.DisplayNameText);
 
                     foreach (Component comp in componenet.Components)
                     {
@@ -339,7 +339,6 @@ namespace Bountyhunter.Store
                     {
                         VRage.Game.ModAPI.Ingame.MyInventoryItem? v = myInventory.GetItemAt(it);
                         if(v != null && v.HasValue)
-                        Logging.Instance.WriteLine("Item " + v.Value.Type.ToString());
                         cargoValue += (float)v.Value.Amount * ItemValue(v.Value.Type.ToString());
                     }
                 }

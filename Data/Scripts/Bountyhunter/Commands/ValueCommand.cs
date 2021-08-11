@@ -51,50 +51,52 @@ namespace Bountyhunter.Commands
             {
                 if (arguments[1].Length < 2)
                 {
-                    SendMessage(player, "Please enter atelast two letters to search for.");
+                    SendMessage(player, "Please enter atleast two letters to search for.");
                 }
                 List<ItemConfig> items = FindItemFuzzy(arguments[1]);
                 if (items.Count == 0)
                 {
-                    SendMessage(player, "Not Item with " + arguments[1] + " found.");
+                    SendMessage(player, "No Item with " + arguments[1] + " found.");
                 }
                 else
                 {
-                    int i = 0;
-                    while (i < 10 && i < items.Count)
+                    items.OrderBy(i => i.ToString());
+                    string title = "Itemsearch";
+                    StringBuilder builder = new StringBuilder();
+                    foreach(ItemConfig item in items)
                     {
-                        SendMessage(player, items[i].ToString() + ": " + Formater.FormatCurrency(items[i].Value));
-                        i++;
+                        builder.Append(item.ToString());
+                        builder.Append(" - ");
+                        builder.Append(Formater.FormatCurrency(item.Value));
+                        builder.Append("\n");
                     }
-                    if (i < items.Count)
-                    {
-                        SendMessage(player, "and " + (items.Count - i - 1) + " more");
-                    }
+                    Utilities.ShowDialog(player.SteamUserId, title, builder.ToString());
                 }
             }
             else if (arguments.Length >= 2 && arguments[0].Equals("block"))
             {
                 if (arguments[1].Length < 2)
                 {
-                    SendMessage(player, "Please enter atelast two letters to search for.");
+                    SendMessage(player, "Please enter atleast two letters to search for.");
                 }
                 List<BlockConfig> items = Values.FindBlockFuzzy(arguments[1]);
                 if (items.Count == 0)
                 {
-                    SendMessage(player, "Not Item with " + arguments[1] + " found.");
+                    SendMessage(player, "No Block with " + arguments[1] + " found.");
                 }
                 else
                 {
-                    int i = 0;
-                    while (i < 10 && i < items.Count)
+                    items.OrderBy(i => i.ToString());
+                    string title = "Blocksearch";
+                    StringBuilder builder = new StringBuilder();
+                    foreach (BlockConfig item in items)
                     {
-                        SendMessage(player, items[i].ToString() + ": " + Formater.FormatCurrency(items[i].Value));
-                        i++;
+                        builder.Append(item.ToString());
+                        builder.Append(" - ");
+                        builder.Append(Formater.FormatCurrency(item.Value));
+                        builder.Append("\n");
                     }
-                    if (i < items.Count)
-                    {
-                        SendMessage(player, "and " + (items.Count - i - 1) + " more");
-                    }
+                    Utilities.ShowDialog(player.SteamUserId, title, builder.ToString());
                 }
             } else
             {

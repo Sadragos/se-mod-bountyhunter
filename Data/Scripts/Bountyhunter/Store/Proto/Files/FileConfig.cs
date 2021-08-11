@@ -54,7 +54,7 @@ namespace Bountyhunter.Store.Proto.Files
 
 
         [ProtoMember(8)]
-        public string CurrencyName = "SC";
+        public string CurrencyName = " SC";
 
         [ProtoMember(9)]
         public bool PlaceBountiesOnSelf = true;
@@ -90,6 +90,9 @@ namespace Bountyhunter.Store.Proto.Files
         public bool AnnouncyBountiesDeatils = true;
 
         [ProtoMember(20)]
-        public int DamageBlockMessageBatchingSeconds = 20;
+        public int DamageBlockMessageBatchingSeconds = 5;
+
+        [ProtoMember(21)]
+        public bool CountGrindingAsDestroy = true;
     }
 }

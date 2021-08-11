@@ -61,7 +61,8 @@ namespace Bountyhunter
             if (MyAPIGateway.Multiplayer.IsServer ) 
             {
 
-                MyAPIGateway.Session.DamageSystem.RegisterDestroyHandler( 0, DeathHandler.DestroyHandler);  
+                MyAPIGateway.Session.DamageSystem.RegisterDestroyHandler(0, DeathHandler.DestroyHandler);
+                //MyAPIGateway.Session.DamageSystem.RegisterBeforeDamageHandler(0, DeathHandler.BeforeDamage);
                 MyVisualScriptLogicProvider.PrefabSpawnedDetailed += LootboxSpawner.NewSpawn;
 
                 // CommandHandlers

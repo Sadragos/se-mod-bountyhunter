@@ -25,7 +25,7 @@ namespace Bountyhunter.Commands
 
         public override void HandleCommand(IMyPlayer player, string[] arguments)
         {
-            Hunter hunter = Participants.GetPlayer(player);
+            Hunter hunter = Participants.GetPlayer(player.Identity);
             List<Item> rewards = new List<Item>();
 
             bool creditsPaid = false;
