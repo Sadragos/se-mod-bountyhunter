@@ -119,9 +119,6 @@ namespace Bountyhunter.Utils
 
         public static void ShowChatMessage(string message, long playerid = 0)
         {
-            //this takes the death message and sends it out to all players
-            Logging.Instance.WriteLine("ShowMessage " + message);
-
             //only the server should do this
             if (!MyAPIGateway.Multiplayer.IsServer)
             {

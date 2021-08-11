@@ -62,7 +62,7 @@ namespace Bountyhunter
             {
 
                 MyAPIGateway.Session.DamageSystem.RegisterDestroyHandler(0, DeathHandler.DestroyHandler);
-                //MyAPIGateway.Session.DamageSystem.RegisterBeforeDamageHandler(0, DeathHandler.BeforeDamage);
+                MyAPIGateway.Session.DamageSystem.RegisterAfterDamageHandler(0, DeathHandler.BeforeDamage);
                 MyVisualScriptLogicProvider.PrefabSpawnedDetailed += LootboxSpawner.NewSpawn;
 
                 // CommandHandlers
@@ -192,7 +192,7 @@ namespace Bountyhunter
 
         public void UpdateBeforeEverySecond()
         {
-            DeathHandler.CheckPendingMessages();
+            DeathHandler.CleanupExplosions();
         }
 
         public void UpdateBeforeEveryMinute()

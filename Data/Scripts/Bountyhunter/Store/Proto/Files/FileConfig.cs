@@ -90,7 +90,7 @@ namespace Bountyhunter.Store.Proto.Files
         public bool AnnouncyBountiesDeatils = true;
 
         [ProtoMember(20)]
-        public int DamageBlockMessageBatchingSeconds = 5;
+        public int BountyMessageBatchingSeconds = 5;
 
         [ProtoMember(21)]
         public bool CountGrindingAsDestroy = true;

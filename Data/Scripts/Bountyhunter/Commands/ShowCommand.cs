@@ -159,11 +159,11 @@ namespace Bountyhunter.Commands
             builder.Append(">> STATS\n");
             AddLine(builder, "Kills", participant.Kills.ToString());
             AddLine(builder, "Deaths", participant.Deaths.ToString());
-            AddLine(builder, "Kill-Death-Ratio", participant.KillDeathRatio.ToString());
+            AddLine(builder, "Kill-Death-Ratio", participant.KillDeathRatio.ToString("0.00"));
             builder.Append("\n");
             AddLine(builder, "Damage Done", Formater.FormatCurrency(participant.DamageDone));
             AddLine(builder, "Damage Received", Formater.FormatCurrency(participant.DamageReceived));
-            AddLine(builder, "Damage-Ratio", Formater.FormatCurrency(participant.DamageRatio));
+            AddLine(builder, "Damage-Ratio", participant.DamageRatio.ToString("0.00"));
             builder.Append("\n");
             AddLine(builder, "Bounty Placed", Formater.FormatCurrency(participant.BountyPlaced));
             AddLine(builder, "Bounty Received", Formater.FormatCurrency(participant.BountyReceived));
