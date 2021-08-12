@@ -42,44 +42,82 @@ namespace Bountyhunter
 
         private static void HandleBlockDeath(IMySlimBlock mySlimBlock, MyDamageInformation info)
         {
-            if (!mySlimBlock.IsDestroyed) return;
+            if(mySlimBlock.FatBlock == null)
+            {
+                Logging.Instance.WriteLine("  ABORT: No Fat Block for " + mySlimBlock.BlockDefinition.ToString());
+                return;
+            }
+            Logging.Instance.WriteLine("Block "+mySlimBlock.BlockDefinition.ToString()+"  Destroyed by " + info.AttackerId + " at " + mySlimBlock.FatBlock.GetPosition());
 
             IMyIdentity identity = Utilities.SlimToIdentity(mySlimBlock);
-            if (identity == null) return;   // Unowned 
+            if (identity == null) 
+            {
+                Logging.Instance.WriteLine("  ABORT: Unknown Blockowner");
+                return;
+            }
+            Logging.Instance.WriteLine("  BO " + identity.DisplayName);
 
             IdentityInfo victim = GetIdentity(identity);
-            if (victim.Hunter == null) return; // Unnkown Victim
+            if (victim.Hunter == null)
+            {
+                Logging.Instance.WriteLine("  ABORT: Unknown Victim");
+                return;
+            }
+            Logging.Instance.WriteLine("  Victim Hunter found");
 
             KillerInfo attacker = GetKiller(info, mySlimBlock.FatBlock.GetPosition());
-            if (attacker.Info.Identity == null) return; // Unknown Attacker
+            if (attacker.Info.Hunter == null)
+            {
+                Logging.Instance.WriteLine("  ABORT: Unknown Attacker");
+                return;
+            }
+            Logging.Instance.WriteLine("  Attacker " + attacker.Info.Hunter.ToString());
 
             // For blocks only count PVP Damage (because of repairs etc.)
-            if (attacker.Info.Hunter.Id.Equals(victim.Hunter.Id) || (attacker.Info.Faction != null && attacker.Info.Faction.IsFriendly(victim.Identity.IdentityId))) return;
+            if (attacker.Info.Identity.IdentityId.Equals(victim.Identity.IdentityId) || (attacker.Info.Faction != null && attacker.Info.Faction.IsFriendly(victim.Identity.IdentityId)))
+            {
+                Logging.Instance.WriteLine("  ABORT: Selfharm or Allied");
+                return;
+            }
+            Logging.Instance.WriteLine("  No Self or Allied harm.");
 
-            if (!Config.Instance.CountGrindingAsDestroy && info.Type.String.Equals("Grind")) return;
+            if (!Config.Instance.CountGrindingAsDestroy && info.Type.String.Equals("Grind"))
+            {
+                Logging.Instance.WriteLine("  ABORT: Grind check failed");
+                return;
+            }
+            Logging.Instance.WriteLine("  Grind check passed.");
 
             float bounty = 0;
-            float value = Values.BlockValue(mySlimBlock.FatBlock.BlockDefinition.ToString());
+            float value = Values.BlockValue(mySlimBlock.BlockDefinition.ToString());
+            Logging.Instance.WriteLine("  BlockValue " + value);
+
+            // TODO Value of Cargo
+
             victim.Hunter.DamageReceived += value;
-            if (!attacker.Selfinflicted && attacker.Info.Hunter != null && (!attacker.IsAllied || Config.Instance.ClaimBountiesFromAllies))
+            attacker.Info.Hunter.DamageDone += value;
+            Logging.Instance.WriteLine("  Attributed Damage");
+
+            bounty += victim.Hunter.ClaimBounty(attacker.Info.Hunter, EBountyType.Damage, value);
+            Logging.Instance.WriteLine("  Claimed Personal Bounty");
+            if (victim.Faction != null)
             {
-                attacker.Info.Hunter.DamageDone += value;
-
-                bounty += victim.Hunter.ClaimBounty(attacker.Info.Hunter, EBountyType.Damage, value);
-                if (victim.Faction != null)
-                {
-                    Faction faction = Participants.GetFaction(victim.Faction);
-                    bounty += faction.ClaimBounty(attacker.Info.Hunter, EBountyType.Damage, value);
-                }
-
-                NotifyBounty(bounty, attacker);
+                Faction faction = Participants.GetFaction(victim.Faction);
+                bounty += faction.ClaimBounty(attacker.Info.Hunter, EBountyType.Damage, value);
+                Logging.Instance.WriteLine("  Claimed Faction Bounty");
+            } else
+            {
+                Logging.Instance.WriteLine("  No Faction for Factionbounties");
             }
             
+
+            NotifyBounty(bounty, attacker);
+            Logging.Instance.WriteLine("  Notification");
         }
 
         internal static void BeforeDamage(object target, MyDamageInformation info)
         {
-            if (target is IMySlimBlock && (target as IMySlimBlock).IsDestroyed && (target as IMySlimBlock).FatBlock != null && (target as IMySlimBlock).FatBlock is IMyTerminalBlock)
+            if (target is IMySlimBlock && (target as IMySlimBlock).IsDestroyed)
             {
                 HandleBlockDeath(target as IMySlimBlock, info);
             }
@@ -188,18 +226,18 @@ namespace Bountyhunter
         private static void NotifyBounty(float bounty, KillerInfo attacker)
         {
             // TODO Loses text if much is happening at the same time. Threads? Maybe show message only every 100 ms or so
-            if (bounty > 0 && attacker.Info.Player != null && !attacker.Info.IsBot)
-            {
-                if (attacker.Info.PendingBountyUpdate != null && attacker.Info.PendingBountyUpdate < DateTime.Now.AddSeconds(-Config.Instance.BountyMessageBatchingSeconds))
-                {
-                    attacker.Info.PendingBountyAmount = 0;
-                }
-                attacker.Info.PendingBountyAmount += bounty;
-                attacker.Info.PendingBountyUpdate = DateTime.Now;
+            //if (bounty > 0 && attacker.Info.Player != null && !attacker.Info.IsBot)
+            //{
+            //    if (attacker.Info.PendingBountyUpdate != null && attacker.Info.PendingBountyUpdate < DateTime.Now.AddSeconds(-Config.Instance.BountyMessageBatchingSeconds))
+            //    {
+            //        attacker.Info.PendingBountyAmount = 0;
+            //    }
+            //    attacker.Info.PendingBountyAmount += bounty;
+            //    attacker.Info.PendingBountyUpdate = DateTime.Now;
 
-                MyVisualScriptLogicProvider.ClearNotifications(attacker.Info.Player.IdentityId);
-                Utilities.ShowNotification("You've earned bounty worth [" + Formater.FormatCurrency(attacker.Info.PendingBountyAmount) + "].", attacker.Info.Player.IdentityId, Config.Instance.BountyMessageBatchingSeconds*1000);
-            }
+            //    MyVisualScriptLogicProvider.ClearNotifications(attacker.Info.Player.IdentityId);
+            //    Utilities.ShowNotification("You've earned bounty worth [" + Formater.FormatCurrency(attacker.Info.PendingBountyAmount) + "].", attacker.Info.Player.IdentityId, Config.Instance.BountyMessageBatchingSeconds*1000);
+            //}
         }
 
         private static KillerInfo GetKiller(MyDamageInformation info, Vector3D position)
@@ -207,7 +245,8 @@ namespace Bountyhunter
             IMyEntity entity;
             if(info.AttackerId == 0 && position != Vector3D.Zero)
             {
-                foreach(ExplosionInfo explosion in Explosions)
+                Logging.Instance.WriteLine("  No Attacker ID - find explosions");
+                foreach (ExplosionInfo explosion in Explosions)
                 {
                     if((explosion.LastPosition - position).Length() <= explosion.Radius)
                     {
@@ -215,7 +254,7 @@ namespace Bountyhunter
                         IMyIdentity myIdentity = Utilities.CubeBlockBuiltByToIdentity(explosion.OwnerId);
                         if(myIdentity != null)
                         {
-                            Logging.Instance.WriteLine("Found Explosion nearby!");
+                            Logging.Instance.WriteLine("  Found Explosion nearby!");
                             return new KillerInfo()
                             {
                                 Info = GetIdentity(myIdentity),
@@ -224,6 +263,7 @@ namespace Bountyhunter
                         }
                     }
                 }
+                Logging.Instance.WriteLine("  No Explosion nearby...");
             }
             else if (MyAPIGateway.Entities.TryGetEntityById(info.AttackerId, out entity))
             {
@@ -235,7 +275,7 @@ namespace Bountyhunter
                 };
             } 
 
-            Logging.Instance.WriteLine("No attacking Entity found");
+            Logging.Instance.WriteLine("  No attacking Entity found");
             return new KillerInfo()
             {
                 Info = GetIdentity(null)
