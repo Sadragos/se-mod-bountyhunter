@@ -66,7 +66,7 @@ namespace Bountyhunter.Commands
                 targetString = targetPlayer.DisplayName;
             } else if (TargetType.Equals(ETargetType.Faction))
             {
-                IMyFaction targetFaction = Utils.Utilities.GetFactionByTag(targetString);
+                IMyFaction targetFaction = Utilities.GetFactionByTag(targetString);
                 if (targetFaction == null || targetFaction.IsEveryoneNpc())
                 {
                     SendMessage(player, "No Faction with the Tag " + targetString + " could be found.");
@@ -224,7 +224,7 @@ namespace Bountyhunter.Commands
                     message = clientName + " has increased the bounty on " + targetString;
                     if(Config.Instance.AnnouncyBountiesDeatils)
                     {
-                        message += " by " + bounty.RewardItem.Value + " " + payment.ToString() + " (" + Formater.FormatCurrency(bountyValue) + ").";
+                        message += " by " + Formater.FormatNumber(bounty.RewardItem.Value) + " " + payment.ToString() + " (" + Formater.FormatCurrency(bountyValue) + ").";
                     } else
                     {
                         message += ".";
@@ -235,7 +235,7 @@ namespace Bountyhunter.Commands
                     message = clientName + " has placed a new bounty ";
                     if (Config.Instance.AnnouncyBountiesDeatils)
                     {
-                        message += " of " + bounty.RewardItem.Value + " " + payment.ToString() + " (" + Formater.FormatCurrency(bountyValue) + ")";
+                        message += " of " + Formater.FormatNumber(bounty.RewardItem.Value) + " " + payment.ToString() + " (" + Formater.FormatCurrency(bountyValue) + ")";
                     }
 
                     message += " on " + targetString + ".";

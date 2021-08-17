@@ -62,7 +62,7 @@ namespace Bountyhunter
             {
 
                 MyAPIGateway.Session.DamageSystem.RegisterDestroyHandler(0, DeathHandler.DestroyHandler);
-                MyAPIGateway.Session.DamageSystem.RegisterAfterDamageHandler(0, DeathHandler.BeforeDamage);
+                MyAPIGateway.Session.DamageSystem.RegisterAfterDamageHandler(0, DeathHandler.AfterDamage);
                 MyVisualScriptLogicProvider.PrefabSpawnedDetailed += LootboxSpawner.NewSpawn;
 
                 // CommandHandlers
@@ -80,7 +80,7 @@ namespace Bountyhunter
                 {
                     reloadHandler.HandleCommand(null, null);
                 }
-            }
+            } 
 
             Logging.Instance.WriteLine(string.Format("Script Initialized"));
         }
@@ -101,6 +101,7 @@ namespace Bountyhunter
                 });
                 sendToOthers = false;
             }
+
 
             if (data != null)
             {
@@ -193,6 +194,7 @@ namespace Bountyhunter
         public void UpdateBeforeEverySecond()
         {
             DeathHandler.CleanupExplosions();
+            DeathHandler.CleanupBounties();
         }
 
         public void UpdateBeforeEveryMinute()
