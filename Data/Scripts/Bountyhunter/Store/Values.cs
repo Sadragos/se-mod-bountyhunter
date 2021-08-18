@@ -198,6 +198,17 @@ namespace Bountyhunter.Store
                     ItemConfig item = new ItemConfig(key);
                     item.Alias.Add(componenet.DisplayNameText);
                     if(!key.StartsWith("MyObjectBuilder_Ingot")) blueprints.TryGetValue(key, out item.Components);
+
+                    string clearName = GetClearName(key);
+                    int nr = 1;
+                    string itemId = clearName + nr.ToString("000");
+                    while(Instance.ItemValues.Find(it => it.BountyId.Equals(itemId)) != null)
+                    {
+                        nr++;
+                        itemId = clearName + nr.ToString("000");
+                    }
+                    item.BountyId = itemId;
+
                     instance.ItemValues.Add(item);
                 }
             }
@@ -208,10 +219,19 @@ namespace Bountyhunter.Store
                 string key = componenet.Id.ToString();
                 if (instance.BlockValues.Find(t => t.BlockId.Equals(key)) == null)
                 {
-                    // TODO TerminalBlocks filtern
                     string prefix = "[" + (componenet.CubeSize.Equals(MyCubeSize.Large) ? "L" : "S") +"] ";
                     BlockConfig bv = new BlockConfig(key);
                     bv.Alias.Add(prefix + componenet.DisplayNameText);
+
+                    string clearName = GetClearName(key);
+                    int nr = 1;
+                    string itemId = clearName + nr.ToString("000");
+                    while (Instance.BlockValues.Find(it => it.BountyId.Equals(itemId)) != null)
+                    {
+                        nr++;
+                        itemId = clearName + nr.ToString("000");
+                    }
+                    bv.BountyId = itemId;
 
                     foreach (Component comp in componenet.Components)
                     {
@@ -238,10 +258,34 @@ namespace Bountyhunter.Store
             Instance2Dict();
         }
 
+        public static string GetClearName(string input, int length = 3)
+        {
+            input = input.Replace("MyObjectBuilder_", "");
+            input = input.Replace("Large", "");
+            input = input.Replace("Small", "");
+            input = input.Replace("Block", "");
+            input = input.ToUpper();
+            string[] parts = input.Split('/'); 
+            string clearName = parts.Length > 1 && !parts[1].Equals("(null)") ? parts[1] : parts[0];
+            clearName = clearName.Substring(0, Math.Min(length, clearName.Length));
+            return clearName;
+        }
+
         public static List<ItemConfig> FindItemFuzzy(string itemId)
         {
             itemId = itemId.ToUpper();
-            return Instance.ItemValues.FindAll(item => item.ItemId.ToUpper().Contains(itemId) || (item.Alias != null && item.Alias.Find(alias => alias.ToUpper().Contains(itemId)) != null));
+
+            ItemConfig conf = Instance.ItemValues.Find(it => it.BountyId.Equals(itemId));
+            if (conf != null)
+            {
+                return new List<ItemConfig>() { conf };
+            }
+
+            return Instance.ItemValues.FindAll(item =>
+                item.BountyId.Contains(itemId)
+                || item.ItemId.ToUpper().Contains(itemId) 
+                || (item.Alias != null && item.Alias.Find(alias => alias.ToUpper().Contains(itemId)) != null)
+            );
         }
 
         public static ItemConfig FindItem(string itemId)
@@ -261,7 +305,16 @@ namespace Bountyhunter.Store
         public static List<BlockConfig> FindBlockFuzzy(string itemId)
         {
             itemId = itemId.ToUpper();
-            return Instance.BlockValues.FindAll(item => item.BlockId.ToUpper().Contains(itemId) || (item.Alias != null && item.Alias.Find(alias => alias.ToUpper().Contains(itemId)) != null));
+            BlockConfig conf = Instance.BlockValues.Find(bc => bc.BountyId.Equals(itemId));
+            if(conf != null)
+            {
+                return new List<BlockConfig>() { conf };
+            }
+            return Instance.BlockValues.FindAll(item =>
+                item.BountyId.Contains(itemId)
+                || item.BlockId.ToUpper().Contains(itemId) 
+                || (item.Alias != null && item.Alias.Find(alias => alias.ToUpper().Contains(itemId)) != null)
+            );
         }
 
         public static BlockConfig FindBlock(string blockId)

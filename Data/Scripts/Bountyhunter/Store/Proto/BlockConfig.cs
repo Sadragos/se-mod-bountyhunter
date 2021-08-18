@@ -24,6 +24,10 @@ namespace Bountyhunter.Store.Proto
         [ProtoMember(4)]
         public List<string> Alias;
 
+        [ProtoMember(5)]
+        [XmlAttribute]
+        public string BountyId;
+
         public BlockConfig(string blockId)
         {
             BlockId = blockId;

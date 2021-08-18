@@ -172,7 +172,7 @@ namespace Bountyhunter
         public static void Dialog( string message, string title = null )
         {
             if (title == null) title = "Bountyhunt";
-            MyAPIGateway.Utilities.ShowMissionScreen(title, "", "", message.Replace("|", "\n\r"));
+            MyAPIGateway.Utilities.ShowMissionScreen(title, "", "", message);
         }
 
         public void AddMessageHandler( )
