@@ -153,10 +153,10 @@ namespace Bountyhunter.Commands
 
         private void AppendLine(StringBuilder builder, int index, string name, string value)
         {
-            builder.Append((index++).ToString("000"));
-            builder.Append(" - ");
-            builder.Append(name);
-            builder.Append(" -> ");
+            builder.Append(Formater.PadRight((index++).ToString("000"), 60));
+            builder.Append("  |  ");
+            builder.Append(Formater.PadRight(name, 700));
+            builder.Append("  |  ");
             builder.Append(value);
             builder.Append("\n");
         }

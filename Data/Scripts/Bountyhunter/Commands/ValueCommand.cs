@@ -65,8 +65,8 @@ namespace Bountyhunter.Commands
                     StringBuilder builder = new StringBuilder();
                     foreach(ItemConfig item in items)
                     {
-                        builder.Append(item.BountyId);
-                        builder.Append(" | ");
+                        builder.Append(Formater.PadRight(item.BountyId, 120));
+                        builder.Append("  |  ");
                         builder.Append(item.ToString());
                         builder.Append(" - ");
                         builder.Append(Formater.FormatCurrency(item.Value));
@@ -93,8 +93,8 @@ namespace Bountyhunter.Commands
                     StringBuilder builder = new StringBuilder();
                     foreach (BlockConfig item in items)
                     {
-                        builder.Append(item.BountyId);
-                        builder.Append(" | ");
+                        builder.Append(Formater.PadRight(item.BountyId, 125));
+                        builder.Append("  |  ");
                         builder.Append(item.ToString());
                         builder.Append(" - ");
                         builder.Append(Formater.FormatCurrency(item.Value));

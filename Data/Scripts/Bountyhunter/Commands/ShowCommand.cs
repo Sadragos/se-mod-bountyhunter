@@ -44,9 +44,9 @@ namespace Bountyhunter.Commands
             }
 
             Hunter hunter = Participants.GetPlayer(p);
-            string title = "Playerdetails: " + hunter.Name;
+            string title = "Player: " + hunter.ToString();
             StringBuilder builder = new StringBuilder();
-            AddLine(builder, "Faction", hunter.FactionTag);
+            
             AddInfo(builder, hunter);
 
             AddBounties(builder, hunter);
@@ -66,7 +66,7 @@ namespace Bountyhunter.Commands
             }
 
             Faction faction = Participants.GetFaction(f);
-            string title = "Factiondetails: " + faction.Name;
+            string title = "Faction: " + faction.ToString();
             StringBuilder builder = new StringBuilder();
             builder.Append(">> MEMBERS (");
             builder.Append(faction.Members.Count);
@@ -96,8 +96,7 @@ namespace Bountyhunter.Commands
             builder.Append(">> KILLS\n");
             foreach(Death d in particiant.GetKillList())
             {
-                builder.Append("- ");
-                builder.Append(d.Time);
+                builder.Append(Formater.PadRight(d.Time, 260));
                 builder.Append(" -> ");
                 if (!string.IsNullOrEmpty(d.Opponent))
                 {
@@ -126,9 +125,7 @@ namespace Bountyhunter.Commands
             builder.Append(">> DEATHS\n");
             foreach (Death d in particiant.GetDeathList())
             {
-                builder.Append("- ");
-                builder.Append(d.Time);
-                builder.Append(" -> ");
+                builder.Append(Formater.PadRight(d.Time, 260));
                 if(!string.IsNullOrEmpty(d.Opponent))
                 {
                     builder.Append(d.Opponent);
@@ -148,8 +145,7 @@ namespace Bountyhunter.Commands
 
         private void AddLine(StringBuilder builder, string key, string value)
         {
-            builder.Append(key);
-            builder.Append(": ");
+            builder.Append(Formater.PadRight(key, 300));
             builder.Append(value);
             builder.Append("\n");
         }
@@ -157,17 +153,17 @@ namespace Bountyhunter.Commands
         private void AddInfo(StringBuilder builder, Participant participant)
         {
             builder.Append(">> STATS\n");
-            AddLine(builder, "Kills", participant.Kills.ToString());
-            AddLine(builder, "Deaths", participant.Deaths.ToString());
-            AddLine(builder, "Kill-Death-Ratio", participant.KillDeathRatio.ToString("0.00"));
+            AddLine(builder, "• Kills", participant.Kills.ToString());
+            AddLine(builder, "• Deaths", participant.Deaths.ToString());
+            AddLine(builder, "• Kill-Death-Ratio", participant.KillDeathRatio.ToString("0.00"));
             builder.Append("\n");
-            AddLine(builder, "Damage Done", Formater.FormatCurrency(participant.DamageDone));
-            AddLine(builder, "Damage Received", Formater.FormatCurrency(participant.DamageReceived));
-            AddLine(builder, "Damage-Ratio", participant.DamageRatio.ToString("0.00"));
+            AddLine(builder, "• Damage Done", Formater.FormatCurrency(participant.DamageDone));
+            AddLine(builder, "• Damage Received", Formater.FormatCurrency(participant.DamageReceived));
+            AddLine(builder, "• Damage-Ratio", participant.DamageRatio.ToString("0.00"));
             builder.Append("\n");
-            AddLine(builder, "Bounty Placed", Formater.FormatCurrency(participant.BountyPlaced));
-            AddLine(builder, "Bounty Received", Formater.FormatCurrency(participant.BountyReceived));
-            AddLine(builder, "Bounty Claimed", Formater.FormatCurrency(participant.BountyClaimed));
+            AddLine(builder, "• Bounty Placed", Formater.FormatCurrency(participant.BountyPlaced));
+            AddLine(builder, "• Bounty Received", Formater.FormatCurrency(participant.BountyReceived));
+            AddLine(builder, "• Bounty Claimed", Formater.FormatCurrency(participant.BountyClaimed));
             builder.Append("\n");
         }
 
@@ -181,43 +177,33 @@ namespace Bountyhunter.Commands
             builder.Append(">> BOUNTIES (");
             builder.Append(Formater.FormatCurrency(participant.BountyWorth));
             builder.Append(")\n");
-            foreach(Bounty b in participant.Bounties)
+            foreach (Bounty b in participant.Bounties)
             {
                 ItemConfig item = Values.Items[b.RewardItem.ItemId];
-                builder.Append("- ");
-                builder.Append(b.BountyType.Equals(EBountyType.Kill) ? "KIL" : "DMG");
+                builder.Append(Formater.PadRight(b.BountyType.Equals(EBountyType.Kill) ? "KILL" : "DMG", 70));
                 builder.Append(" ");
-                if (b.BountyType.Equals(EBountyType.Kill))
-                {
-                    builder.Append(b.Count);
-                    builder.Append("x for ");
-                } else
-                {
-                    builder.Append("for ");
-                    builder.Append(Formater.FormatCurrency(b.Count));
-                    builder.Append(" -> ");
-                }
-                builder.Append(Formater.FormatNumber(b.RewardItem.Value));
-                builder.Append(" ");
-                builder.Append(item.ToString());
-                builder.Append(" (");
-                builder.Append(Formater.FormatCurrency(item.Value * b.RewardItem.Value));
-                builder.Append(") total. ");
                 if (b.BountyType.Equals(EBountyType.Kill))
                 {
                     float percentage = b.RewardItem.Remaining / b.RewardItem.Value;
                     int killsRemaining = (int)Math.Round(percentage * b.Count);
                     float perKill = item.Value * b.RewardItem.Value / b.Count;
-                    builder.Append(killsRemaining);
-                    builder.Append(" kills remaining.");
-                }
-                else
+                    builder.Append(Formater.PadLeft(killsRemaining.ToString(), 80));
+                    builder.Append(" / ");
+                    builder.Append(Formater.PadRight(b.Count.ToString(), 80));
+                } else
                 {
                     float percentage = b.RewardItem.Remaining / b.RewardItem.Value;
                     float damageRemaining = percentage * b.Count;
-                    builder.Append(Formater.FormatCurrency(damageRemaining));
-                    builder.Append(" damage remaining.");
+                    builder.Append(Formater.PadLeft(Formater.FormatNumber(damageRemaining), 80));
+                    builder.Append(" / ");
+                    builder.Append(Formater.PadRight(Formater.FormatNumber(b.Count), 80));
+
                 }
+                builder.Append(" -->  [");
+                builder.Append(Formater.PadCenter(Formater.FormatCurrency(item.Value * b.RewardItem.Value), 160));
+                builder.Append("]  ");
+                builder.Append(Formater.FormatNumber(b.RewardItem.Value) + " " + item.ToString());
+
 
                 builder.Append("\n");
             }
