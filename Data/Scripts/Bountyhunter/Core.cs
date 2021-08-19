@@ -131,9 +131,14 @@ namespace Bountyhunter
             if ( item.Type.Equals("chat") )
             {
                 MyAPIGateway.Utilities.ShowMessage(item.Sender, item.Message);
-            } else if(item.Type.Equals("dialog"))
+            }
+            else if (item.Type.Equals("dialog"))
             {
                 Dialog(item.Message, item.DialogTitle);
+            }
+            else if (item.Type.Equals("notification"))
+            {
+                Utilities.ShowNotificationLocal(item.Message, item.Delay, item.Font);
             }
         }
 

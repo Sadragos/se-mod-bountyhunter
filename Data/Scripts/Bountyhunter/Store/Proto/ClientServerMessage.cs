@@ -24,5 +24,11 @@ namespace Bountyhunter.Data.Proto
 
         [ProtoMember(5)]
         public string DialogTitle;
+
+        [ProtoMember(6)]
+        public int Delay;
+
+        [ProtoMember(7)]
+        public string Font;
     }
 }

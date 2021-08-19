@@ -30,6 +30,8 @@ namespace Bountyhunter.Utils
     internal class Utilities
     {
 
+        private static IMyHudNotification LocalNotification;
+
         public static IMyIdentity SlimToIdentity(IMySlimBlock block)
         {
             long owner = 0;
@@ -127,9 +129,34 @@ namespace Bountyhunter.Utils
             MyVisualScriptLogicProvider.SendChatMessageColored(message, Config.Instance.BroadcastNameRealColor, (playerid != 0 ? "~" : "")+ Config.Instance.BroadcastName, playerid);
         }
 
-        public static void ShowNotification(string message, long playerid = 0, int delay = 3000)
+        public static void ShowNotificationViSc(string message, long playerid = 0, int delay = 3000)
         {
             MyVisualScriptLogicProvider.ShowNotification(message, delay, MyFontEnum.White, playerid);
+        }
+
+        public static void ShowNotification(string message, ulong steamId = 0, int delay = 3000)
+        {
+            ClientServerMessage item = new ClientServerMessage()
+            {
+                Type = "notification",
+                Message = message,
+                Delay = delay,
+                Font = MyFontEnum.White
+            };
+            SendMessageToClient(item, steamId);
+        }
+
+        public static void ShowNotificationLocal(string message, int delay = 3000, string font = MyFontEnum.White)
+        {
+            if(LocalNotification == null)
+            {
+                LocalNotification = MyAPIGateway.Utilities.CreateNotification(message, delay, font);
+            }
+            LocalNotification.Hide();
+            LocalNotification.Font = font;
+            LocalNotification.Text = message;
+            LocalNotification.AliveTime = delay;
+            LocalNotification.Show();
         }
 
         public static void ShowDialog(ulong steamId, string title, string content)

@@ -327,8 +327,11 @@ namespace Bountyhunter
             for (int i = PendingBountyInfos.Count - 1; i >= 0; i--)
             {
                 BountyInfo bi = PendingBountyInfos[i];
-                MyVisualScriptLogicProvider.ClearNotifications(bi.Reciever.IdentityId);
-                Utilities.ShowNotification("You've earned bounty worth [" + Formater.FormatCurrency(bi.Amount) + "].", bi.Reciever.IdentityId, 2000);
+                if (!bi.LastSent.Equals(bi.Amount))
+                {
+                    Utilities.ShowNotification("You've earned bounty worth [" + Formater.FormatCurrency(bi.Amount) + "].", bi.Reciever.SteamUserId, 5000);
+                    bi.LastSent = bi.Amount;
+                }
                 if (bi.Ticks-- <= 0) PendingBountyInfos.RemoveAt(i);
             }
         }
@@ -377,6 +380,7 @@ namespace Bountyhunter
     {
         public IMyPlayer Reciever;
         public float Amount;
+        public float LastSent;
         public int Ticks;
     }
 }
