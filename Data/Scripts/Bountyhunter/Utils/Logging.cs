@@ -19,7 +19,7 @@ namespace Bountyhunter.Utils
         {
             try
             {
-                _writer = MyAPIGateway.Utilities.WriteFileInWorldStorage( logFile, typeof( Logging ) );
+                _writer = MyAPIGateway.Utilities.WriteFileInLocalStorage( logFile, typeof( Logging ) );
                 _instance = this;
             }
             catch
