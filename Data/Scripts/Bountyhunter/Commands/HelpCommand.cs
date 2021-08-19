@@ -27,10 +27,7 @@ namespace Bountyhunter.Commands
 
         }
 
-        public override string ArgumentDescription()
-        {
-            return "";
-        }
+        public override string ArgumentDescription => "";
 
         public override void HandleCommand(IMyPlayer player, string[] arguments)
         {
@@ -41,7 +38,7 @@ namespace Bountyhunter.Commands
                 builder.Append("/bh ");
                 builder.Append(handler.CommandPrefix);
                 builder.Append(" ");
-                builder.Append(handler.ArgumentDescription());
+                builder.Append(handler.ArgumentDescription);
                 builder.Append("\n\n");
             }
             Utilities.ShowDialog(player.SteamUserId, "Bountyhunt - Help", builder.ToString());

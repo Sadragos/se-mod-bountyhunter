@@ -16,10 +16,7 @@ namespace Bountyhunter.Commands
 
         }
 
-        public override string ArgumentDescription()
-        {
-            return "<player/faction> <kills/deaths/kdratio/damageDone/damageReceived/damageRatio/bountyPlaced/bountyReceived/bountyClaimed/bounty>";
-        }
+        public override string ArgumentDescription => "<player/faction> <kills/deaths/kdratio/damageDone/damageReceived/damageRatio/bountyPlaced/bountyReceived/bountyClaimed/bounty>";
 
         public override void HandleCommand(IMyPlayer player, string[] arguments)
         {

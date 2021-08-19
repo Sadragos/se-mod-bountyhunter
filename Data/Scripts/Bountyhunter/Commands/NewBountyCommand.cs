@@ -265,9 +265,7 @@ namespace Bountyhunter.Commands
 
         }
 
-        public override string ArgumentDescription()
-        {
-            return "<kill/damage> <player/faction> <targetName> <amount> <payment item> [amount of kills/damage]";
-        }
+        public override string ArgumentDescription => "<kill/damage> <player/faction> <targetName> <amount> <payment item> [amount of kills/damage]";
+        
     }
 }

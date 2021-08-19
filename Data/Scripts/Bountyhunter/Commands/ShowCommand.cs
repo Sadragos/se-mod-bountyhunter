@@ -17,10 +17,8 @@ namespace Bountyhunter.Commands
 
         }
 
-        public override string ArgumentDescription()
-        {
-            return "<player/faction> (name)";
-        }
+
+        public override string ArgumentDescription => "<player/faction> (name)";
 
         public override void HandleCommand(IMyPlayer player, string[] arguments)
         {

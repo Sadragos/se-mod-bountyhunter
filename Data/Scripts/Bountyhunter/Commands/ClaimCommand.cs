@@ -18,10 +18,7 @@ namespace Bountyhunter.Commands
 
         }
 
-        public override string ArgumentDescription()
-        {
-            return "";
-        }
+        public override string ArgumentDescription => "";
 
         public override void HandleCommand(IMyPlayer player, string[] arguments)
         {

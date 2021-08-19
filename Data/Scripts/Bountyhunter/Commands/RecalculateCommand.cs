@@ -38,10 +38,7 @@ namespace Bountyhunter.Commands
             }
         }
 
-        public override string ArgumentDescription()
-        {
-            return "<ores/components/blocks>";
-        }
+        public override string ArgumentDescription => "<ores/components/blocks>";
 
         private void RecalculateBlocks(IMyPlayer player)
         {

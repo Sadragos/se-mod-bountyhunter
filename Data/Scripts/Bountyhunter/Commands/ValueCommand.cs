@@ -27,10 +27,7 @@ namespace Bountyhunter.Commands
 
         }
 
-        public override string ArgumentDescription()
-        {
-            return "<grid/item/block> [searchtext]";
-        }
+        public override string ArgumentDescription => "<grid/item/block> [searchtext]";
 
         public override void HandleCommand(IMyPlayer player, string[] arguments)
         {
