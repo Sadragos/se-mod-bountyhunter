@@ -41,7 +41,7 @@ namespace Bountyhunter
 
         private static int interval = 0;
 
-        private static List<AbstactCommandHandler> CommandHandlers = new List<AbstactCommandHandler>();
+        public static List<AbstactCommandHandler> CommandHandlers = new List<AbstactCommandHandler>();
 
         override public void SaveData()
         {
@@ -75,6 +75,7 @@ namespace Bountyhunter
                 CommandHandlers.Add(new RankingCommand());
                 CommandHandlers.Add(new ShowCommand());
                 CommandHandlers.Add(new MeCommand());
+                CommandHandlers.Add(new HelpCommand());
 
                 AbstactCommandHandler reloadHandler = CommandHandlers.Find(ch => ch is ReloadCommand);
                 if (reloadHandler != null)
