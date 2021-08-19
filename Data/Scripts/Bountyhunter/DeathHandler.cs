@@ -47,6 +47,13 @@ namespace Bountyhunter
 
             //Logging.Instance.WriteLine("Block "+mySlimBlock.BlockDefinition.ToString()+"  Destroyed by " + info.AttackerId + " at " + mySlimBlock.FatBlock.GetPosition());
 
+            if (!Config.Instance.CountGrindingAsDestroy && "Grind".Equals(info.Type.String))
+            {
+                //Logging.Instance.WriteLine("  ABORT: Grind check failed");
+                return;
+            }
+            //Logging.Instance.WriteLine("  Grind check passed.");
+
             IMyIdentity identity = Utilities.SlimToIdentity(mySlimBlock);
             if (identity == null) 
             {
@@ -62,8 +69,11 @@ namespace Bountyhunter
                 return;
             }
             //Logging.Instance.WriteLine("  Victim Hunter found");
-            Vector3D pos = mySlimBlock.FatBlock != null ? mySlimBlock.FatBlock.GetPosition() : Vector3D.Zero;
-            if (pos == Vector3D.Zero) mySlimBlock.ComputeWorldCenter(out pos);
+            Vector3D pos = Vector3D.Zero;
+            
+            // We only need the position if the attacker is zero.
+            if(info.AttackerId == 0) mySlimBlock.ComputeWorldCenter(out pos);
+
             KillerInfo attacker = GetKiller(info, pos);
             if (attacker.Info.Hunter == null)
             {
@@ -79,13 +89,6 @@ namespace Bountyhunter
                 return;
             }
             //Logging.Instance.WriteLine("  No Self or Allied harm.");
-
-            if (!Config.Instance.CountGrindingAsDestroy && info.Type.String.Equals("Grind"))
-            {
-                //Logging.Instance.WriteLine("  ABORT: Grind check failed");
-                return;
-            }
-            //Logging.Instance.WriteLine("  Grind check passed.");
 
             float damageDone = info.Amount / mySlimBlock.MaxIntegrity;
            
@@ -268,7 +271,6 @@ namespace Bountyhunter
                         }
                     }
                 }
-                Logging.Instance.WriteLine("  No Explosion nearby...");
             }
             else if (MyAPIGateway.Entities.TryGetEntityById(info.AttackerId, out entity))
             {
@@ -279,8 +281,6 @@ namespace Bountyhunter
                     Entity = entity
                 };
             } 
-
-            Logging.Instance.WriteLine("  No attacking Entity found");
             return new KillerInfo()
             {
                 Info = GetIdentity(null)

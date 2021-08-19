@@ -90,6 +90,6 @@ namespace Bountyhunter.Store.Proto.Files
         public bool AnnouncyBountiesDeatils = true;
 
         [ProtoMember(20)]
-        public bool CountGrindingAsDestroy = true;
+        public bool CountGrindingAsDestroy = false;
     }
 }

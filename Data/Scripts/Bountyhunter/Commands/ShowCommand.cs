@@ -187,16 +187,16 @@ namespace Bountyhunter.Commands
                     float percentage = b.RewardItem.Remaining / b.RewardItem.Value;
                     int killsRemaining = (int)Math.Round(percentage * b.Count);
                     float perKill = item.Value * b.RewardItem.Value / b.Count;
-                    builder.Append(Formater.PadLeft(killsRemaining.ToString(), 80));
+                    builder.Append(Formater.PadLeft(killsRemaining.ToString(), 100));
                     builder.Append(" / ");
-                    builder.Append(Formater.PadRight(b.Count.ToString(), 80));
+                    builder.Append(Formater.PadRight(b.Count.ToString(), 100));
                 } else
                 {
                     float percentage = b.RewardItem.Remaining / b.RewardItem.Value;
                     float damageRemaining = percentage * b.Count;
-                    builder.Append(Formater.PadLeft(Formater.FormatNumber(damageRemaining), 80));
+                    builder.Append(Formater.PadLeft(Formater.FormatNumber(damageRemaining), 100));
                     builder.Append(" / ");
-                    builder.Append(Formater.PadRight(Formater.FormatNumber(b.Count), 80));
+                    builder.Append(Formater.PadRight(Formater.FormatNumber(b.Count), 100));
 
                 }
                 builder.Append(" -->  [");
