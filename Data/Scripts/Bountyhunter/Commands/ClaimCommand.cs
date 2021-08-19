@@ -45,7 +45,7 @@ namespace Bountyhunter.Commands
 
         private void PayoutLootbox(IMyPlayer player, Hunter hunter)
         {
-            List<Item> payout = GetPayout(hunter);
+            List<Item> payout = hunter.Payout;
             if (payout.Count == 0) return;
 
             List<Item> ToAdd = new List<Item>();
@@ -74,7 +74,7 @@ namespace Bountyhunter.Commands
 
         private void PayoutInventory(IMyPlayer player, Hunter hunter, bool creditsPaid)
         {
-            List<Item> payout = GetPayout(hunter);
+            List<Item> payout = hunter.Payout;
             if (payout.Count == 0 && !creditsPaid)
             {
                 Utilities.ShowChatMessage("You dont have enough Bounty collected.", player.IdentityId);
@@ -128,19 +128,6 @@ namespace Bountyhunter.Commands
                 }
             }
             Utilities.ShowChatMessage(builder.ToString(), player.IdentityId);
-        }
-
-        private List<Item> GetPayout(Hunter hunter)
-        {
-            List<Item> payout = new List<Item>();
-            foreach(Item item in hunter.ClaimableBounty)
-            {
-                if (item.Value < Config.Instance.MinPayout) continue;
-                if (!Config.Instance.CreditsAsItem && item.ItemId.Equals(Values.SC_ITEM)) continue;
-                if (item.Value < 1 && !item.HasFractions) continue;
-                payout.Add(new Item(item.ItemId, (float)(item.HasFractions ? item.Value : Math.Floor(item.Value))));
-            }
-            return payout;
         }
 
         private bool PayCredits(IMyPlayer player, Hunter hunter)

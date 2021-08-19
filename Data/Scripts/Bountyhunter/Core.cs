@@ -71,6 +71,7 @@ namespace Bountyhunter
                 CommandHandlers.Add(new ReloadCommand());
                 CommandHandlers.Add(new ValueCommand());
                 CommandHandlers.Add(new NewBountyCommand());
+                CommandHandlers.Add(new ClaimableCommand());
                 CommandHandlers.Add(new ClaimCommand());
                 CommandHandlers.Add(new RankingCommand());
                 CommandHandlers.Add(new ShowCommand());
