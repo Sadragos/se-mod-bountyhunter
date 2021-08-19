@@ -62,6 +62,13 @@ namespace Bountyhunter.Commands
             AddInfo(builder, hunter);
 
             AddBounties(builder, hunter);
+            
+            if(!string.IsNullOrEmpty(hunter.FactionTag))
+            {
+                Faction faction = Participants.GetFaction(hunter.FactionTag, false);
+                AddBounties(builder, faction, "FACTION BOUNTIES");
+            }
+
             AddKills(builder, hunter);
             AddDeaths(builder, hunter);
 
@@ -179,14 +186,18 @@ namespace Bountyhunter.Commands
             builder.Append("\n");
         }
 
-        private void AddBounties(StringBuilder builder, Participant participant)
+        private void AddBounties(StringBuilder builder, Participant participant, string name = "BOUNTIES")
         {
             if(participant.Bounties.Count == 0)
             {
-                builder.Append(">> NO BOUNTIES FOUND\n\n");
+                builder.Append(">> NO ");
+                builder.Append(name);
+                builder.Append(" FOUND\n\n");
                 return;
             }
-            builder.Append(">> BOUNTIES (");
+            builder.Append(">> ");
+            builder.Append(name);
+            builder.Append(" (");
             builder.Append(Formater.FormatCurrency(participant.BountyWorth));
             builder.Append(")\n");
             foreach (Bounty b in participant.Bounties)
