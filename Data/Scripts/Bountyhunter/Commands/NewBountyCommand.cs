@@ -4,6 +4,7 @@ using Bountyhunter.Utils;
 using Sandbox.ModAPI;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using VRage.Game;
 using VRage.Game.ModAPI;
@@ -52,8 +53,26 @@ namespace Bountyhunter.Commands
             string targetString = arguments[2];
             if(TargetType.Equals(ETargetType.Player))
             {
-                IMyIdentity targetPlayer = Utils.Utilities.GetPlayerIdentity(targetString);
-                if(targetPlayer == null)
+                List<IMyIdentity> list = Utilities.GetPlayerIdentityFuzzy(targetString);
+                StringBuilder builder = new StringBuilder();
+                if (list.Count != 1)
+                {
+                    builder.Append("No player with that name found.");
+                    if (list.Count > 1)
+                    {
+                        builder.Append(" Did you mean...\n");
+                        foreach (IMyIdentity id in list)
+                        {
+                            builder.Append("- ");
+                            builder.Append(id.DisplayName);
+                            builder.Append("\n");
+                        }
+                    }
+                    SendMessage(player, builder.ToString());
+                    return;
+                }
+                IMyIdentity targetPlayer = list.FirstOrDefault();
+                if (targetPlayer == null)
                 {
                     SendMessage(player, "The Player " + targetString + " could not be found.");
                     return;

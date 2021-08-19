@@ -283,6 +283,13 @@ namespace Bountyhunter.Utils
             return players.FirstOrDefault();
         }
 
+        public static List<IMyIdentity> GetPlayerIdentityFuzzy(string name)
+        {
+            List<IMyIdentity> players = new List<IMyIdentity>();
+            MyAPIGateway.Players.GetAllIdentites(players, i => i.DisplayName.ToLower().Contains(name.ToLower()));
+            return players;
+        }
+
         public static IMyIdentity GetPlayerIdentity(long id)
         {
             List<IMyIdentity> players = new List<IMyIdentity>();
