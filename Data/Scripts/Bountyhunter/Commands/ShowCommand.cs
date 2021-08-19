@@ -57,9 +57,10 @@ namespace Bountyhunter.Commands
 
             Hunter hunter = Participants.GetPlayer(p);
             string title = "Player: " + hunter.ToString();
-            
-            
-            AddInfo(builder, hunter);
+
+            List<Participant> plist = new List<Participant>();
+            foreach (Hunter h in Participants.Players.Values) plist.Add(h);
+            AddInfo(builder, hunter, plist);
 
             AddBounties(builder, hunter);
             
@@ -93,7 +94,9 @@ namespace Bountyhunter.Commands
             builder.Append(string.Join(", ", faction.Members));
             builder.Append("\n\n");
 
-            AddInfo(builder, faction);
+            List<Participant> list = new List<Participant>();
+            foreach (Faction fa in Participants.Factions.Values) list.Add(fa);
+            AddInfo(builder, faction, list);
 
             AddBounties(builder, faction);
 
@@ -162,27 +165,33 @@ namespace Bountyhunter.Commands
             builder.Append("\n");
         }
 
-        private void AddLine(StringBuilder builder, string key, string value)
+        private void AddLine(StringBuilder builder, string key, string value, int rank = 0)
         {
             builder.Append(Formater.PadRight(key, 300));
-            builder.Append(value);
+            builder.Append(Formater.PadRight(value, 180));
+            if(rank > 0)
+            {
+                builder.Append(" [ ");
+                builder.Append(rank);
+                builder.Append(" ]");
+            }
             builder.Append("\n");
         }
 
-        private void AddInfo(StringBuilder builder, Participant participant)
+        private void AddInfo(StringBuilder builder, Participant participant, List<Participant> participants)
         {
             builder.Append(">> STATS\n");
-            AddLine(builder, "• Kills", participant.Kills.ToString());
-            AddLine(builder, "• Deaths", participant.Deaths.ToString());
-            AddLine(builder, "• Kill-Death-Ratio", participant.KillDeathRatio.ToString("0.00"));
+            AddLine(builder, "• Kills", participant.Kills.ToString(), GetRank(participant, participants, p => p.Kills));
+            AddLine(builder, "• Deaths", participant.Deaths.ToString(), GetRank(participant, participants, p => p.Deaths));
+            AddLine(builder, "• Kill-Death-Ratio", participant.KillDeathRatio.ToString("0.00"), GetRank(participant, participants, p => p.KillDeathRatio));
             builder.Append("\n");
-            AddLine(builder, "• Damage Done", Formater.FormatCurrency(participant.DamageDone));
-            AddLine(builder, "• Damage Received", Formater.FormatCurrency(participant.DamageReceived));
-            AddLine(builder, "• Damage-Ratio", participant.DamageRatio.ToString("0.00"));
+            AddLine(builder, "• Damage Done", Formater.FormatCurrency(participant.DamageDone), GetRank(participant, participants, p => p.DamageDone));
+            AddLine(builder, "• Damage Received", Formater.FormatCurrency(participant.DamageReceived), GetRank(participant, participants, p => p.DamageReceived));
+            AddLine(builder, "• Damage-Ratio", participant.DamageRatio.ToString("0.00"), GetRank(participant, participants, p => p.DamageRatio));
             builder.Append("\n");
-            AddLine(builder, "• Bounty Placed", Formater.FormatCurrency(participant.BountyPlaced));
-            AddLine(builder, "• Bounty Received", Formater.FormatCurrency(participant.BountyReceived));
-            AddLine(builder, "• Bounty Claimed", Formater.FormatCurrency(participant.BountyClaimed));
+            AddLine(builder, "• Bounty Placed", Formater.FormatCurrency(participant.BountyPlaced), GetRank(participant, participants, p => p.BountyPlaced));
+            AddLine(builder, "• Bounty Received", Formater.FormatCurrency(participant.BountyReceived), GetRank(participant, participants, p => p.BountyReceived));
+            AddLine(builder, "• Bounty Claimed", Formater.FormatCurrency(participant.BountyClaimed), GetRank(participant, participants, p => p.BountyClaimed));
             builder.Append("\n");
         }
 
@@ -233,6 +242,11 @@ namespace Bountyhunter.Commands
                 builder.Append("\n");
             }
             builder.Append("\n");
+        }
+
+        private int GetRank<TKey>(Participant participant, List<Participant> list, Func<Participant, TKey> selector)
+        {
+            return list.OrderBy(selector).ToList().IndexOf(participant) + 1;
         }
     }
 }
