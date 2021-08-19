@@ -44,11 +44,7 @@ namespace Bountyhunter
 
         private static void HandleBlockDeath(IMySlimBlock mySlimBlock, MyDamageInformation info)
         {
-            if(mySlimBlock.FatBlock == null)
-            {
-                //Logging.Instance.WriteLine("  ABORT: No Fat Block for " + mySlimBlock.BlockDefinition.ToString());
-                return;
-            }
+
             //Logging.Instance.WriteLine("Block "+mySlimBlock.BlockDefinition.ToString()+"  Destroyed by " + info.AttackerId + " at " + mySlimBlock.FatBlock.GetPosition());
 
             IMyIdentity identity = Utilities.SlimToIdentity(mySlimBlock);
@@ -66,8 +62,9 @@ namespace Bountyhunter
                 return;
             }
             //Logging.Instance.WriteLine("  Victim Hunter found");
-
-            KillerInfo attacker = GetKiller(info, mySlimBlock.FatBlock.GetPosition());
+            Vector3D pos = mySlimBlock.FatBlock != null ? mySlimBlock.FatBlock.GetPosition() : Vector3D.Zero;
+            if (pos == Vector3D.Zero) mySlimBlock.ComputeWorldCenter(out pos);
+            KillerInfo attacker = GetKiller(info, pos);
             if (attacker.Info.Hunter == null)
             {
                 //Logging.Instance.WriteLine("  ABORT: Unknown Attacker");
@@ -90,8 +87,11 @@ namespace Bountyhunter
             }
             //Logging.Instance.WriteLine("  Grind check passed.");
 
+            float damageDone = info.Amount / mySlimBlock.MaxIntegrity;
+           
+
             float bounty = 0;
-            float value = Values.BlockValue(mySlimBlock.BlockDefinition.ToString());
+            float value = Values.BlockValue(mySlimBlock.BlockDefinition.ToString()) * damageDone;
             //Logging.Instance.WriteLine("  BlockValue " + value);
 
             // TODO Value of Cargo
@@ -119,7 +119,7 @@ namespace Bountyhunter
 
         internal static void AfterDamage(object target, MyDamageInformation info)
         {
-            if (target is IMySlimBlock && (target as IMySlimBlock).IsDestroyed)
+            if (target is IMySlimBlock)
             {
                 HandleBlockDeath(target as IMySlimBlock, info);
             }
@@ -252,7 +252,6 @@ namespace Bountyhunter
             IMyEntity entity;
             if(info.AttackerId == 0 && position != Vector3D.Zero)
             {
-                Logging.Instance.WriteLine("  No Attacker ID - find explosions");
                 foreach (ExplosionInfo explosion in Explosions)
                 {
                     if((explosion.LastPosition - position).Length() <= explosion.Radius)
@@ -261,7 +260,6 @@ namespace Bountyhunter
                         IMyIdentity myIdentity = Utilities.CubeBlockBuiltByToIdentity(explosion.OwnerId);
                         if(myIdentity != null)
                         {
-                            Logging.Instance.WriteLine("  Found Explosion nearby!");
                             return new KillerInfo()
                             {
                                 Info = GetIdentity(myIdentity),
