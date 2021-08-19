@@ -110,23 +110,38 @@ namespace Bountyhunter.Utils
             return width;
         }
 
-        public static string PadLeft(string text, int targetWidth, char padding = ' ')
+        public static string PadLeft(string text, int targetWidth, bool slice = false, char padding = ' ')
         {
             int width = GetWidth(text);
+            while(slice && width > targetWidth)
+            {
+                text = text.Substring(0, text.Length - 1);
+                width = GetWidth(text);
+            }
             if (width >= targetWidth) return text;
             else return new string(padding, (int)Math.Floor((float)(targetWidth - width) / GetWidth(padding))) + text;
         }
 
-        public static string PadRight(string text, int targetWidth, char padding = ' ')
+        public static string PadRight(string text, int targetWidth, bool slice = false, char padding = ' ')
         {
             int width = GetWidth(text);
+            while (slice && width > targetWidth)
+            {
+                text = text.Substring(0, text.Length - 1);
+                width = GetWidth(text);
+            }
             if (width >= targetWidth) return text;
             else return text + new string(padding, (int)Math.Floor((float)(targetWidth - width) / GetWidth(padding)));
         }
 
-        public static string PadCenter(string text, int targetWidth, char padding = ' ')
+        public static string PadCenter(string text, int targetWidth, bool slice = false, char padding = ' ')
         {
             int width = GetWidth(text);
+            while (slice && width > targetWidth)
+            {
+                text = text.Substring(0, text.Length - 1);
+                width = GetWidth(text);
+            }
             if (width >= targetWidth) return text;
             else {
                 float todo = (float)Math.Floor((float)(targetWidth - width) / GetWidth(padding));

@@ -214,7 +214,9 @@ namespace Bountyhunter.Commands
                 builder.Append(" -->  [");
                 builder.Append(Formater.PadCenter(Formater.FormatCurrency(item.Value * b.RewardItem.Value), 160));
                 builder.Append("]  ");
-                builder.Append(Formater.FormatNumber(b.RewardItem.Value) + " " + item.ToString());
+                builder.Append(Formater.FormatNumber(b.RewardItem.Value));
+                builder.Append("  ");
+                builder.Append(Formater.PadRight(item.ToString(), 350, true));
 
 
                 builder.Append("\n");

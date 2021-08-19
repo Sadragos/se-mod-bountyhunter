@@ -231,7 +231,7 @@ namespace Bountyhunter.Commands
                 Participants.GetFaction(me.FactionTag).BountyPlaced += bountyValue;
             }
 
-            SendMessage(player, "You set a bounty of " + Formater.FormatNumber(rewardItem.Value) + " " + payment.ToString() + " on " + targetString + ". " + takenFrom);
+            Utilities.ShowDialog(player.SteamUserId, "Bounty placed", "You set a bounty of " + Formater.FormatNumber(rewardItem.Value) + " " + payment.ToString() + " on " + targetString + ". " + takenFrom);
 
             if(Config.Instance.AnnouncyBounties)
             {

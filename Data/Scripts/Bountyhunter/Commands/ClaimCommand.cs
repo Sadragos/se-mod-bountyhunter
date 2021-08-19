@@ -25,7 +25,7 @@ namespace Bountyhunter.Commands
             Hunter hunter = Participants.GetPlayer(player.Identity);
             List<Item> rewards = new List<Item>();
 
-            bool creditsPaid = false;
+            long creditsPaid = 0;
             if (!Config.Instance.CreditsAsItem)
             {
                 creditsPaid = PayCredits(player, hunter);
@@ -69,10 +69,10 @@ namespace Bountyhunter.Commands
             LootboxSpawner.SpawnLootBox(player, ToAdd);
         }
 
-        private void PayoutInventory(IMyPlayer player, Hunter hunter, bool creditsPaid)
+        private void PayoutInventory(IMyPlayer player, Hunter hunter, long creditsPaid)
         {
             List<Item> payout = hunter.Payout;
-            if (payout.Count == 0 && !creditsPaid)
+            if (payout.Count == 0 && creditsPaid == 0)
             {
                 Utilities.ShowChatMessage("You dont have enough Bounty collected.", player.IdentityId);
             }
@@ -88,7 +88,14 @@ namespace Bountyhunter.Commands
             int currentInventoryIndex = 0;
             NamedInventory currentInventory = inventories[currentInventoryIndex];
 
-            StringBuilder builder = new StringBuilder("Items paid out:");
+            StringBuilder builder = new StringBuilder();
+            if(creditsPaid > 0)
+            {
+                builder.Append(Formater.PadRight(Formater.FormatNumber(creditsPaid), 160));
+                builder.Append(" ");
+                builder.Append(Formater.PadRight(Values.Items[Values.SC_ITEM].ToString(), 360, true));
+                builder.Append(" -> Bankaccount\n");
+            }
 
             foreach(Item item in payout)
             {
@@ -97,12 +104,12 @@ namespace Bountyhunter.Commands
                     float amount = Utilities.TryPutItem(currentInventory.Inventory, item.ItemId, item.Value);
                     if (amount > 0)
                     {
-                        builder.Append("\n -> ");
-                        builder.Append(Formater.FormatNumber(amount));
+                        builder.Append(Formater.PadRight(Formater.FormatNumber(amount), 160));
                         builder.Append(" ");
-                        builder.Append(Values.Items[item.ItemId].ToString());
-                        builder.Append(" into ");
+                        builder.Append(Formater.PadRight(Values.Items[item.ItemId].ToString(), 360, true));
+                        builder.Append(" -> ");
                         builder.Append(currentInventory.Name);
+                        builder.Append("\n");
                     }
 
                     if (amount < item.Value-Config.Instance.FloatAmountBuffer)
@@ -124,10 +131,10 @@ namespace Bountyhunter.Commands
                     }
                 }
             }
-            Utilities.ShowChatMessage(builder.ToString(), player.IdentityId);
+            Utilities.ShowDialog(player.SteamUserId, "Claimed Bounty", builder.ToString());
         }
 
-        private bool PayCredits(IMyPlayer player, Hunter hunter)
+        private long PayCredits(IMyPlayer player, Hunter hunter)
         {
             foreach (Item item in hunter.ClaimableBounty)
             {
@@ -138,13 +145,12 @@ namespace Bountyhunter.Commands
                     {
                         Utilities.PayPlayer(player, amount);
                         hunter.RemoveClaimable(item, amount);
-                        Utilities.ShowChatMessage(Formater.FormatNumber(amount) + " Credits paid to your Account.");
-                        return true;
+                        return amount;
                     }
                     break;
                 }
             }
-            return false;
+            return 0;
         }
     }
 }

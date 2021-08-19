@@ -423,7 +423,7 @@ namespace Bountyhunter.Utils
             List<NamedInventory> inventories = new List<NamedInventory>();
             if (includePlayer && player.Character != null && player.Character.GetInventory() != null)
             {
-                inventories.Add(new NamedInventory(player.Character.GetInventory(), "your Inventory"));
+                inventories.Add(new NamedInventory(player.Character.GetInventory(), "Character Inventory"));
             }
 
             foreach (MyCubeGrid grid in GetGridsNearPlayer(player, range))
