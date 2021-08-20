@@ -94,5 +94,11 @@ namespace Bountyhunter.Store.Proto.Files
 
         [ProtoMember(21)]
         public int RankingRefreshSeconds = 60;
+
+        [ProtoMember(22)]
+        public bool ShowLastLogin = true;
+
+        [ProtoMember(23)]
+        public bool ShowOnlineTime = true;
     }
 }

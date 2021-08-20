@@ -101,6 +101,11 @@ namespace Bountyhunter.Utils
             return null;
         }
 
+        internal static string MinutesToTime(long minutes)
+        {
+            return TimeSpan.FromMinutes(minutes).ToString("c");
+        }
+
         public static IMyIdentity CharacterToIdentity(IMyCharacter character)
         {
             if (character == null) { return null; }

@@ -58,6 +58,11 @@ namespace Bountyhunter.Commands
             Hunter hunter = Participants.GetPlayer(p);
             string title = "Player: " + hunter.ToString();
 
+            builder.Append(">> STATS\n");
+            if (Config.Instance.ShowOnlineTime) AddLine(builder, "• Onlinetime", Utilities.MinutesToTime(hunter.OnlineMinutes));
+            if (Config.Instance.ShowLastLogin) AddLine(builder, "• Last Active", hunter.LastSeen.ToString("d"));
+            if (Config.Instance.ShowLastLogin || Config.Instance.ShowOnlineTime) builder.Append("\n");
+
             AddInfo(builder, hunter, false);
 
             AddBounties(builder, hunter);
@@ -91,6 +96,12 @@ namespace Bountyhunter.Commands
             builder.Append(")\n");
             builder.Append(string.Join(", ", faction.Members));
             builder.Append("\n\n");
+
+            builder.Append(">> STATS\n");
+            // TODO Onlinestat
+            //if (Config.Instance.ShowOnlineTime) AddLine(builder, "• Onlinetime", Utilities.MinutesToTime(hunter.OnlineMinutes));
+            //if (Config.Instance.ShowLastLogin) AddLine(builder, "• Last Active", hunter.LastSeen.ToString("d"));
+            //if (Config.Instance.ShowLastLogin || Config.Instance.ShowOnlineTime) builder.Append("\n");
 
             AddInfo(builder, faction, true);
 
@@ -176,7 +187,6 @@ namespace Bountyhunter.Commands
 
         private void AddInfo(StringBuilder builder, Participant participant, bool faction)
         {
-            builder.Append(">> STATS\n");
             AddLine(builder, "• Kills", participant.Kills.ToString(), Rankings.Rank("kills", participant, faction));
             AddLine(builder, "• Deaths", participant.Deaths.ToString(), Rankings.Rank("deaths", participant, faction));
             AddLine(builder, "• Kill-Death-Ratio", participant.KillDeathRatio.ToString("0.00"), Rankings.Rank("kdratio", participant, faction));
