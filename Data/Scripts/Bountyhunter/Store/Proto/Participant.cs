@@ -111,7 +111,16 @@ namespace Bountyhunter.Store.Proto
         {
             get
             {
-                return Bounties.Sum(b => b.RewardItem.Worth);
+                float sum = Bounties.Sum(b => b.RewardItem.Worth); ;
+                if (!string.IsNullOrEmpty(FactionTag))
+                {
+                    Faction faction = Participants.GetFaction(FactionTag, false);
+                    if(!faction.Id.Equals(Id))
+                    {
+                        sum += faction.BountyWorth;
+                    }
+                }
+                return sum;
             }
         }
 

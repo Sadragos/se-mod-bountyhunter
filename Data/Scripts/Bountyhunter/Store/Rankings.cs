@@ -40,7 +40,6 @@ namespace Bountyhunter.Store
         public static List<Participant> GetRanking(string ranking, bool faction)
         {
             Dictionary<string, Ranking> target = faction ? FactionRankings : PlayerRankings;
-            Logging.Instance.WriteLine("Get Ranking " + ranking + " " + faction.ToString());
             Ranking rank = null;
             if(!target.TryGetValue(ranking, out rank))
             {
@@ -49,7 +48,6 @@ namespace Bountyhunter.Store
             }
             if(rank.LastCheck < DateTime.Now.AddSeconds(-Config.Instance.RankingRefreshSeconds))
             {
-                Logging.Instance.WriteLine("Refresh");
                 rank.Participants.Clear();
                 rank.LastCheck = DateTime.Now;
                 if (faction) foreach (Faction f in Participants.Factions.Values) rank.Participants.Add(f);
@@ -85,7 +83,6 @@ namespace Bountyhunter.Store
                         rank.Participants = rank.Participants.OrderByDescending(p => p.BountyClaimed).ToList();
                         break;
                     case "bounty":
-                        // TODO Add faction bounties to players
                         rank.Participants = rank.Participants.OrderByDescending(p => p.BountyWorth).ToList();
                         break;
                 }

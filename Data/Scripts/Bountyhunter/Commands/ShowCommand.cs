@@ -188,6 +188,7 @@ namespace Bountyhunter.Commands
             AddLine(builder, "• Bounty Placed", Formater.FormatCurrency(participant.BountyPlaced), Rankings.Rank("bountyPlaced", participant, faction));
             AddLine(builder, "• Bounty Received", Formater.FormatCurrency(participant.BountyReceived), Rankings.Rank("bountyReceived", participant, faction));
             AddLine(builder, "• Bounty Claimed", Formater.FormatCurrency(participant.BountyClaimed), Rankings.Rank("bountyClaimed", participant, faction));
+            AddLine(builder, "• Current Bounty", Formater.FormatCurrency(participant.BountyWorth), Rankings.Rank("bounty", participant, faction));
             builder.Append("\n");
         }
 
@@ -203,7 +204,7 @@ namespace Bountyhunter.Commands
             builder.Append(">> ");
             builder.Append(name);
             builder.Append(" (");
-            builder.Append(Formater.FormatCurrency(participant.BountyWorth));
+            builder.Append(Formater.FormatCurrency(participant.Bounties.Sum(b => b.RewardItem.Worth)));
             builder.Append(")\n");
             foreach (Bounty b in participant.Bounties)
             {
