@@ -102,7 +102,8 @@ namespace Bountyhunter.Commands
 
             // Payment
             BountyItem rewardItem = new BountyItem();
-            if(!float.TryParse(arguments[3], out rewardItem.Value) || Math.Floor(rewardItem.Value) <= 0)
+            rewardItem.Value = Utilities.ParseNumber(arguments[3]);
+            if(Math.Floor(rewardItem.Value) <= 0)
             {
                 WrongArguments(player);
                 return;

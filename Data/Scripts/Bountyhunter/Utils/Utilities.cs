@@ -106,6 +106,29 @@ namespace Bountyhunter.Utils
             return TimeSpan.FromMinutes(minutes).ToString("c");
         }
 
+        public static float ParseNumber(string input, float defaultValue = 0.0f)
+        {
+            input = input.ToLower();
+            float mult = 1;
+            while (input.EndsWith("k"))
+            {
+                mult *= 1000;
+                input = input.Substring(0, input.Length - 1);
+            }
+            while (input.EndsWith("m"))
+            {
+                mult *= 1000000;
+                input = input.Substring(0, input.Length - 1);
+            }
+
+            float value = 0;
+            if(!float.TryParse(input, out value))
+            {
+                value = defaultValue;
+            }
+            return value * mult;
+        }
+
         public static IMyIdentity CharacterToIdentity(IMyCharacter character)
         {
             if (character == null) { return null; }
