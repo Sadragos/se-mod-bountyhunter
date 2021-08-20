@@ -91,5 +91,8 @@ namespace Bountyhunter.Store.Proto.Files
 
         [ProtoMember(20)]
         public bool CountGrindingAsDestroy = false;
+
+        [ProtoMember(21)]
+        public int RankingRefreshSeconds = 60;
     }
 }
