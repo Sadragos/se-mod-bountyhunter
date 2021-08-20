@@ -19,6 +19,13 @@ namespace Bountyhunter.Store.Proto
         [ProtoMember(14)]
         public List<Item> ClaimableBounty = new List<Item>();
 
+        [ProtoMember(15)]
+        public DateTime LastSeen = DateTime.Now;
+
+        [ProtoMember(16)]
+        [XmlAttribute]
+        public long OnlineMinutes = 0;
+
 
         internal void RemoveClaimable(Item item, float amount)
         {

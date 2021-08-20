@@ -14,7 +14,6 @@ namespace Bountyhunter.Store.Proto
         public long Id;
 
         [ProtoMember(2)]
-        [XmlAttribute]
         public string Name;
 
         [ProtoMember(3)]

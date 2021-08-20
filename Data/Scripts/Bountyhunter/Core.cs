@@ -208,7 +208,7 @@ namespace Bountyhunter
         public void UpdateBeforeEveryMinute()
         {
             DeathHandler.UpdateIdentityCache();
-            Participants.RefreshAllFactions();
+            Participants.RefreshParticipantData();
         }
 
         // Overrides

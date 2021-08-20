@@ -150,12 +150,14 @@ namespace Bountyhunter.Store
             return GetFaction(Utilities.GetFactionByTag(faction), create);
         }
 
-        public static void RefreshAllFactions()
+        public static void RefreshParticipantData()
         {
+            DateTime currentTimestamp = DateTime.Now;
             foreach(Faction fact in Factions.Values)
             {
                 fact.Members.Clear();
                 IMyFaction myFaction = MyAPIGateway.Session.Factions.TryGetFactionById(fact.Id);
+                // Delete old Factions
                 if (myFaction == null)
                 {
                     Factions.Remove(fact.Id);
@@ -167,14 +169,23 @@ namespace Bountyhunter.Store
 
             foreach(Hunter hunter in Players.Values)
             {
-                IMyIdentity player = Utilities.GetPlayerIdentity(hunter.Id);
-                if(player == null)
+                // Delete unknown Identities
+                IMyIdentity identity = Utilities.GetPlayerIdentity(hunter.Id);
+                if(identity == null)
                 {
                     Players.Remove(hunter.Id);
                     continue;
                 }
-                hunter.Name = player.DisplayName;
-                IMyFaction faction = MyAPIGateway.Session.Factions.TryGetPlayerFaction(player.IdentityId);
+
+                IMyPlayer player = Utilities.GetPlayer(identity.DisplayName);
+                if (player != null)
+                {
+                    hunter.Name = identity.DisplayName;
+                    hunter.OnlineMinutes++;
+                    hunter.LastSeen = currentTimestamp;
+                } 
+
+                IMyFaction faction = MyAPIGateway.Session.Factions.TryGetPlayerFaction(identity.IdentityId);
                 if(faction == null)
                 {
                     hunter.FactionTag = null;
