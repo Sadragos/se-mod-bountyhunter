@@ -32,6 +32,7 @@ Especially for damage missions these Values are relevant. Each Item has a config
 
 ## Claim your bounty
 Claiming your bounty is simple. Use the following command. Any Space Credits you earned will be added to your account. Any Items will be either put in your Inventory, a Cargo Container near you, that is owned by you or (if the config wishes so) spawns a Bountybox near you, that contains your claimed bounties. You *can* claim partial bounties. For example if someone hat put up 100 Uranium up for 5 kills of player X and you killed the target 2 times you can claim 40 Uranium.
+- <pre>/bh claimable</pre> Shows what bounties you've collected so far, which can be claimed
 - <pre>/bh claim</pre>
 
 ## Rankings
@@ -43,7 +44,12 @@ There are several Rankings and Lists and Infos, that can be used to show almost 
 - <pre>/bh rank (faction/player) ratio</pre> shows a ranking of kill/death ratio
 - <pre>/bh rank (faction/player) damageDone</pre> shows a ranking of who has done the most destruction
 - <pre>/bh rank (faction/player) damageReceived</pre> shows a ranking of who has received the most destruction
+- <pre>/bh rank (faction/player) damageRatio</pre> shows a ranking of who has the best damage ratio
 - <pre>/bh rank (faction/player) bountyPlaced</pre> shows a ranking of who has put up the most bounty
 - <pre>/bh rank (faction/player) bountyClaimed</pre> shows a ranking of who has claimed the most bounty
 - <pre>/bh rank (faction/player) bounty</pre> shows who has the highest bounty on his head
 
+## Admin Commands
+- <pre>/bh save</pre> Stores all changed the the savefiles
+- <pre>/bh reload</pre> Reloads all savefiles
+- <pre>/bh recalculate</pre> can be used to Recalculate component, ore and blockvalues based on Ingodvalues
