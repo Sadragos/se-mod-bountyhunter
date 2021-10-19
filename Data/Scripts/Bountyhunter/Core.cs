@@ -174,6 +174,7 @@ namespace Bountyhunter
                     return;
                 }
             }
+            Utilities.ShowChatMessage("Unknown command. Use /bh help to learn more.", player.IdentityId);
         }
 
         // Zeigt dem Spieler eine Dialog an
