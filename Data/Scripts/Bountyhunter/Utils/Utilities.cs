@@ -386,6 +386,10 @@ namespace Bountyhunter.Utils
                 fixedAmount = MyFixedPoint.Floor(fixedAmount);
             }
             MyObjectBuilder_PhysicalObject builder = GetItemBuilder(itemId);
+            if(builder == null)
+            {
+                return 0;
+            }
             float volumeLeft = (float)inventory.MaxVolume - (float)inventory.CurrentVolume;
             float volume = ItemVolume(itemId);
             float totalVolume = (float)fixedAmount * volume;
@@ -427,6 +431,8 @@ namespace Bountyhunter.Utils
                     return new MyObjectBuilder_Ore() { SubtypeName = subtypeId };
                 case "MyObjectBuilder_PhysicalObject":
                     return new MyObjectBuilder_PhysicalObject() { SubtypeName = subtypeId };
+                case "MyObjectBuilder_PhysicalGunObject":
+                    return new MyObjectBuilder_PhysicalGunObject() { SubtypeName = subtypeId };
                 case "MyObjectBuilder_ConsumableItem":
                     return new MyObjectBuilder_ConsumableItem() { SubtypeName = subtypeId };
                 default:
@@ -438,6 +444,10 @@ namespace Bountyhunter.Utils
         public static float ItemVolume(string itemId, float amount = 1)
         {
             MyObjectBuilder_PhysicalObject builder = GetItemBuilder(itemId);
+            if (builder == null)
+            {
+                return 0;
+            }
             MyItemType type = new MyItemType(builder.TypeId, builder.SubtypeId);
             return type.GetItemInfo().Volume * amount;
         }
