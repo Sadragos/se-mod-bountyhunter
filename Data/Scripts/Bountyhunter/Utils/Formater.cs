@@ -41,7 +41,17 @@ namespace Bountyhunter.Utils
         public static string FormatNumber(double value)
         {
             string suffix = "";
-            if (value >= 1000000)
+            if (value >= 1000000000000)
+            {
+                value /= 1000000000000;
+                suffix = "t";
+            }
+            else if (value >= 1000000000)
+            {
+                value /= 1000000000;
+                suffix = "b";
+            }
+            else if (value >= 1000000)
             {
                 value /= 1000000;
                 suffix = "m";
@@ -102,6 +112,7 @@ namespace Bountyhunter.Utils
 
         public static int GetWidth(string text)
         {
+            if (text == null) return 0;
             int width = 0;
             foreach(char c in text.ToCharArray())
             {
@@ -112,6 +123,7 @@ namespace Bountyhunter.Utils
 
         public static string PadLeft(string text, int targetWidth, bool slice = false, char padding = ' ')
         {
+            if (text == null) text = "";
             int width = GetWidth(text);
             while(slice && width > targetWidth)
             {
@@ -124,6 +136,7 @@ namespace Bountyhunter.Utils
 
         public static string PadRight(string text, int targetWidth, bool slice = false, char padding = ' ')
         {
+            if (text == null) text = "";
             int width = GetWidth(text);
             while (slice && width > targetWidth)
             {
@@ -136,6 +149,7 @@ namespace Bountyhunter.Utils
 
         public static string PadCenter(string text, int targetWidth, bool slice = false, char padding = ' ')
         {
+            if (text == null) text = "";
             int width = GetWidth(text);
             while (slice && width > targetWidth)
             {
