@@ -26,6 +26,12 @@ namespace Bountyhunter.Store.Proto
         [XmlAttribute]
         public long OnlineMinutes = 0;
 
+        [ProtoMember(17)]
+        public DateTime GraceTime;
+
+        [ProtoMember(18)]
+        public bool Graced;
+
 
         internal void RemoveClaimable(Item item, float amount)
         {

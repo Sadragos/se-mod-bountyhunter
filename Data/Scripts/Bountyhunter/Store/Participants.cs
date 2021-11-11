@@ -27,6 +27,7 @@ namespace Bountyhunter.Store
 
         public static Dictionary<long, Hunter> Players = new Dictionary<long, Hunter>();
         public static Dictionary<long, Faction> Factions = new Dictionary<long, Faction>();
+        static List<long> Removes = new List<long>();
 
 
         public static void Load()
@@ -150,9 +151,35 @@ namespace Bountyhunter.Store
             return GetFaction(Utilities.GetFactionByTag(faction), create);
         }
 
-        public static void RefreshParticipantData()
+        public static void UpdateOnlineTime()
         {
             DateTime currentTimestamp = DateTime.Now;
+            foreach (Hunter hunter in Players.Values)
+            {
+                // Delete unknown Identities
+                IMyIdentity identity = Utilities.GetPlayerIdentity(hunter.Id);
+                if (identity == null)
+                {
+                    Removes.Add(hunter.Id);
+                    continue;
+                }
+
+                IMyPlayer player = Utilities.IdentityToPlayer(identity);
+                if (player != null)
+                {
+                    hunter.Name = identity.DisplayName;
+                    hunter.OnlineMinutes++;
+                    hunter.LastSeen = currentTimestamp;
+                }
+            }
+
+            foreach(long l in Removes) Players.Remove(l);
+            Removes.Clear();
+        }
+
+        public static void RefreshHunterFactionData()
+        {
+            
             foreach(Faction fact in Factions.Values)
             {
                 fact.Members.Clear();
@@ -160,30 +187,26 @@ namespace Bountyhunter.Store
                 // Delete old Factions
                 if (myFaction == null)
                 {
-                    Factions.Remove(fact.Id);
+                    Removes.Add(fact.Id);
                     continue;
                 }
                 fact.Name = myFaction.Name;
                 fact.FactionTag = myFaction.Tag;
             }
+            foreach (long l in Removes) Factions.Remove(l);
+            Removes.Clear();
 
-            foreach(Hunter hunter in Players.Values)
+            foreach (Hunter hunter in Players.Values)
             {
                 // Delete unknown Identities
                 IMyIdentity identity = Utilities.GetPlayerIdentity(hunter.Id);
                 if(identity == null)
                 {
-                    Players.Remove(hunter.Id);
+                    Removes.Add(hunter.Id);
                     continue;
                 }
 
-                IMyPlayer player = Utilities.GetPlayer(identity.DisplayName);
-                if (player != null)
-                {
-                    hunter.Name = identity.DisplayName;
-                    hunter.OnlineMinutes++;
-                    hunter.LastSeen = currentTimestamp;
-                } 
+                string oldFaction = hunter.FactionTag;
 
                 IMyFaction faction = MyAPIGateway.Session.Factions.TryGetPlayerFaction(identity.IdentityId);
                 if(faction == null)
@@ -194,7 +217,18 @@ namespace Bountyhunter.Store
                     hunter.FactionTag = faction.Tag;
                     GetFaction(faction).Members.Add(hunter.Name);
                 }
+
+                if(oldFaction != hunter.FactionTag)
+                {
+                    hunter.GraceTime = DateTime.Now;
+                    hunter.Graced = true;
+                } else if (hunter.Graced && hunter.GraceTime != null && DateTime.Now >= hunter.GraceTime.AddMinutes(Config.Instance.FactionChangeGraceTimeMinutes))
+                {
+                    hunter.Graced = false;
+                }
             }
+            foreach (long l in Removes) Players.Remove(l);
+            Removes.Clear();
         }
     }
 }

@@ -188,14 +188,25 @@ namespace Bountyhunter
         {
             //register all our events and stuff
             MyAPIGateway.Utilities.MessageEntered += HandleMessageEntered;
+            MyAPIGateway.Session.Factions.FactionStateChanged += FactionChanged;
             MyAPIGateway.Multiplayer.RegisterMessageHandler( CLIENT_ID, HandleServerData );
             MyAPIGateway.Multiplayer.RegisterMessageHandler( SERVER_ID, HandlePlayerData );
+        }
+
+        private void FactionChanged(MyFactionStateChange newState, long fromFactionId, long toFactionId, long playerId, long senderId)
+        {
+            if (!MyAPIGateway.Multiplayer.IsServer)
+                return;)
+            IMyIdentity myIdentity = Utilities.CubeBlockBuiltByToIdentity(playerId) ;
+            Logging.Instance.WriteLine(myIdentity.DisplayName + " Switched Faction!");
+            Participants.RefreshHunterFactionData();
         }
 
         public void RemoveMessageHandler( )
         {
             //unregister them when the game is closed
             MyAPIGateway.Utilities.MessageEntered -= HandleMessageEntered;
+            MyAPIGateway.Session.Factions.FactionStateChanged -= FactionChanged;
             MyAPIGateway.Multiplayer.UnregisterMessageHandler( CLIENT_ID, HandleServerData );
             MyAPIGateway.Multiplayer.UnregisterMessageHandler( SERVER_ID, HandlePlayerData );
         }
@@ -209,7 +220,8 @@ namespace Bountyhunter
         public void UpdateBeforeEveryMinute()
         {
             DeathHandler.UpdateIdentityCache();
-            Participants.RefreshParticipantData();
+            Participants.RefreshHunterFactionData();
+            Participants.UpdateOnlineTime();
         }
 
         // Overrides

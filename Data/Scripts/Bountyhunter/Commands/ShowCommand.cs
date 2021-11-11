@@ -59,9 +59,11 @@ namespace Bountyhunter.Commands
             string title = "Player: " + hunter.ToString();
 
             builder.Append(">> STATS\n");
+            long graceMinutes = Config.Instance.FactionChangeGraceTimeMinutes - (long)(DateTime.Now - hunter.GraceTime).TotalMinutes;
             if (Config.Instance.ShowOnlineTime) AddLine(builder, "• Onlinetime", Utilities.MinutesToTime(hunter.OnlineMinutes));
             if (Config.Instance.ShowLastLogin) AddLine(builder, "• Last Active", hunter.LastSeen.ToString("d"));
-            if (Config.Instance.ShowLastLogin || Config.Instance.ShowOnlineTime) builder.Append("\n");
+            if (hunter.Graced) AddLine(builder, "• Graceperiod", Utilities.MinutesToTime(graceMinutes));
+            if (Config.Instance.ShowLastLogin || Config.Instance.ShowOnlineTime || hunter.Graced) builder.Append("\n");
 
             AddInfo(builder, hunter, false);
 

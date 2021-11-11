@@ -82,8 +82,14 @@ namespace Bountyhunter
             }
             //Logging.Instance.WriteLine("  Attacker " + attacker.Info.Hunter.ToString());
 
+            if(attacker.Info.Hunter.Graced)
+            {
+                return;
+            }
+
             // For blocks only count PVP Damage (because of repairs etc.)
-            if (attacker.Info.Identity.IdentityId.Equals(victim.Identity.IdentityId) || (attacker.Info.Faction != null && attacker.Info.Faction.IsFriendly(victim.Identity.IdentityId)))
+            if (attacker.Info.Identity.IdentityId.Equals(victim.Identity.IdentityId) 
+                || (attacker.Info.Faction != null && !attacker.Info.Faction.IsEnemy(victim.Identity.IdentityId)))
             {
                 //Logging.Instance.WriteLine("  ABORT: Selfharm or Allied");
                 return;
@@ -173,14 +179,18 @@ namespace Bountyhunter
                 {
                     attacker.IsAllied = true;
                     attacker.IsSameFaction = true;
-                } else if(attacker.Info.Faction.IsFriendly(victim.Identity.IdentityId))
+                } else if(!attacker.Info.Faction.IsEnemy(victim.Identity.IdentityId))
                 {
                     attacker.IsAllied = true;
                 }
             }
 
             float bounty = 0;
-            if (!attacker.Info.IsBot && !attacker.Selfinflicted && attacker.Info.Hunter != null && (!attacker.IsAllied || Config.Instance.ClaimBountiesFromAllies))
+            if (!attacker.Info.IsBot 
+                && !attacker.Selfinflicted 
+                && attacker.Info.Hunter != null 
+                && (!attacker.IsAllied || Config.Instance.ClaimBountiesFromAlliesAndNeutrals) 
+                && !attacker.Info.Hunter.Graced)
             {
 
                 bounty += victim.Hunter.ClaimBounty(attacker.Info.Hunter, EBountyType.Kill);

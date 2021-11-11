@@ -63,7 +63,7 @@ namespace Bountyhunter.Store.Proto.Files
         public bool PlaceBountiesOnAllies = true;
 
         [ProtoMember(11)]
-        public bool ClaimBountiesFromAllies = false;
+        public bool ClaimBountiesFromAlliesAndNeutrals = false;
 
         [ProtoMember(12)]
         public int DeathListEntries = 10;
@@ -100,5 +100,8 @@ namespace Bountyhunter.Store.Proto.Files
 
         [ProtoMember(23)]
         public bool ShowOnlineTime = true;
+
+        [ProtoMember(24)]
+        public int FactionChangeGraceTimeMinutes = 1440;
     }
 }
