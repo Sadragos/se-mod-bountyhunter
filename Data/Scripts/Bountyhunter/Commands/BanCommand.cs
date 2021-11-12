@@ -76,9 +76,10 @@ namespace Bountyhunter.Commands
                 }
                 hunter.Banned = true;
 
+                string reason = "";
                 if (arguments.Length > 3)
                 {
-                    string reason = "";
+                    
                     for(int i = 3; i < arguments.Length; i++)
                     {
                         if (reason.Length > 0) reason += " ";
@@ -90,8 +91,12 @@ namespace Bountyhunter.Commands
                 SendMessage(player, "Suspended " + hunter.Name + " from claiming Bounties until " + hunter.BannedUntil.ToString("g", CultureInfo.CreateSpecificCulture("de-DE")));
 
                 if (bannedPlayer != null)
-                    SendMessage(bannedPlayer, "You have been suspended from claiming any Bounties until " + hunter.BannedUntil.ToString("g", CultureInfo.CreateSpecificCulture("de-DE")));
-
+                {
+                    string message = "You have been suspended from claiming any Bounties until " + hunter.BannedUntil.ToString("g", CultureInfo.CreateSpecificCulture("de-DE"));
+                    if (reason.Length > 0)
+                        message += " Reason: " + reason;
+                    SendMessage(bannedPlayer, message);
+                }
             }
         }
     }
