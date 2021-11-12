@@ -340,8 +340,19 @@ namespace Bountyhunter.Utils
 
         public static List<IMyIdentity> GetPlayerIdentityFuzzy(string name)
         {
+            string lowered = name.ToLower();
             List<IMyIdentity> players = new List<IMyIdentity>();
-            MyAPIGateway.Players.GetAllIdentites(players, i => i.DisplayName.ToLower().Contains(name.ToLower()));
+            MyAPIGateway.Players.GetAllIdentites(players, i => i.DisplayName.ToLower().Contains(lowered));
+            foreach(IMyIdentity p in players)
+            {
+                if(p.DisplayName.ToLower().Equals(lowered))
+                {
+                    // Perfect match
+                    players.Clear();
+                    players.Add(p);
+                    return players;
+                }
+            }
             return players;
         }
 
