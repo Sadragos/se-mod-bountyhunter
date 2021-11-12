@@ -66,18 +66,20 @@ namespace Bountyhunter
                 MyVisualScriptLogicProvider.PrefabSpawnedDetailed += LootboxSpawner.NewSpawn;
 
                 // CommandHandlers
-                CommandHandlers.Add(new RecalculateCommand());
-                CommandHandlers.Add(new SaveCommand());
-                CommandHandlers.Add(new ReloadCommand());
+                CommandHandlers.Add(new HelpCommand());
+                CommandHandlers.Add(new WelcomeCommand());
+                CommandHandlers.Add(new ShowCommand());
+                CommandHandlers.Add(new MeCommand());
+                CommandHandlers.Add(new RankingCommand());
                 CommandHandlers.Add(new ValueCommand());
                 CommandHandlers.Add(new NewBountyCommand());
                 CommandHandlers.Add(new ClaimableCommand());
                 CommandHandlers.Add(new ClaimCommand());
-                CommandHandlers.Add(new RankingCommand());
-                CommandHandlers.Add(new ShowCommand());
-                CommandHandlers.Add(new MeCommand());
-                CommandHandlers.Add(new WelcomeCommand());
-                CommandHandlers.Add(new HelpCommand());
+
+                CommandHandlers.Add(new ReloadCommand());
+                CommandHandlers.Add(new RecalculateCommand());
+                CommandHandlers.Add(new SaveCommand());
+                
 
                 AbstactCommandHandler reloadHandler = CommandHandlers.Find(ch => ch is ReloadCommand);
                 if (reloadHandler != null)

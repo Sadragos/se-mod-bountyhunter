@@ -13,7 +13,7 @@ namespace Bountyhunter.Commands
 
         }
 
-        public override string ArgumentDescription => "";
+        public override string ArgumentDescription => "\nThis wil reload all relevant XML files from the Disk. This is usefull if you hgave changed them with an external Editor. Make sure to use this command quickly after making your changes, as the file is saved everytime your world is saved, which can result in the loss of your changes.";
 
         public override void HandleCommand(IMyPlayer player, string[] arguments)
         {

@@ -142,7 +142,8 @@ namespace Bountyhunter.Commands
             // Get Count / requirement
             if(arguments.Length == 6)
             {
-                if(!float.TryParse(arguments[5], out bounty.Count) || bounty.Count <= 0)
+                bounty.Count = Utilities.ParseNumber(arguments[5]);
+                if (bounty.Count <= 0)
                 {
                     WrongArguments(player);
                     return;
@@ -266,7 +267,25 @@ namespace Bountyhunter.Commands
 
         }
 
-        public override string ArgumentDescription => "<kill/damage> <player/faction> <targetName> <amount> <payment item> [amount of kills/damage]";
+        public override string ArgumentDescription => "<kill/damage> <player/faction> <targetName> <amount> <payment item> [amount of kills/damage]" +
+            "\nThis command lets you place new bounties on someone." +
+            "You can use 'k' or 'd' instead of kill or damage for the first argument. " +
+            "You can use 'p' or 'f' instead of player or faction as the second argument. " +
+            "\n'targetName' must be a faction tag for factions or the name of a player. For playernames a part of the name can suffice, if it clearly identifies one player." +
+            "\n'amount' can be any whole number. You can also use smart numbers like 5k for 5000, 5kk for 5000000 or 7m for 7000000." +
+            "\n'payment item' can be any itemname, a part of it or an item ID. If you can't find an item use '/bh value item SEARCH' to find the item and then use the ID. " +
+            "This is especially usefull for stuff like Iron Ore and Iron Ingots - as both have the name Iron you have to use the ID or ingot/iron for example." +
+            "\n'amount of kills/damage' This argument is optional and allows you to specify how much damage or how many kills have to be done to claim the full bounty. " +
+            "This is usefull if you want to place a bounty on the next 10 kills or if you want to payout abountyvalue of 5k for 10k of damage. If this argument is not set kills default to 1 and damage defaults to the value the bounty." +
+            "\nNote: The bounty will be withdrawn directly from you, your Bankaccount or any cargo around you, that you have access to. If you can't afford the bounty this command will fail." +
+            "\n\nExample: Kill Sadragos 5 times and reward 500 Steelplates for each kill" +
+            "\n/bh new k p Sadragos 2500 Steelplate 5" +
+            "\nExample: Destroy Blocks worth 500k for the faction ADM and pay 100k Credits for that" +
+            "\n/bh new d f ADM 100k credit 500k" +
+            "\nExample: Destroy Blocks worth the same value as 500k Steelplates and earn 500k Steelplates" +
+            "\n/bh new d f ADM 500k steelplate" +
+            "\nExample: Kill Sadragos for 500 Credits" +
+            "\n/bh new k p Sadragos 500 credit";
         
     }
 }

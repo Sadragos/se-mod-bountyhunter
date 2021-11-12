@@ -120,6 +120,11 @@ namespace Bountyhunter.Utils
                 mult *= 1000000;
                 input = input.Substring(0, input.Length - 1);
             }
+            while (input.EndsWith("b"))
+            {
+                mult *= 1000000000;
+                input = input.Substring(0, input.Length - 1);
+            }
 
             float value = 0;
             if(!float.TryParse(input, out value))

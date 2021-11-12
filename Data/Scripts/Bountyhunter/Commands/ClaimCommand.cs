@@ -18,7 +18,7 @@ namespace Bountyhunter.Commands
 
         }
 
-        public override string ArgumentDescription => "";
+        public override string ArgumentDescription => "\nClaims all bounties, that you have earned, that have not been claimed yet. Depending on the Settings they will be put into you Bankaccount, Player-Inventory, Cargo near you (that you can access) or will be delivered with a drop-pod.";
 
         public override void HandleCommand(IMyPlayer player, string[] arguments)
         {

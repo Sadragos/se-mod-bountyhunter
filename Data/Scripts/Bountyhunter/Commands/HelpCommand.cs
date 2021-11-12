@@ -27,19 +27,23 @@ namespace Bountyhunter.Commands
 
         }
 
-        public override string ArgumentDescription => "";
+        public override string ArgumentDescription => "\nShows this help window";
 
         public override void HandleCommand(IMyPlayer player, string[] arguments)
         {
             StringBuilder builder = new StringBuilder();
-            foreach(AbstactCommandHandler handler in Core.CommandHandlers)
+            builder.Append("Welcome to the Bountyhunt, ");
+            builder.Append(player.DisplayName);
+            builder.Append(". The following commands can be used to interact with the Bountyhunt-Mod. \n\n");
+            builder.Append("\n-----------------------------------------\n");
+            foreach (AbstactCommandHandler handler in Core.CommandHandlers)
             {
                 if (!handler.HasRank(player)) continue;
                 builder.Append("/bh ");
                 builder.Append(handler.CommandPrefix);
                 builder.Append(" ");
                 builder.Append(handler.ArgumentDescription);
-                builder.Append("\n\n");
+                builder.Append("\n-----------------------------------------\n");
             }
             Utilities.ShowDialog(player.SteamUserId, "Bountyhunt - Help", builder.ToString());
         }

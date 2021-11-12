@@ -38,7 +38,7 @@ namespace Bountyhunter.Commands
             }
         }
 
-        public override string ArgumentDescription => "<ores/components/blocks>";
+        public override string ArgumentDescription => "<ores/components/blocks>\nThis will recalculate the values of the given category. Caution: It will override all manual changes to the values in that category. Best use '/bh save' afterwards.";
 
         private void RecalculateBlocks(IMyPlayer player)
         {

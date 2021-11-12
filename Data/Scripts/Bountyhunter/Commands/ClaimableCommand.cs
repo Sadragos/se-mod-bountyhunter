@@ -27,7 +27,7 @@ namespace Bountyhunter.Commands
 
         }
 
-        public override string ArgumentDescription => "";
+        public override string ArgumentDescription => "\nShows you a list of all bounties, that you've already earned and that can be claimed with the '/bh claim' command.";
 
         public override void HandleCommand(IMyPlayer player, string[] arguments)
         {

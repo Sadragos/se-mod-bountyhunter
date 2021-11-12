@@ -27,7 +27,7 @@ namespace Bountyhunter.Commands
 
         }
 
-        public override string ArgumentDescription => "";
+        public override string ArgumentDescription => "\nAlias for '/bh show player YOUR-NAME'";
 
         public override void HandleCommand(IMyPlayer player, string[] arguments)
         {

@@ -27,7 +27,10 @@ namespace Bountyhunter.Commands
 
         }
 
-        public override string ArgumentDescription => "<grid/item/block> [searchtext]";
+        public override string ArgumentDescription => "<grid/item/block> [searchtext]\nEvery Item and Block is assigned a value, which is most relevant for damage bounties and to display a unified bounty value. This command shows you the value if a grid, an item or a block. Searchtext is not required for grids. There are some things to keep in mind:" +
+            "\n- grid\n   Shows you the value of grids around you in a small radius. You have to own enough Blocks on the grids." +
+            "\n- item\n   Doubles as an item search, which means you can enter only a few letters of the name.Every item also gets a uique ID which can be used when placing bounties." +
+            "\n- block\n   Doubles as a block search, which means you can enter only a few letters of the name.";
 
         public override void HandleCommand(IMyPlayer player, string[] arguments)
         {

@@ -16,7 +16,19 @@ namespace Bountyhunter.Commands
 
         }
 
-        public override string ArgumentDescription => "<player/faction> <kills/deaths/kdratio/damageDone/damageReceived/damageRatio/bountyPlaced/bountyReceived/bountyClaimed/bounty>";
+        public override string ArgumentDescription => "<player/faction> <ranking>" +
+            "\nShows a ranking for the given category. " +
+            "You can use 'p' or 'f' instead of player or faction as the first argument. Use one of the following categories as ranking:" +
+            "\n- bounty\n   Which head has currently the highest bounty on it." +
+            "\n- kills\n   Shows who has killed the most players." +
+            "\n- deaths\n   Shows who died the most." +
+            "\n- kdratio\n   Shows who has the best kill-death-ratio. " +
+            "\n- damageDone\n   Shows who has done the most damage to enemy grids." +
+            "\n- damageReceived\n   Shows who has received the most damage from enemies." +
+            "\n- damageRatio\n   Shows who has the best damagae ratio." +
+            "\n- bountyPlaced\n   Shows who has placed the most bounties in total." +
+            "\n- bountyReceived\n   Shows, on which had was placed the most bounty in total." +
+            "\n- bountyClaimed\n   Shows who has earned the most bounties in total.";
 
         public override void HandleCommand(IMyPlayer player, string[] arguments)
         {

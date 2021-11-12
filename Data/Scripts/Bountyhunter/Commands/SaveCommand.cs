@@ -13,7 +13,7 @@ namespace Bountyhunter.Commands
 
         }
 
-        public override string ArgumentDescription => "";
+        public override string ArgumentDescription => "\nSaves all pending changes to files.";
 
         public override void HandleCommand(IMyPlayer player, string[] arguments)
         {
