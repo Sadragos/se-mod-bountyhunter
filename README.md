@@ -39,6 +39,8 @@ Claiming your bounty is simple. Use the following command. Any Space Credits you
 There are several Rankings and Lists and Infos, that can be used to show almost all aspects of the Mod
 - <pre>/bh show player (name)</pre> shows info on the specified player
 - <pre>/bh show faction (tag)</pre> shows info on the specified faction
+- <pre>/bh me</pre> shows info about yourself
+- <pre>/bh welcome</pre> shows how much Bounty is on your head
 - <pre>/bh rank (faction/player) kills</pre> shows a ranking of kills
 - <pre>/bh rank (faction/player) deaths</pre> shows a ranking of deaths
 - <pre>/bh rank (faction/player) ratio</pre> shows a ranking of kill/death ratio
