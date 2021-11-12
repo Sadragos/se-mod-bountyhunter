@@ -36,12 +36,20 @@ namespace Bountyhunter.Commands
                 foreach (IMyCubeGrid grid in Utilities.GetGridsNearPlayer(player))
                 {
                     string name = grid.CustomName;
+                    
                     PointValue thread = CalculateValue(grid, true);
 
-                    SendMessage(player, "Value of " + name 
-                        + "\n-> Empty " + Formater.FormatCurrency(thread.GridValue)
-                        + "\n-> Cargo " + Formater.FormatCurrency(thread.CargoValue)
-                        + "\n-> Total " + Formater.FormatCurrency(thread.GridValue + thread.CargoValue));
+                    float percentage = thread.GetOwnedPercent(player.IdentityId);
+                    if (percentage >= Config.Instance.GridValueMinOwnershipPercent)
+                    {
+                        SendMessage(player, "Value of " + name
+                            + "\n-> Empty " + Formater.FormatCurrency(thread.GridValue)
+                            + "\n-> Cargo " + Formater.FormatCurrency(thread.CargoValue)
+                            + "\n-> Total " + Formater.FormatCurrency(thread.GridValue + thread.CargoValue));
+                    } else
+                    {
+                        SendMessage(player, "Value of " + name + " could not be determined as you don't own enough of it.");
+                    }
                 }
             }
             else if (arguments.Length >= 2 && arguments[0].Equals("item"))

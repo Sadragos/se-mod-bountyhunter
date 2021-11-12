@@ -103,5 +103,8 @@ namespace Bountyhunter.Store.Proto.Files
 
         [ProtoMember(24)]
         public int FactionChangeGraceTimeMinutes = 1440;
+
+        [ProtoMember(25)]
+        public int GridValueMinOwnershipPercent = 60;
     }
 }

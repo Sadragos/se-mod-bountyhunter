@@ -372,18 +372,24 @@ namespace Bountyhunter.Store
         {
             Dictionary<string, int> components = new Dictionary<string, int>();
             List<IMySlimBlock> slimBlocks = new List<IMySlimBlock>();
+            Dictionary<long, int> blocksOwned = new Dictionary<long, int>();
             grid.GetBlocks(slimBlocks);
             double gridValue = 0;
             double cargoValue = 0;
+            int blocks = 0;
             foreach (IMySlimBlock block in slimBlocks)
             {
                 if (block.FatBlock == null) continue;
                 gridValue += BlockValue(block.FatBlock.BlockDefinition.ToString());
 
-                if (!includeCargo) continue;
+                
                 if (!(block.FatBlock is IMyTerminalBlock)) continue;
-
                 IMyTerminalBlock term = block.FatBlock as IMyTerminalBlock;
+                blocks++;
+                if (blocksOwned.ContainsKey(term.OwnerId)) blocksOwned[term.OwnerId]++;
+                else blocksOwned.Add(term.OwnerId, 1);
+
+                if (!includeCargo) continue;
                 if (!term.HasInventory) continue;
                 for(int inv = 0; inv < term.InventoryCount; inv++)
                 {
@@ -396,33 +402,26 @@ namespace Bountyhunter.Store
                     }
                 }
             }
-            return new PointValue() { CargoValue = cargoValue, GridValue = gridValue };
-        }
-
-        public static PointValue CalculateValue(IMyPlayer player, bool includeCargo = true)
-        {
-            PointValue value = new PointValue();
-            IMyEntity cache;
-            HashSet<long> grids = player.Grids;
-            foreach (long l in grids)
-            {
-                if (MyAPIGateway.Entities.TryGetEntityById(l, out cache) && cache is IMyCubeGrid)
-                {
-                    value.Add(CalculateValue(cache as IMyCubeGrid, includeCargo));
-                }
-            }
-            return value;
+            return new PointValue() { CargoValue = cargoValue, GridValue = gridValue, Block = blocks, OwnedBlocks = blocksOwned};
         }
 
         public struct PointValue
         {
             public double CargoValue;
             public double GridValue;
+            public int Block;
+            public Dictionary<long, int> OwnedBlocks;
 
             public void Add(PointValue adder)
             {
                 CargoValue += adder.CargoValue;
                 GridValue += adder.GridValue;
+            }
+
+            public float GetOwnedPercent(long playerId)
+            {
+                if (OwnedBlocks == null || !OwnedBlocks.ContainsKey(playerId) || Block == 0) return 0;
+                return (float)OwnedBlocks[playerId] / (float)Block * 100;
             }
         }
     }
