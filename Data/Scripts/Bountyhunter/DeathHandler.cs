@@ -166,6 +166,8 @@ namespace Bountyhunter
                 else if (attacker.Entity.ToString().ToLower().Contains("missile")) reason = "Rocket";
                 else reason = "Accident";
             }
+            if (reason.Equals("Bullet")) reason = "Gunfire";
+            if (reason.Equals("Grid")) reason = "Collision";
 
             if (reason.Equals("Suicide") || (attacker.Info.Identity != null && attacker.Info.Identity.IdentityId.Equals(identity.IdentityId)))
             {
