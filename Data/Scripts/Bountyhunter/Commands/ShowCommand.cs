@@ -18,7 +18,9 @@ namespace Bountyhunter.Commands
         }
 
 
-        public override string ArgumentDescription => "<player/faction> (name)\nShows a detailed Overview over a faction or player. You can use 'p' or 'f' instead of player or faction as the first argument. If  you want to show a player you can use a part of his name as long as it uniquely identifies one player. If you want to show a faction you have to use its tag.";
+        public override string ArgumentDescription => "<player/faction> (name)\nShows a detailed Overview over a faction or player. " +
+            "You can use 'p' or 'f' instead of player or faction as the first argument. " +
+            "If  you want to show a player you can use a part of his name as long as it uniquely identifies one player. If you want to show a faction you have to use its tag.";
 
         public override void HandleCommand(IMyPlayer player, string[] arguments)
         {

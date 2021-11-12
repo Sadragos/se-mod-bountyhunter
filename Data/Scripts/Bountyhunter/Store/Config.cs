@@ -50,6 +50,41 @@ namespace Bountyhunter.Store
         private static void ValidateData()
         {
             if (Instance == null) Instance = new FileConfig();
+            if(Instance.DeathCauseReplacements == null || Instance.DeathCauseReplacements.Count == 0)
+            {
+                Instance.DeathCauseReplacements = new List<DeathCauseReplacement>();
+                Instance.DeathCauseReplacements.Add(new DeathCauseReplacement()
+                {
+                    PlayerName = "*",
+                    AsAttacker = false,
+                    Replacers = new List<ReplaceEntry>()
+                    {
+                        new ReplaceEntry("Bullet", "Gunfire"),
+                        new ReplaceEntry("Grid", "Collision"),
+                        new ReplaceEntry("Grind", "Grinding"),
+                        new ReplaceEntry("Weld", "Welding"),
+                        new ReplaceEntry("Drill", "Drill"),
+                        new ReplaceEntry("Suicide", "Suicide"),
+                        new ReplaceEntry("Accident", "Accident"),
+                        new ReplaceEntry("Temperature", "Temperature"),
+                        new ReplaceEntry("Floating Object", "Floating Object"),
+                        new ReplaceEntry("Thrust", "Thrust"),
+                        new ReplaceEntry("Nuke", "Nuke"),
+                        new ReplaceEntry("Rocket", "Rocket")
+                    }
+                });
+                Instance.DeathCauseReplacements.Add(new DeathCauseReplacement()
+                {
+                    PlayerName = "Sadragos",
+                    AsAttacker = true,
+                    Replacers = new List<ReplaceEntry>()
+                    {
+                        new ReplaceEntry("Bullet", "Mighty BUllets"),
+                        new ReplaceEntry("Grid", "Crushing")
+                    }
+                });
+                Save();
+            }
         }
 
         public static void Save()

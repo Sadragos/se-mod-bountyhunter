@@ -1,6 +1,7 @@
 ﻿using Bountyhunter.GameLogic;
 using Bountyhunter.Store;
 using Bountyhunter.Store.Proto;
+using Bountyhunter.Store.Proto.Files;
 using Bountyhunter.Utils;
 using Sandbox.Game;
 using Sandbox.ModAPI;
@@ -166,8 +167,6 @@ namespace Bountyhunter
                 else if (attacker.Entity.ToString().ToLower().Contains("missile")) reason = "Rocket";
                 else reason = "Accident";
             }
-            if (reason.Equals("Bullet")) reason = "Gunfire";
-            if (reason.Equals("Grid")) reason = "Collision";
 
             if (reason.Equals("Suicide") || (attacker.Info.Identity != null && attacker.Info.Identity.IdentityId.Equals(identity.IdentityId)))
             {
@@ -186,6 +185,9 @@ namespace Bountyhunter
                     attacker.IsAllied = true;
                 }
             }
+
+            string renamedReason = RenameReason(reason, victim.Identity.DisplayName, (attacker.Info.Identity != null && !attacker.Selfinflicted) ? attacker.Info.Identity.DisplayName : null);
+            
 
             float bounty = 0;
             if (!attacker.Info.IsBot 
@@ -207,16 +209,16 @@ namespace Bountyhunter
             
             if(!attacker.Selfinflicted && attacker.Info.Identity != null)
             {
-                victim.Hunter.AddDeath(reason, attacker.Info.Identity.DisplayName, bounty);
+                victim.Hunter.AddDeath(renamedReason, attacker.Info.Identity.DisplayName, bounty);
  
-                if(!attacker.Info.IsBot && attacker.Info.Hunter != null) attacker.Info.Hunter.AddKill(reason, victim.Hunter.Name, bounty);
+                if(!attacker.Info.IsBot && attacker.Info.Hunter != null) attacker.Info.Hunter.AddKill(renamedReason, victim.Hunter.Name, bounty);
                 if (!attacker.Info.IsBot && !string.IsNullOrEmpty(attacker.Info.Hunter.FactionTag))
                 {
                     Participants.GetFaction(attacker.Info.Faction).BountyClaimed += bounty;
                 }
             } else
             {
-                victim.Hunter.AddDeath(reason, null);
+                victim.Hunter.AddDeath(renamedReason, null);
             }
 
             if(Config.Instance.KillFeed)
@@ -225,11 +227,11 @@ namespace Bountyhunter
                 string message;
                 if (attacker.Info.Identity != null && !attacker.Selfinflicted)
                 {
-                    message = attacker.Info.Identity.DisplayName + " killed " + victim.Hunter.Name + " by " + reason;
+                    message = attacker.Info.Identity.DisplayName + " killed " + victim.Hunter.Name + " by " + renamedReason;
                 }
                 else
                 {
-                    message = victim.Hunter.Name + " died by " + reason + ".";
+                    message = victim.Hunter.Name + " died by " + renamedReason + ".";
                 }
 
                 if(Config.Instance.IncludeBountiesInKillFeed && bounty > 0 && attacker.Info.Hunter != null)
@@ -238,6 +240,34 @@ namespace Bountyhunter
                 }
                 Utilities.ShowChatMessage(message);
             }
+        }
+
+        private static string RenameReason(string reason, string victim, string attacker)
+        {
+            if (Config.Instance.DeathCauseReplacements == null || Config.Instance.DeathCauseReplacements.Count == 0 || reason == null) return reason;
+
+            string newReason = reason;
+            ReplaceEntry rep;
+
+            DeathCauseReplacement globalReplacer = Config.Instance.DeathCauseReplacements.Find(r => r.PlayerName.Equals("*") && !r.AsAttacker);
+            rep = globalReplacer?.Replacers?.Find(r => r.Cause.Equals(reason));
+            if (rep != null) newReason = rep.Replacement;
+
+            if (victim != null)
+            {
+                DeathCauseReplacement victimReplacer = Config.Instance.DeathCauseReplacements.Find(r => r.PlayerName.Equals(victim) && !r.AsAttacker);
+                rep = victimReplacer?.Replacers?.Find(r => r.Cause.Equals(reason));
+                if (rep != null) newReason = rep.Replacement;
+            }
+
+            if (attacker != null)
+            {
+                DeathCauseReplacement attackerReplacer = Config.Instance.DeathCauseReplacements.Find(r => r.PlayerName.Equals(attacker) && r.AsAttacker);
+                rep = attackerReplacer?.Replacers?.Find(r => r.Cause.Equals(reason));
+                if (rep != null) newReason = rep.Replacement;
+            }
+
+            return newReason;
         }
 
         private static void NotifyBounty(float bounty, KillerInfo attacker)

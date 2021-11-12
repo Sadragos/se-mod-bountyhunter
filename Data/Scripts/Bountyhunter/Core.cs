@@ -101,7 +101,7 @@ namespace Bountyhunter
                     MyAPIGateway.Multiplayer.SendMessageToServer(SERVER_ID, data);
                 });
             }
-
+            // TODO not working as intended
             Logging.Instance.WriteLine(string.Format("Script Initialized"));
         }
         

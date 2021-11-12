@@ -26,8 +26,8 @@ namespace Bountyhunter.Store.Proto.Files
                 string[] splits = BroadcastNameColor.Split(',');
                 int[] rgb = new int[3];
                 if (splits.Length != 3) return VRageMath.Color.OrangeRed;
-                
-                if(!int.TryParse(splits[0], out rgb[0]) || !int.TryParse(splits[1], out rgb[1]) || !int.TryParse(splits[2], out rgb[2]))
+
+                if (!int.TryParse(splits[0], out rgb[0]) || !int.TryParse(splits[1], out rgb[1]) || !int.TryParse(splits[2], out rgb[2]))
                     return VRageMath.Color.OrangeRed;
 
                 return new Color(rgb[0], rgb[1], rgb[2]);
@@ -106,5 +106,47 @@ namespace Bountyhunter.Store.Proto.Files
 
         [ProtoMember(25)]
         public int GridValueMinOwnershipPercent = 60;
+
+        [ProtoMember(26)]
+        public List<DeathCauseReplacement> DeathCauseReplacements = new List<DeathCauseReplacement>();
+    }
+
+    [ProtoContract]
+    [Serializable]
+    public class DeathCauseReplacement
+    {
+        [ProtoMember(1)]
+        [XmlAttribute]
+        public string PlayerName;
+
+        [ProtoMember(2)]
+        [XmlAttribute]
+        public bool AsAttacker;
+
+        [ProtoMember(3)]
+        public List<ReplaceEntry> Replacers = new List<ReplaceEntry>();
+    }
+    
+    [ProtoContract]
+    [Serializable]
+    public class ReplaceEntry
+    {
+        [ProtoMember(1)]
+        [XmlAttribute]
+        public string Cause;
+
+        [ProtoMember(2)]
+        [XmlAttribute]
+        public string Replacement;
+
+        public ReplaceEntry(string cause, string replacement)
+        {
+            Cause = cause;
+            Replacement = replacement;
+        }
+
+        public ReplaceEntry()
+        {
+        }
     }
 }
