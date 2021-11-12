@@ -76,6 +76,7 @@ namespace Bountyhunter
                 CommandHandlers.Add(new RankingCommand());
                 CommandHandlers.Add(new ShowCommand());
                 CommandHandlers.Add(new MeCommand());
+                CommandHandlers.Add(new WelcomeCommand());
                 CommandHandlers.Add(new HelpCommand());
 
                 AbstactCommandHandler reloadHandler = CommandHandlers.Find(ch => ch is ReloadCommand);
@@ -83,7 +84,21 @@ namespace Bountyhunter
                 {
                     reloadHandler.HandleCommand(null, null);
                 }
-            } 
+            }
+
+            if(!MyAPIGateway.Multiplayer.IsServer || MyAPIGateway.Session.LocalHumanPlayer != null)
+            {
+                byte[] data = Utilities.MessageToBytes(new ClientServerMessage()
+                {
+                    SteamId = MyAPIGateway.Session.Player.SteamUserId,
+                    Message = "welcome"
+                });
+
+                MyAPIGateway.Utilities.InvokeOnGameThread(() =>
+                {
+                    MyAPIGateway.Multiplayer.SendMessageToServer(SERVER_ID, data);
+                });
+            }
 
             Logging.Instance.WriteLine(string.Format("Script Initialized"));
         }
