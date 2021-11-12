@@ -4,6 +4,7 @@ using Bountyhunter.Utils;
 using Sandbox.ModAPI;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using VRage.Game.ModAPI;
@@ -63,9 +64,10 @@ namespace Bountyhunter.Commands
             builder.Append(">> STATS\n");
             long graceMinutes = Config.Instance.FactionChangeGraceTimeMinutes - (long)(DateTime.Now - hunter.GraceTime).TotalMinutes;
             if (Config.Instance.ShowOnlineTime) AddLine(builder, "• Onlinetime", Utilities.MinutesToTime(hunter.OnlineMinutes));
-            if (Config.Instance.ShowLastLogin) AddLine(builder, "• Last Active", hunter.LastSeen.ToString("d"));
+            if (Config.Instance.ShowLastLogin) AddLine(builder, "• Last Active", hunter.LastSeen.ToString("d", CultureInfo.CreateSpecificCulture("de-DE")));
             if (hunter.Graced) AddLine(builder, "• Graceperiod", Utilities.MinutesToTime(graceMinutes));
-            if (Config.Instance.ShowLastLogin || Config.Instance.ShowOnlineTime || hunter.Graced) builder.Append("\n");
+            if (hunter.Banned) AddLine(builder, "• Suspended until ", hunter.BannedUntil.ToString("g", CultureInfo.CreateSpecificCulture("de-DE")));
+            if (Config.Instance.ShowLastLogin || Config.Instance.ShowOnlineTime || hunter.Graced || hunter.Banned) builder.Append("\n");
 
             AddInfo(builder, hunter, false);
 

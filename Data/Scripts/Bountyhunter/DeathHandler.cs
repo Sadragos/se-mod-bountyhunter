@@ -83,7 +83,7 @@ namespace Bountyhunter
             }
             //Logging.Instance.WriteLine("  Attacker " + attacker.Info.Hunter.ToString());
 
-            if(attacker.Info.Hunter.Graced)
+            if(attacker.Info.Hunter.Graced || attacker.Info.Hunter.Banned)
             {
                 return;
             }
@@ -194,7 +194,8 @@ namespace Bountyhunter
                 && !attacker.Selfinflicted 
                 && attacker.Info.Hunter != null 
                 && (!attacker.IsAllied || Config.Instance.ClaimBountiesFromAlliesAndNeutrals) 
-                && !attacker.Info.Hunter.Graced)
+                && !attacker.Info.Hunter.Graced
+                && !attacker.Info.Hunter.Banned)
             {
 
                 bounty += victim.Hunter.ClaimBounty(attacker.Info.Hunter, EBountyType.Kill);

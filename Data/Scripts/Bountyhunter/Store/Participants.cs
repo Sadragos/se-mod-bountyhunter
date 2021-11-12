@@ -225,6 +225,16 @@ namespace Bountyhunter.Store
                 } else if (hunter.Graced && hunter.GraceTime != null && DateTime.Now >= hunter.GraceTime.AddMinutes(Config.Instance.FactionChangeGraceTimeMinutes))
                 {
                     hunter.Graced = false;
+                    IMyPlayer player = Utilities.GetPlayer(hunter.Name);
+                    if (player != null)
+                        Utilities.ShowChatMessage("Your grace period is over.", player.IdentityId);
+                }
+
+                if(hunter.Banned && DateTime.Now >= hunter.BannedUntil) {
+                    hunter.Banned = false;
+                    IMyPlayer player = Utilities.GetPlayer(hunter.Name);
+                    if (player != null)
+                        Utilities.ShowChatMessage("Your suspension is over.", player.IdentityId);
                 }
             }
             foreach (long l in Removes) Players.Remove(l);

@@ -32,6 +32,15 @@ namespace Bountyhunter.Store.Proto
         [ProtoMember(18)]
         public bool Graced;
 
+        [ProtoMember(19)]
+        public DateTime BannedUntil;
+
+        [ProtoMember(20)]
+        public bool Banned;
+
+        [ProtoMember(21)]
+        public string BanReason;
+
 
         internal void RemoveClaimable(Item item, float amount)
         {

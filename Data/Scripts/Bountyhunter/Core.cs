@@ -79,7 +79,8 @@ namespace Bountyhunter
                 CommandHandlers.Add(new ReloadCommand());
                 CommandHandlers.Add(new RecalculateCommand());
                 CommandHandlers.Add(new SaveCommand());
-                
+                CommandHandlers.Add(new BanCommand());
+
 
                 AbstactCommandHandler reloadHandler = CommandHandlers.Find(ch => ch is ReloadCommand);
                 if (reloadHandler != null)

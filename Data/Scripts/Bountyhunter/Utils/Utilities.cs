@@ -331,6 +331,7 @@ namespace Bountyhunter.Utils
 
         public static IMyPlayer GetPlayer(string name)
         {
+            if (name == null) return null;
             List<IMyPlayer> players = new List<IMyPlayer>();
             MyAPIGateway.Players.GetPlayers(players, i => i.DisplayName.ToLower().Equals(name.ToLower()));
             return players.FirstOrDefault();
