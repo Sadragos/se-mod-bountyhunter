@@ -197,8 +197,6 @@ namespace Bountyhunter
         {
             if (!MyAPIGateway.Multiplayer.IsServer)
                 return;
-            IMyIdentity myIdentity = Utilities.CubeBlockBuiltByToIdentity(playerId) ;
-            Logging.Instance.WriteLine(myIdentity.DisplayName + " Switched Faction!");
             Participants.RefreshHunterFactionData();
         }
 
