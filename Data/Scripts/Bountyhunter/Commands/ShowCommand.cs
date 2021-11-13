@@ -66,7 +66,14 @@ namespace Bountyhunter.Commands
             if (Config.Instance.ShowOnlineTime) AddLine(builder, "• Onlinetime", Utilities.MinutesToTime(hunter.OnlineMinutes));
             if (Config.Instance.ShowLastLogin) AddLine(builder, "• Last Active", hunter.LastSeen.ToString("d", CultureInfo.CreateSpecificCulture("de-DE")));
             if (hunter.Graced) AddLine(builder, "• Graceperiod", Utilities.MinutesToTime(graceMinutes));
-            if (hunter.Banned) AddLine(builder, "• Suspended until ", hunter.BannedUntil.ToString("g", CultureInfo.CreateSpecificCulture("de-DE")));
+            if (hunter.Banned)
+            {
+                AddLine(builder, "• Suspended until ", hunter.BannedUntil.ToString("g", CultureInfo.CreateSpecificCulture("de-DE")));
+                if(hunter.BanReason != null && hunter.BanReason.Length > 0 && (player.PromoteLevel >= MyPromoteLevel.Moderator || player.DisplayName.Equals(hunter.Name)))
+                {
+                    AddLine(builder, "• Reason", hunter.BanReason);
+                }
+            }
             if (Config.Instance.ShowLastLogin || Config.Instance.ShowOnlineTime || hunter.Graced || hunter.Banned) builder.Append("\n");
 
             AddInfo(builder, hunter, false);

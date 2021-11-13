@@ -86,6 +86,9 @@ namespace Bountyhunter.Commands
                         reason += arguments[i];
                     }
                     hunter.BanReason = reason;
+                } else
+                {
+                    hunter.BanReason = null;
                 }
 
                 SendMessage(player, "Suspended " + hunter.Name + " from claiming Bounties until " + hunter.BannedUntil.ToString("g", CultureInfo.CreateSpecificCulture("de-DE")));

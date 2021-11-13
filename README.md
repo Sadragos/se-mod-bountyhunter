@@ -55,4 +55,4 @@ There are several Rankings and Lists and Infos, that can be used to show almost 
 - <pre>/bh save</pre> Stores all changed the the savefiles
 - <pre>/bh reload</pre> Reloads all savefiles
 - <pre>/bh recalculate</pre> can be used to Recalculate component, ore and blockvalues based on Ingodvalues
-- <pre>/bh ban (player) (time) (m/h/d)</pre> Suspends a players ability to claim bounties for the given time. If time is 0 an existing ban will be lifted. m = Minutes, h = hours, d = days.
+- <pre>/bh ban (player) (time) (m/h/d) (reason)</pre> Suspends a players ability to claim bounties for the given time. If time is 0 an existing ban will be lifted. m = Minutes, h = hours, d = days.

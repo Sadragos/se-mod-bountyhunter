@@ -230,7 +230,7 @@ namespace Bountyhunter.Store
                         Utilities.ShowChatMessage("Your grace period is over.", player.IdentityId);
                 }
 
-                if(hunter.Banned && DateTime.Now >= hunter.BannedUntil) {
+                if(hunter.Banned && hunter.BannedUntil != null && DateTime.Now >= hunter.BannedUntil) {
                     hunter.Banned = false;
                     IMyPlayer player = Utilities.GetPlayer(hunter.Name);
                     if (player != null)
