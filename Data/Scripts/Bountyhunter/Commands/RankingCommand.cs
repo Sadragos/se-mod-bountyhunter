@@ -55,106 +55,154 @@ namespace Bountyhunter.Commands
 
         private void SowRanking(IMyPlayer player, string v, bool faction)
         {
-            int index = 1;
             string title = faction ? "Faction Ranking for " : "Player Ranking for ";
             StringBuilder content = new StringBuilder();
             switch (v)
             {
                 case "kills":
                     title += "Kills";
-                    foreach (Participant p in Rankings.GetRanking(v, faction))
-                    {
-                        AppendLine(content, index++, p.ToString(), p.Kills.ToString());
-                        if (index >= 999) break;
-                    }
                     break;
                 case "deaths":
                     title += "Deaths";
-                    foreach (Participant p in Rankings.GetRanking(v, faction))
-                    {
-                        AppendLine(content, index++, p.ToString(), p.Deaths.ToString());
-                        if (index >= 999) break;
-                    }
                     break;
                 case "kdratio":
                     title += "KD-Ratio";
-                    foreach (Participant p in Rankings.GetRanking(v, faction))
-                    {
-                        AppendLine(content, index++, p.ToString(), p.KillDeathRatio.ToString("0.00"));
-                        if (index >= 999) break;
-                    }
                     break;
                 case "damageDone":
                     title += "Damage done";
-                    foreach (Participant p in Rankings.GetRanking(v, faction))
-                    {
-                        AppendLine(content, index++, p.ToString(), Formater.FormatCurrency(p.DamageDone));
-                        if (index >= 999) break;
-                    }
                     break;
                 case "damageReceived":
                     title += "Damage received";
-                    foreach (Participant p in Rankings.GetRanking(v, faction))
-                    {
-                        AppendLine(content, index++, p.ToString(), Formater.FormatCurrency(p.DamageReceived));
-                        if (index >= 999) break;
-                    }
                     break;
                 case "damageRatio":
                     title += "Damageratio";
-                    foreach (Participant p in Rankings.GetRanking(v, faction))
-                    {
-                        AppendLine(content, index++, p.ToString(), Formater.FormatCurrency(p.DamageRatio));
-                        if (index >= 999) break;
-                    }
                     break;
                 case "bountyPlaced":
                     title += "Bounty placed";
-                    foreach (Participant p in Rankings.GetRanking(v, faction))
-                    {
-                        AppendLine(content, index++, p.ToString(), Formater.FormatCurrency(p.BountyPlaced));
-                        if (index >= 999) break;
-                    }
                     break;
                 case "bountyReceived":
                     title += "Bounty received";
-                    foreach (Participant p in Rankings.GetRanking(v, faction))
-                    {
-                        AppendLine(content, index++, p.ToString(), Formater.FormatCurrency(p.BountyReceived));
-                        if (index >= 999) break;
-                    }
                     break;
                 case "bountyClaimed":
                     title += "Bounty claimed";
-                    foreach (Participant p in Rankings.GetRanking(v, faction))
-                    {
-                        AppendLine(content, index++, p.ToString(), Formater.FormatCurrency(p.BountyClaimed));
-                        if (index >= 999) break;
-                    }
                     break;
                 case "bounty":
                     title += "current Bounty";
-                    foreach (Participant p in Rankings.GetRanking(v, faction))
-                    {
-                        AppendLine(content, index++, p.ToString(), Formater.FormatCurrency(p.BountyWorth));
-                        if (index >= 999) break;
-                    }
                     break;
                 default:
                     WrongArguments(player);
                     return;
             }
+            AppendRanking(content, v, faction, 500, false);
             Utilities.ShowDialog(player.SteamUserId, title, content.ToString());
         }
 
-        private void AppendLine(StringBuilder builder, int index, string name, string value)
+        public static void AppendRanking(StringBuilder sb, string ranking, bool faction, int limit, bool monospace = false)
         {
-            builder.Append(Formater.PadRight((index++).ToString("000"), 60));
-            builder.Append("  |  ");
-            builder.Append(Formater.PadRight(name, 700));
-            builder.Append("  |  ");
-            builder.Append(value);
-            builder.Append("\n");
+            int index = 1;
+            switch (ranking)
+            {
+                case "kills":
+                    foreach (Participant p in Rankings.GetRanking(ranking, faction))
+                    {
+                        AppendLine(sb, index++, p.ToString(), p.Kills.ToString(), monospace);
+                        if (index >= limit) break;
+                    }
+                    break;
+                case "deaths":
+                    foreach (Participant p in Rankings.GetRanking(ranking, faction))
+                    {
+                        AppendLine(sb, index++, p.ToString(), p.Deaths.ToString(), monospace);
+                        if (index >= limit) break;
+                    }
+                    break;
+                case "kdratio":
+                    foreach (Participant p in Rankings.GetRanking(ranking, faction))
+                    {
+                        AppendLine(sb, index++, p.ToString(), p.KillDeathRatio.ToString("0.00"), monospace);
+                        if (index >= limit) break;
+                    }
+                    break;
+                case "damageDone":
+                    foreach (Participant p in Rankings.GetRanking(ranking, faction))
+                    {
+                        AppendLine(sb, index++, p.ToString(), Formater.FormatCurrency(p.DamageDone), monospace);
+                        if (index >= limit) break;
+                    }
+                    break;
+                case "damageReceived":
+                    foreach (Participant p in Rankings.GetRanking(ranking, faction))
+                    {
+                        AppendLine(sb, index++, p.ToString(), Formater.FormatCurrency(p.DamageReceived), monospace);
+                        if (index >= limit) break;
+                    }
+                    break;
+                case "damageRatio":
+                    foreach (Participant p in Rankings.GetRanking(ranking, faction))
+                    {
+                        AppendLine(sb, index++, p.ToString(), Formater.FormatCurrency(p.DamageRatio), monospace);
+                        if (index >= limit) break;
+                    }
+                    break;
+                case "bountyPlaced":
+                    foreach (Participant p in Rankings.GetRanking(ranking, faction))
+                    {
+                        AppendLine(sb, index++, p.ToString(), Formater.FormatCurrency(p.BountyPlaced), monospace);
+                        if (index >= limit) break;
+                    }
+                    break;
+                case "bountyReceived":
+                    foreach (Participant p in Rankings.GetRanking(ranking, faction))
+                    {
+                        AppendLine(sb, index++, p.ToString(), Formater.FormatCurrency(p.BountyReceived), monospace);
+                        if (index >= limit) break;
+                    }
+                    break;
+                case "bountyClaimed":
+                    foreach (Participant p in Rankings.GetRanking(ranking, faction))
+                    {
+                        AppendLine(sb, index++, p.ToString(), Formater.FormatCurrency(p.BountyClaimed), monospace);
+                        if (index >= limit) break;
+                    }
+                    break;
+                case "bounty":
+                    foreach (Participant p in Rankings.GetRanking(ranking, faction))
+                    {
+                        AppendLine(sb, index++, p.ToString(), Formater.FormatCurrency(p.BountyWorth), monospace);
+                        if (index >= limit) break;
+                    }
+                    break;
+            }
+        }
+
+        private static void AppendLine(StringBuilder builder, int index, string name, string value, bool monospace = false)
+        {
+            if (monospace)
+            {
+                int targetWidth = 20;
+                string newName = name;
+                if (newName.Length > targetWidth)
+                    newName = newName.Substring(0, targetWidth);
+                else if (newName.Length < targetWidth)
+                    newName += new string(' ', targetWidth - newName.Length);
+
+                builder
+                    .Append(index.ToString("000"))
+                    .Append(" | ")
+                    .Append(newName)
+                    .Append(" | ")
+                    .Append(value)
+                    .Append("\n");
+            }
+            else
+            {
+                builder.Append(Formater.PadRight(index.ToString("000"), 60))
+                    .Append("  |  ")
+                    .Append(Formater.PadRight(name, 700))
+                    .Append("  |  ")
+                    .Append(value)
+                    .Append("\n");
+            }
         }
     }
 }
