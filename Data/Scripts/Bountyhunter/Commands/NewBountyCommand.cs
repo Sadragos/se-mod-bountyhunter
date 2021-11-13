@@ -238,7 +238,7 @@ namespace Bountyhunter.Commands
             if(Config.Instance.AnnouncyBounties)
             {
                 string message = "";
-                string clientName = bounty.HideClient ? "Anonymous" : bounty.Client;
+                string clientName = Config.Instance.AnnouncyBountiesWithName ?  bounty.Client : "Someone";
 
                 if (existingBounties)
                 {

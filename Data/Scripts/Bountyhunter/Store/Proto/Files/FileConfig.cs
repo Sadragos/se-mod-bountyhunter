@@ -90,24 +90,27 @@ namespace Bountyhunter.Store.Proto.Files
         public bool AnnouncyBountiesDeatils = true;
 
         [ProtoMember(20)]
-        public bool CountGrindingAsDestroy = false;
+        public bool AnnouncyBountiesWithName = true;
 
         [ProtoMember(21)]
-        public int RankingRefreshSeconds = 60;
+        public bool CountGrindingAsDestroy = false;
 
         [ProtoMember(22)]
-        public bool ShowLastLogin = true;
+        public int RankingRefreshSeconds = 60;
 
         [ProtoMember(23)]
-        public bool ShowOnlineTime = true;
+        public bool ShowLastLogin = true;
 
         [ProtoMember(24)]
-        public int FactionChangeGraceTimeMinutes = 1440;
+        public bool ShowOnlineTime = true;
 
         [ProtoMember(25)]
-        public int GridValueMinOwnershipPercent = 60;
+        public int FactionChangeGraceTimeMinutes = 1440;
 
         [ProtoMember(26)]
+        public int GridValueMinOwnershipPercent = 60;
+
+        [ProtoMember(27)]
         public List<DeathCauseReplacement> DeathCauseReplacements = new List<DeathCauseReplacement>();
     }
 

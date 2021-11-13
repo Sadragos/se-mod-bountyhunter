@@ -21,21 +21,17 @@ namespace Bountyhunter.Store.Proto
 
         [ProtoMember(3)]
         [XmlAttribute]
-        public bool HideClient = false;
+        public EBountyType BountyType;
 
         [ProtoMember(4)]
         [XmlAttribute]
-        public EBountyType BountyType;
+        public float Count = 1;
 
         [ProtoMember(5)]
         [XmlAttribute]
-        public float Count = 1;
-
-        [ProtoMember(6)]
-        [XmlAttribute]
         public bool Partial = true;
 
-        [ProtoMember(7)]
+        [ProtoMember(6)]
         public BountyItem RewardItem = new BountyItem(Values.SC_ITEM);
 
 
