@@ -186,8 +186,7 @@ namespace Bountyhunter
                 }
             }
 
-            string renamedReason = RenameReason(reason, victim.Identity.DisplayName, (attacker.Info.Identity != null && !attacker.Selfinflicted) ? attacker.Info.Identity.DisplayName : null);
-            
+            string renamedReason = Killmessages.Instance.GetName(reason);
 
             float bounty = 0;
             if (!attacker.Info.IsBot 
@@ -224,51 +223,16 @@ namespace Bountyhunter
 
             if(Config.Instance.KillFeed)
             {
-                // TODO Better messages
-                string message;
-                if (attacker.Info.Identity != null && !attacker.Selfinflicted)
+                string message = Killmessages.Instance.GetMessage(reason, victim.Identity.DisplayName, (attacker.Info.Identity != null && !attacker.Selfinflicted) ? attacker.Info.Identity.DisplayName : null);
+                if (message != null)
                 {
-                    message = attacker.Info.Identity.DisplayName + " killed " + victim.Hunter.Name + " by " + renamedReason;
+                    if (Config.Instance.IncludeBountiesInKillFeed && bounty > 0 && attacker.Info.Hunter != null)
+                    {
+                        message += " " + attacker.Info.Hunter.Name + " earned a Bounty of " + Formater.FormatCurrency(bounty) + ".";
+                    }
+                    Utilities.ShowChatMessage(message);
                 }
-                else
-                {
-                    message = victim.Hunter.Name + " died by " + renamedReason + ".";
-                }
-
-                if(Config.Instance.IncludeBountiesInKillFeed && bounty > 0 && attacker.Info.Hunter != null)
-                {
-                    message += " " + attacker.Info.Hunter.Name + " earned a Bounty of " + Formater.FormatCurrency(bounty) + ".";
-                }
-                Utilities.ShowChatMessage(message);
             }
-        }
-
-        private static string RenameReason(string reason, string victim, string attacker)
-        {
-            if (Config.Instance.DeathCauseReplacements == null || Config.Instance.DeathCauseReplacements.Count == 0 || reason == null) return reason;
-
-            string newReason = reason;
-            ReplaceEntry rep;
-
-            DeathCauseReplacement globalReplacer = Config.Instance.DeathCauseReplacements.Find(r => r.PlayerName.Equals("*") && !r.AsAttacker);
-            rep = globalReplacer?.Replacers?.Find(r => r.Cause.Equals(reason));
-            if (rep != null) newReason = rep.Replacement;
-
-            if (victim != null)
-            {
-                DeathCauseReplacement victimReplacer = Config.Instance.DeathCauseReplacements.Find(r => r.PlayerName.Equals(victim) && !r.AsAttacker);
-                rep = victimReplacer?.Replacers?.Find(r => r.Cause.Equals(reason));
-                if (rep != null) newReason = rep.Replacement;
-            }
-
-            if (attacker != null)
-            {
-                DeathCauseReplacement attackerReplacer = Config.Instance.DeathCauseReplacements.Find(r => r.PlayerName.Equals(attacker) && r.AsAttacker);
-                rep = attackerReplacer?.Replacers?.Find(r => r.Cause.Equals(reason));
-                if (rep != null) newReason = rep.Replacement;
-            }
-
-            return newReason;
         }
 
         private static void NotifyBounty(float bounty, KillerInfo attacker)

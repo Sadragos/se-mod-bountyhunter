@@ -109,47 +109,5 @@ namespace Bountyhunter.Store.Proto.Files
 
         [ProtoMember(26)]
         public int GridValueMinOwnershipPercent = 60;
-
-        [ProtoMember(27)]
-        public List<DeathCauseReplacement> DeathCauseReplacements = new List<DeathCauseReplacement>();
-    }
-
-    [ProtoContract]
-    [Serializable]
-    public class DeathCauseReplacement
-    {
-        [ProtoMember(1)]
-        [XmlAttribute]
-        public string PlayerName;
-
-        [ProtoMember(2)]
-        [XmlAttribute]
-        public bool AsAttacker;
-
-        [ProtoMember(3)]
-        public List<ReplaceEntry> Replacers = new List<ReplaceEntry>();
-    }
-    
-    [ProtoContract]
-    [Serializable]
-    public class ReplaceEntry
-    {
-        [ProtoMember(1)]
-        [XmlAttribute]
-        public string Cause;
-
-        [ProtoMember(2)]
-        [XmlAttribute]
-        public string Replacement;
-
-        public ReplaceEntry(string cause, string replacement)
-        {
-            Cause = cause;
-            Replacement = replacement;
-        }
-
-        public ReplaceEntry()
-        {
-        }
     }
 }
