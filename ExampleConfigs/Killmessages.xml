@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-16"?>
+<FileMessages xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	  <!-- The Method in which Messages are chosen:
+	  1. Look for CauseOfDeath with a matching Reason. If none is found dont show a Message.
+	  2. If there was an attacker get special Messages for that attacker (AsAttacker with matcing playername)
+	  3. If no messages were found for an attacker or if there was no attacker get special Victim Messages (AsVictim with matching playername)
+	  4. If no messages were found for an attacker or the victim look for default messages (player = * in AsAttacker)
+	  5. If any messages where found return a random message. Else don't show any message
+	  -->
+  <Entries>
+	<!-- A cause of Death. The Reason can be looked up with the show command. 
+	Most Reasons will be pregenerated in this file. To disable all messages for a 
+	cause simply remove that Block. ShortName is a rreplacement for the Kill- & Deathlog
+	in Player Details. -->
+    <CauseOfDeath Reason="Bullet" ShortName="Gunfire">
+	<!-- All Messages for Bullets, without an attacker (self inflicted) 
+	Use * as Playername if you want to use that message for everyone.
+	To temporary disable a message set Enabled to false. To disable Selfinflicted 
+	messages for Bullet remove all DeathMessages in the NoAttacker Block.
+	If multiple messages for a Player (or *) is defined a random message will be chosen. -->
+      <NoAttacker>
+        <DeathMessage Player="*" Message="$V got shot." Enabled="true" />
+        <DeathMessage Player="*" Message="$V looket at the wrong side of a gun." Enabled="true" />
+      </NoAttacker>
+	  	<!-- All Messages for Bullets, with an attacker. To disable Attacker
+		messages for Bullet remove all DeathMessages in the AsAttacker Block.
+		If multiple messages for a Player (or *) is defined a random message will be chosen. -->
+      <AsAttacker>
+        <DeathMessage Player="*" Message="$V got shot by $A." Enabled="true" />
+        <DeathMessage Player="*" Message="$A shot $V." Enabled="true" />
+      </AsAttacker>
+	  	<!-- All Messages for Bullets, with for victims. To disable Victim
+		messages for Bullet remove all DeathMessages in the AsVictim Block.
+		If multiple messages for a Player (or *) is defined a random message will be chosen. -->
+      <AsVictim>
+        <DeathMessage Player="Sadragos" Message="$V got killed by $A, finally!" Enabled="true" />
+      </AsVictim>
+    </CauseOfDeath>
+    <CauseOfDeath Reason="Grind" ShortName="Grinder">
+      <NoAttacker>
+        <DeathMessage Player="*" Message="$V ran into a grinder." Enabled="true" />
+      </NoAttacker>
+      <AsAttacker>
+        <DeathMessage Player="*" Message="$V got ground down by $A." Enabled="true" />
+      </AsAttacker>
+      <AsVictim />
+    </CauseOfDeath>
+    <CauseOfDeath Reason="Grid" ShortName="Collision">
+      <NoAttacker>
+        <DeathMessage Player="*" Message="$V ran into a Grid too fast." Enabled="true" />
+      </NoAttacker>
+      <AsAttacker />
+      <AsVictim />
+    </CauseOfDeath>
+    <CauseOfDeath Reason="Weld" ShortName="Welder">
+      <NoAttacker>
+        <DeathMessage Player="*" Message="$V burned himself to Death." Enabled="true" />
+      </NoAttacker>
+      <AsAttacker>
+        <DeathMessage Player="*" Message="$A burned $V." Enabled="true" />
+      </AsAttacker>
+      <AsVictim />
+    </CauseOfDeath>
+    <CauseOfDeath Reason="Drill" ShortName="Drill">
+      <NoAttacker>
+        <DeathMessage Player="*" Message="$V was drilled to Death." Enabled="true" />
+      </NoAttacker>
+      <AsAttacker>
+        <DeathMessage Player="*" Message="$A drilled $V." Enabled="true" />
+      </AsAttacker>
+      <AsVictim />
+    </CauseOfDeath>
+    <CauseOfDeath Reason="Suicide" ShortName="Suicide">
+      <NoAttacker>
+        <DeathMessage Player="*" Message="$V commited Suicide." Enabled="true" />
+      </NoAttacker>
+      <AsAttacker />
+      <AsVictim />
+    </CauseOfDeath>
+    <CauseOfDeath Reason="Accident" ShortName="Accident">
+      <NoAttacker>
+        <DeathMessage Player="*" Message="$V had an accident." Enabled="true" />
+      </NoAttacker>
+      <AsAttacker>
+        <DeathMessage Player="*" Message="$A accidentally killed $V." Enabled="true" />
+      </AsAttacker>
+      <AsVictim />
+    </CauseOfDeath>
+    <CauseOfDeath Reason="Temperature" ShortName="Temperature">
+      <NoAttacker>
+        <DeathMessage Player="*" Message="$V froze to Death." Enabled="true" />
+      </NoAttacker>
+      <AsAttacker />
+      <AsVictim />
+    </CauseOfDeath>
+    <CauseOfDeath Reason="LowPressure" ShortName="Suffocation">
+      <NoAttacker>
+        <DeathMessage Player="*" Message="$V suffocated." Enabled="true" />
+      </NoAttacker>
+      <AsAttacker />
+      <AsVictim />
+    </CauseOfDeath>
+    <CauseOfDeath Reason="Floating Object" ShortName="Floating Object">
+      <NoAttacker>
+        <DeathMessage Player="*" Message="$V hit a Rock and died." Enabled="true" />
+      </NoAttacker>
+      <AsAttacker />
+      <AsVictim />
+    </CauseOfDeath>
+    <CauseOfDeath Reason="Thrust" ShortName="Thruster">
+      <NoAttacker>
+        <DeathMessage Player="*" Message="$V looked into a Thruster." Enabled="true" />
+      </NoAttacker>
+      <AsAttacker>
+        <DeathMessage Player="*" Message="$A burned $V with a thruster." Enabled="true" />
+      </AsAttacker>
+      <AsVictim />
+    </CauseOfDeath>
+    <CauseOfDeath Reason="Nuke" ShortName="Nuke">
+      <NoAttacker>
+        <DeathMessage Player="*" Message="$V got nuked." Enabled="true" />
+      </NoAttacker>
+      <AsAttacker>
+        <DeathMessage Player="*" Message="$A nuked $V." Enabled="true" />
+      </AsAttacker>
+      <AsVictim />
+    </CauseOfDeath>
+    <CauseOfDeath Reason="Rocket" ShortName="Rocket">
+      <NoAttacker>
+        <DeathMessage Player="*" Message="$V was hit by a Rocket." Enabled="true" />
+      </NoAttacker>
+      <AsAttacker>
+        <DeathMessage Player="*" Message="$A shot $V with a Rocket." Enabled="true" />
+      </AsAttacker>
+      <AsVictim />
+    </CauseOfDeath>
+    <CauseOfDeath Reason="Explosion" ShortName="Explosion">
+      <NoAttacker>
+        <DeathMessage Player="*" Message="$V was blasted to pieces." Enabled="true" />
+      </NoAttacker>
+      <AsAttacker>
+        <DeathMessage Player="*" Message="$A exploded $V into pieces." Enabled="true" />
+      </AsAttacker>
+      <AsVictim />
+    </CauseOfDeath>
+  </Entries>
+</FileMessages>

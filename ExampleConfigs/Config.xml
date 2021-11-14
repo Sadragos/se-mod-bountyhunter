@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-16"?>
+<FileConfig xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <BroadcastName>Bountyhunt</BroadcastName>
+  <BroadcastNameColor>255,180,20</BroadcastNameColor>
+  <EnableFactionBounties>true</EnableFactionBounties>
+  <EnablePlayerBounties>true</EnablePlayerBounties>
+  <EnableItemBounties>true</EnableItemBounties>
+  <TakeCreditFromBank>true</TakeCreditFromBank>
+  <CreditsAsItem>false</CreditsAsItem>
+  <SpawnRewardDropPods>false</SpawnRewardDropPods>
+  <CurrencyName> SC</CurrencyName>
+  <PlaceBountiesOnSelf>true</PlaceBountiesOnSelf>
+  <PlaceBountiesOnAllies>true</PlaceBountiesOnAllies>
+  <ClaimBountiesFromAlliesAndNeutrals>false</ClaimBountiesFromAlliesAndNeutrals>
+  <DeathListEntries>10</DeathListEntries>
+  <KillFeed>true</KillFeed>
+  <IncludeBountiesInKillFeed>true</IncludeBountiesInKillFeed>
+  <CountSuicides>false</CountSuicides>
+  <FloatAmountBuffer>1E-06</FloatAmountBuffer>
+  <MinPayout>0.01</MinPayout>
+  <AnnouncyBounties>true</AnnouncyBounties>
+  <AnnouncyBountiesDeatils>true</AnnouncyBountiesDeatils>
+  <AnnouncyBountiesWithName>true</AnnouncyBountiesWithName>
+  <CountGrindingAsDestroy>false</CountGrindingAsDestroy>
+  <RankingRefreshSeconds>60</RankingRefreshSeconds>
+  <ShowLastLogin>true</ShowLastLogin>
+  <ShowOnlineTime>true</ShowOnlineTime>
+  <FactionChangeGraceTimeMinutes>1440</FactionChangeGraceTimeMinutes>
+  <GridValueMinOwnershipPercent>60</GridValueMinOwnershipPercent>
+</FileConfig>

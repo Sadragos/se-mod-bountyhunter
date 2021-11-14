@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-16"?>
+<FileParticipants xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Factions>
+    <Faction Id="253700639346619180" FactionTag="PLO" Kills="0" Deaths="0" BountyPlaced="355223.09890192747" BountyClaimed="0" BountyReceived="50128.473331451416" DamageDone="0" DamageReceived="0">
+      <Name>Plopp</Name>
+      <Bounties>
+        <Bounty Client="Sadragos" Timestamp="20.08.21 16:58:07" BountyType="Kill" Count="1" Partial="true">
+          <RewardItem ItemId="MyObjectBuilder_PhysicalObject/SpaceCredit" Value="100" Claimed="0" Worth="100" />
+        </Bounty>
+        <Bounty Client="Sadragos" Timestamp="10.11.21 20:08:28" BountyType="Damage" Count="28.4733315" Partial="true">
+          <RewardItem ItemId="MyObjectBuilder_AmmoMagazine/AutomaticRifleGun_Mag_20rd" Value="10" Claimed="0" Worth="28.4733315" />
+        </Bounty>
+        <Bounty Client="Sadragos" Timestamp="11.11.21 17:20:39" BountyType="Damage" Count="50000" Partial="true">
+          <RewardItem ItemId="MyObjectBuilder_PhysicalObject/SpaceCredit" Value="50000" Claimed="0" Worth="50000" />
+        </Bounty>
+      </Bounties>
+      <Members />
+    </Faction>
+    <Faction Id="276066691226561296" FactionTag="tes" Kills="0" Deaths="0" BountyPlaced="5000" BountyClaimed="0" BountyReceived="0" DamageDone="0" DamageReceived="0">
+      <Name>test</Name>
+      <Bounties />
+      <Members>
+        <string>Sadragos</string>
+      </Members>
+    </Faction>
+  </Factions>
+  <Players>
+    <Hunter Id="144115188075855897" Kills="29" Deaths="0" BountyPlaced="0" BountyClaimed="10003.046666622162" BountyReceived="355891.93890380859" DamageDone="177.93761196732521" DamageReceived="61837.227160019829" OnlineMinutes="0">
+      <Name>Desertstorm</Name>
+      <Bounties>
+        <Bounty Client="Sadragos" Timestamp="11.08.21 21:09:48" BountyType="Damage" Count="100000" Partial="true">
+          <RewardItem ItemId="MyObjectBuilder_PhysicalObject/SpaceCredit" Value="100000" Claimed="55444.74" Worth="44555.26" />
+        </Bounty>
+        <Bounty Client="Sadragos" Timestamp="17.08.21 17:17:41" BountyType="Kill" Count="1" Partial="true">
+          <RewardItem ItemId="MyObjectBuilder_AmmoMagazine/Missile200mm" Value="10" Claimed="0" Worth="345.973358" />
+        </Bounty>
+        <Bounty Client="Sadragos" Timestamp="17.08.21 17:17:46" BountyType="Kill" Count="1" Partial="true">
+          <RewardItem ItemId="MyObjectBuilder_AmmoMagazine/Missile200mm" Value="10" Claimed="0" Worth="345.973358" />
+        </Bounty>
+        <Bounty Client="Sadragos" Timestamp="19.08.21 18:13:30" BountyType="Damage" Count="52349.9961" Partial="true">
+          <RewardItem ItemId="MyObjectBuilder_AmmoMagazine/NATO_25x184mm" Value="900" Claimed="257.780823" Worth="37355.7461" />
+        </Bounty>
+        <Bounty Client="Sadragos" Timestamp="20.08.21 18:24:55" BountyType="Kill" Count="1" Partial="true">
+          <RewardItem ItemId="MyObjectBuilder_PhysicalObject/SpaceCredit" Value="50000" Claimed="0" Worth="50000" />
+        </Bounty>
+        <Bounty Client="Sadragos" Timestamp="20.08.21 18:25:08" BountyType="Kill" Count="1" Partial="true">
+          <RewardItem ItemId="MyObjectBuilder_PhysicalObject/SpaceCredit" Value="50500" Claimed="0" Worth="50500" />
+        </Bounty>
+      </Bounties>
+      <KillList>
+        <Death Opponent="Sadragos" Time="14.11.21 19:43:09" Reason="Collision" ClaimedBounty="0" />
+        <Death Opponent="Sadragos" Time="14.11.21 19:34:26" Reason="Welder" ClaimedBounty="0" />
+        <Death Opponent="Sadragos" Time="14.11.21 19:34:07" Reason="Welder" ClaimedBounty="0" />
+        <Death Opponent="Sadragos" Time="14.11.21 19:31:51" Reason="Collision" ClaimedBounty="0" />
+        <Death Opponent="Sadragos" Time="14.11.21 19:31:40" Reason="Collision" ClaimedBounty="0" />
+        <Death Opponent="Sadragos" Time="14.11.21 19:31:27" Reason="Collision" ClaimedBounty="0" />
+        <Death Opponent="Sadragos" Time="14.11.21 19:30:55" Reason="Collision" ClaimedBounty="0" />
+        <Death Opponent="Sadragos" Time="14.11.21 19:29:43" Reason="Explosion" ClaimedBounty="0" />
+        <Death Opponent="Sadragos" Time="14.11.21 19:27:09" Reason="Collision" ClaimedBounty="0" />
+        <Death Opponent="Sadragos" Time="14.11.21 19:26:59" Reason="Gunfire" ClaimedBounty="0" />
+      </KillList>
+      <DeathList />
+      <ClaimableBounty>
+        <Item ItemId="MyObjectBuilder_PhysicalObject/SpaceCredit" Value="6100" />
+        <Item ItemId="MyObjectBuilder_PhysicalGunObject/WelderItem" Value="0.2" />
+        <Item ItemId="MyObjectBuilder_PhysicalGunObject/AngleGrinderItem" Value="1" />
+        <Item ItemId="MyObjectBuilder_PhysicalGunObject/HandDrillItem" Value="1" />
+      </ClaimableBounty>
+      <LastSeen>2021-08-20T17:17:54.9772831+02:00</LastSeen>
+      <GraceTime>0001-01-01T00:00:00</GraceTime>
+      <Graced>false</Graced>
+      <BannedUntil>2021-11-13T11:49:48.6380564+01:00</BannedUntil>
+      <Banned>false</Banned>
+      <BanReason>haha</BanReason>
+      <Payout>
+        <Item ItemId="MyObjectBuilder_PhysicalGunObject/AngleGrinderItem" Value="1" />
+        <Item ItemId="MyObjectBuilder_PhysicalGunObject/HandDrillItem" Value="1" />
+      </Payout>
+    </Hunter>
+    <Hunter Id="144115188075855895" FactionTag="tes" Kills="0" Deaths="34" BountyPlaced="5000" BountyClaimed="103.1745673418045" BountyReceived="5000" DamageDone="51.58728301525116" DamageReceived="105.03058615326881" OnlineMinutes="215">
+      <Name>Sadragos</Name>
+      <Bounties />
+      <KillList />
+      <DeathList>
+        <Death Opponent="Desertstorm" Time="14.11.21 19:43:09" Reason="Collision" ClaimedBounty="0" />
+        <Death Opponent="Desertstorm" Time="14.11.21 19:34:26" Reason="Welder" ClaimedBounty="0" />
+        <Death Opponent="Desertstorm" Time="14.11.21 19:34:07" Reason="Welder" ClaimedBounty="0" />
+        <Death Time="14.11.21 19:33:48" Reason="Welder" ClaimedBounty="0" />
+        <Death Opponent="Desertstorm" Time="14.11.21 19:31:51" Reason="Collision" ClaimedBounty="0" />
+        <Death Opponent="Desertstorm" Time="14.11.21 19:31:40" Reason="Collision" ClaimedBounty="0" />
+        <Death Opponent="Desertstorm" Time="14.11.21 19:31:27" Reason="Collision" ClaimedBounty="0" />
+        <Death Opponent="Desertstorm" Time="14.11.21 19:30:55" Reason="Collision" ClaimedBounty="0" />
+        <Death Opponent="Desertstorm" Time="14.11.21 19:29:43" Reason="Explosion" ClaimedBounty="0" />
+        <Death Opponent="Desertstorm" Time="14.11.21 19:27:09" Reason="Collision" ClaimedBounty="0" />
+      </DeathList>
+      <ClaimableBounty>
+        <Item ItemId="MyObjectBuilder_AmmoMagazine/NATO_25x184mm" Value="0.886887252" />
+        <Item ItemId="MyObjectBuilder_PhysicalObject/SpaceCredit" Value="51.5872765" />
+      </ClaimableBounty>
+      <LastSeen>2021-11-14T19:45:43.5717787+01:00</LastSeen>
+      <GraceTime>2021-11-12T15:49:10.8910809+01:00</GraceTime>
+      <Graced>false</Graced>
+      <BannedUntil>2021-11-13T22:09:22.2483919+01:00</BannedUntil>
+      <Banned>false</Banned>
+      <BanReason>You should not exploit this stuff!</BanReason>
+      <Payout />
+    </Hunter>
+  </Players>
+</FileParticipants>
