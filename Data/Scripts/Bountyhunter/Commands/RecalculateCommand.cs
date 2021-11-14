@@ -17,7 +17,7 @@ namespace Bountyhunter.Commands
         {
             if(arguments.Length == 1)
             {
-                if(arguments[0].Equals("ores"))
+                if (arguments[0].Equals("ores"))
                 {
                     RecalculateOres(player);
                 } else if (arguments[0].Equals("components"))
@@ -25,6 +25,10 @@ namespace Bountyhunter.Commands
                     RecalculateComponents(player);
                 } else if (arguments[0].Equals("blocks"))
                 {
+                    RecalculateBlocks(player);
+                } else if (arguments[0].Equals("all")) {
+                    RecalculateOres(player);
+                    RecalculateComponents(player);
                     RecalculateBlocks(player);
                 } else
                 {
@@ -38,24 +42,27 @@ namespace Bountyhunter.Commands
             }
         }
 
-        public override string ArgumentDescription => "<ores/components/blocks>\nThis will recalculate the values of the given category. Caution: It will override all manual changes to the values in that category. Best use '/bh save' afterwards.";
+        public override string ArgumentDescription => "<all/ores/components/blocks>\nThis will recalculate the values of the given category. Caution: It will override all manual changes to the values in that category.";
 
         private void RecalculateBlocks(IMyPlayer player)
         {
             Values.CalculateBlocks();
-            SendMessage(player, "Blocks recalculated. Use /bh save to store changes.");
+            SendMessage(player, "Blocks recalculated.");
+            Values.Save();
         }
 
         private void RecalculateComponents(IMyPlayer player)
         {
             Values.CalculateComponent();
-            SendMessage(player, "Craftables recalculated. Use /bh save to store changes.");
+            SendMessage(player, "Craftables recalculated.");
+            Values.Save();
         }
 
         private void RecalculateOres(IMyPlayer player)
         {
             Values.CalculateOres();
-            SendMessage(player, "Ores recalculated. Use /bh save to store changes.");
+            SendMessage(player, "Ores recalculated.");
+            Values.Save();
         }
     }
 }

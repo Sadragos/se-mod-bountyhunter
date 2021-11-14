@@ -17,12 +17,14 @@ namespace Bountyhunter.Commands
 
         public override void HandleCommand(IMyPlayer player, string[] arguments)
         {
-            Values.Save();
-            if(player != null) SendMessage(player, "Values saved.");
+            //Values.Save();
+            //if(player != null) SendMessage(player, "Values saved.");
             Participants.Save();
             if (player != null) SendMessage(player, "Participants saved.");
-            Config.Save();
-            if (player != null) SendMessage(player, "Config saved.");
+            //Config.Save();
+            //if (player != null) SendMessage(player, "Config saved.");
+            //Killmessages.Save();
+            //if (player != null) SendMessage(player, "Killmessages saved.");
         }
     }
 }
