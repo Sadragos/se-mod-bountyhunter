@@ -53,6 +53,6 @@ There are several Rankings and Lists and Infos, that can be used to show almost 
 
 ## Admin Commands
 - <pre>/bh save</pre> Stores all changed the the savefiles
-- <pre>/bh reload</pre> Reloads all savefiles
-- <pre>/bh recalculate</pre> can be used to Recalculate component, ore and blockvalues based on Ingodvalues
+- <pre>/bh reload (c/v/p/k)</pre> This wil reload relevant XML files from the Disk. This is usefull if you hgave changed them with an external Editor. Make sure to use this command quickly after making your changes, as the file is saved everytime your world is saved, which can result in the loss of your changes. To reload only a specific File you can use an argument. c= Config, v = Values, p = Participants, k = Killmessages
+- <pre>/bh recalculate (all/ores/components/blocks)</pre> can be used to Recalculate component, ore and blockvalues based on Ingodvalues
 - <pre>/bh ban (player) (time) (m/h/d) (reason)</pre> Suspends a players ability to claim bounties for the given time. If time is 0 an existing ban will be lifted. m = Minutes, h = hours, d = days.
