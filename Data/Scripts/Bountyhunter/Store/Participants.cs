@@ -240,5 +240,64 @@ namespace Bountyhunter.Store
             foreach (long l in Removes) Players.Remove(l);
             Removes.Clear();
         }
+
+        public static void ReimburseBounties()
+        {
+            if (Config.Instance.ReimburseBountiesAfterMinutes == 0) return;
+            foreach (Faction faction in Factions.Values)
+                if (faction.Bounties != null && faction.Bounties.Count > 0)
+                    for (int i = faction.Bounties.Count - 1; i >= 0; i--)
+                    {
+                        Bounty bounty = faction.Bounties[i];
+                        if (bounty.Created.AddMinutes(Config.Instance.ReimburseBountiesAfterMinutes) < DateTime.Now)
+                        {
+                            faction.Bounties.RemoveAt(i);
+                            Hunter hunter = GetPlayer(bounty.Client, false);
+                            if (hunter == null) continue;
+                            hunter.AddClaimable(bounty.RewardItem, bounty.RewardItem.Remaining);
+
+                            IMyPlayer client = Utilities.GetPlayer(hunter.Name);
+                            if (client != null)
+                            {
+                                ItemConfig item = Values.Items[bounty.RewardItem.ItemId];
+                                Utilities.ShowChatMessage("Your remaining Bounty of "
+                                    + Formater.FormatNumber(bounty.RewardItem.Remaining)
+                                    + " "
+                                    + item.ToString()
+                                    + " on "
+                                    + faction.ToString()
+                                    + " has expired and has been repaid. You can get it with /bh claim.", client.IdentityId);
+                            }
+                        }
+                    }
+
+            foreach (Hunter hunter in Players.Values)
+                if (hunter.Bounties != null && hunter.Bounties.Count > 0)
+                    for (int i = hunter.Bounties.Count - 1; i >= 0; i--)
+                    {
+                        Bounty bounty = hunter.Bounties[i];
+                        if (bounty.Created.AddMinutes(Config.Instance.ReimburseBountiesAfterMinutes) < DateTime.Now)
+                        {
+                            hunter.Bounties.RemoveAt(i);
+                            Hunter clientHunter = GetPlayer(bounty.Client, false);
+                            if (hunter == null) continue;
+                            clientHunter.AddClaimable(bounty.RewardItem, bounty.RewardItem.Remaining);
+
+                            IMyPlayer client = Utilities.GetPlayer(clientHunter.Name);
+
+                            if (client != null)
+                            {
+                                ItemConfig item = Values.Items[bounty.RewardItem.ItemId];
+                                Utilities.ShowChatMessage("Your remaining Bounty of "
+                                    + Formater.FormatNumber(bounty.RewardItem.Remaining)
+                                    + " "
+                                    + item.ToString()
+                                    + " on "
+                                    + hunter.ToString()
+                                    + " has expired and has been repaid. You can get it with /bh claim.", client.IdentityId);
+                            }
+                        }
+                    }
+        }
     }
 }

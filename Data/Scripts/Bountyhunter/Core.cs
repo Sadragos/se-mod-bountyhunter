@@ -239,6 +239,7 @@ namespace Bountyhunter
             DeathHandler.UpdateIdentityCache();
             Participants.RefreshHunterFactionData();
             Participants.UpdateOnlineTime();
+            Participants.ReimburseBounties();
         }
 
         // Overrides

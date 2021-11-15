@@ -17,7 +17,7 @@ namespace Bountyhunter.Store.Proto
 
         [ProtoMember(2)]
         [XmlAttribute]
-        public string Timestamp = Utilities.CurrentTimestamp();
+        public DateTime Created = DateTime.Now;
 
         [ProtoMember(3)]
         [XmlAttribute]
