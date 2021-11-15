@@ -110,6 +110,12 @@ namespace Bountyhunter.Commands
             }
             rewardItem.Value = (float)Math.Floor(rewardItem.Value);
 
+            if(rewardItem.Value < Config.Instance.MinItemAmount || rewardItem.Value > Config.Instance.MaxItemAmount)
+            {
+                SendMessage(player, "You have to set an amount between " + Config.Instance.MinItemAmount + " and " + Config.Instance.MaxItemAmount + ".");
+                return;
+            }
+
             List<ItemConfig> foundItems = Values.FindItemFuzzy(arguments[4]);
             if(foundItems.Count != 1)
             {

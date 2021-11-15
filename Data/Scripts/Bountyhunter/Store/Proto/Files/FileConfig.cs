@@ -109,5 +109,11 @@ namespace Bountyhunter.Store.Proto.Files
 
         [ProtoMember(26)]
         public int GridValueMinOwnershipPercent = 60;
+
+        [ProtoMember(27)]
+        public int MinItemAmount = 1;
+
+        [ProtoMember(28)]
+        public int MaxItemAmount = 10000000;
     }
 }
