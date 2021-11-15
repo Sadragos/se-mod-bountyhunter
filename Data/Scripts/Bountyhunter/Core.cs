@@ -77,6 +77,7 @@ namespace Bountyhunter
                 CommandHandlers.Add(new ClaimCommand());
 
                 CommandHandlers.Add(new ReloadCommand());
+                CommandHandlers.Add(new ChangeValueCommand());
                 CommandHandlers.Add(new RecalculateCommand());
                 CommandHandlers.Add(new SaveCommand());
                 CommandHandlers.Add(new BanCommand());
