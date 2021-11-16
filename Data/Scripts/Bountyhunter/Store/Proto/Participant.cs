@@ -88,7 +88,7 @@ namespace Bountyhunter.Store.Proto
             {
                 if (Deaths == 0) return Kills;
                 if (Kills == 0) return 0;
-                return Kills / Deaths;
+                return (float)Kills / (float)Deaths;
             }
         }
 
@@ -100,7 +100,7 @@ namespace Bountyhunter.Store.Proto
             {
                 if (DamageReceived == 0) return DamageDone;
                 if (DamageDone == 0) return 0;
-                return DamageDone / DamageReceived;
+                return (float)DamageDone / (float)DamageReceived;
             }
         }
 

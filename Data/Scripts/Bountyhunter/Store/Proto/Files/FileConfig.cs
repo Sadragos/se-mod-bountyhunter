@@ -117,6 +117,6 @@ namespace Bountyhunter.Store.Proto.Files
         public int MaxItemAmount = 10000000;
 
         [ProtoMember(29)]
-        public int ReimburseBountiesAfterMinutes = 168;
+        public int ReimburseBountiesAfterMinutes = 10080;
     }
 }

@@ -27,23 +27,13 @@ namespace Bountyhunter
 
         public static void DestroyHandler(object target, MyDamageInformation info)
         {
-
-            if (!MyAPIGateway.Multiplayer.IsServer)
-                return;
-
-            if (target == null)
-                return;
-
             if (target is IMyCharacter)
             {
                 HandlePlayerDeath(target as IMyCharacter, info);
-            } else
-            {
-                //BeforeDamage(target, ref info);
-            }
+            } 
         }
 
-        private static void HandleBlockDeath(IMySlimBlock mySlimBlock, MyDamageInformation info)
+        private static void HandleBlockDamage(IMySlimBlock mySlimBlock, MyDamageInformation info)
         {
 
             //Logging.Instance.WriteLine("Block "+mySlimBlock.BlockDefinition.ToString()+"  Destroyed by " + info.AttackerId + " at " + mySlimBlock.FatBlock.GetPosition());
@@ -131,7 +121,7 @@ namespace Bountyhunter
         {
             if (target is IMySlimBlock)
             {
-                HandleBlockDeath(target as IMySlimBlock, info);
+                HandleBlockDamage(target as IMySlimBlock, info);
             }
         }
 

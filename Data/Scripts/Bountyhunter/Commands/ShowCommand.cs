@@ -206,7 +206,7 @@ namespace Bountyhunter.Commands
             builder.Append("\n");
             AddLine(builder, "• Damage Done", Formater.FormatCurrency(participant.DamageDone), Rankings.Rank("damageDone", participant, faction));
             AddLine(builder, "• Damage Received", Formater.FormatCurrency(participant.DamageReceived), Rankings.Rank("damageReceived", participant, faction));
-            AddLine(builder, "• Damage-Ratio", participant.DamageRatio.ToString("0.00"), Rankings.Rank("damageRatio", participant, faction));
+            AddLine(builder, "• Damage-Ratio", Formater.FormatCurrency(participant.DamageRatio), Rankings.Rank("damageRatio", participant, faction));
             builder.Append("\n");
             AddLine(builder, "• Bounty Placed", Formater.FormatCurrency(participant.BountyPlaced), Rankings.Rank("bountyPlaced", participant, faction));
             AddLine(builder, "• Bounty Received", Formater.FormatCurrency(participant.BountyReceived), Rankings.Rank("bountyReceived", participant, faction));
