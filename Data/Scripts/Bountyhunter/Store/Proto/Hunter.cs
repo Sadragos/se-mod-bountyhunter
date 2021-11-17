@@ -41,6 +41,9 @@ namespace Bountyhunter.Store.Proto
         [ProtoMember(21)]
         public string BanReason;
 
+        [ProtoMember(22)]
+        public DateTime LastBountySet;
+
 
         internal void RemoveClaimable(Item item, float amount)
         {

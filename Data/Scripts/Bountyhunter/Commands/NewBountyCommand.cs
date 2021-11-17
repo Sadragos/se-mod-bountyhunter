@@ -28,6 +28,13 @@ namespace Bountyhunter.Commands
             }
             Hunter me = Participants.GetPlayer(player.Identity);
 
+            if(me.LastBountySet != null && me.LastBountySet.AddSeconds(Config.Instance.BountyDelaySeconds) > DateTime.Now)
+            {
+                int seconds = (int)(me.LastBountySet.AddSeconds(Config.Instance.BountyDelaySeconds) - DateTime.Now).TotalSeconds;
+                SendMessage(player, "You have to wait " + seconds + " seconds before you can set a new Bounty.");
+                return;
+            }
+
             Bounty bounty = new Bounty();
             bounty.Client = player.DisplayName;
             bounty.Partial = true;
@@ -127,7 +134,7 @@ namespace Bountyhunter.Commands
 
             if(payment.Value < Config.Instance.FloatAmountBuffer)
             {
-                SendMessage(player, payment.ToString() + " is currenty worth " + Formater.FormatCurrency(0) + " and can not be setup as Bounty.");
+                SendMessage(player, payment.ToString() + " is currenty worth nothing and can not be used as Bounty.");
                 return;
             }
 
@@ -235,6 +242,10 @@ namespace Bountyhunter.Commands
                     existingBounties = pTarget.Bounties.Count > 0;
                     pTarget.Bounties.Add(bounty);
                     pTarget.BountyReceived += bountyValue;
+                    if (!string.IsNullOrEmpty(pTarget.FactionTag))
+                    {
+                        Participants.GetFaction(pTarget.FactionTag).BountyReceived += bountyValue;
+                    }
                     break;
             }
             
@@ -246,6 +257,7 @@ namespace Bountyhunter.Commands
             }
 
             Utilities.ShowDialog(player.SteamUserId, "Bounty placed", "You set a bounty of " + Formater.FormatNumber(rewardItem.Value) + " " + payment.ToString() + " on " + targetString + ". " + takenFrom);
+            me.LastBountySet = DateTime.Now;
 
             if(Config.Instance.AnnouncyBounties)
             {

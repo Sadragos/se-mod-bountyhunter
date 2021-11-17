@@ -118,5 +118,8 @@ namespace Bountyhunter.Store.Proto.Files
 
         [ProtoMember(29)]
         public int ReimburseBountiesAfterMinutes = 10080;
+
+        [ProtoMember(30)]
+        public int BountyDelaySeconds = 60;
     }
 }
