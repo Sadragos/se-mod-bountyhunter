@@ -125,6 +125,12 @@ namespace Bountyhunter.Commands
             ItemConfig payment = foundItems[0];
             rewardItem.ItemId = payment.ItemId;
 
+            if(payment.Value < Config.Instance.FloatAmountBuffer)
+            {
+                SendMessage(player, payment.ToString() + " is currenty worth " + Formater.FormatCurrency(0) + " and can not be setup as Bounty.");
+                return;
+            }
+
             bool isCredits = rewardItem.ItemId.Equals(Values.SC_ITEM);
 
             if(!isCredits && !Config.Instance.EnableItemBounties)
