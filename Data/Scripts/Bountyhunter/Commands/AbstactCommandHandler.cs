@@ -91,7 +91,7 @@ namespace Bountyhunter.Commands
         protected void WrongArguments(IMyPlayer player)
         {
             SendMessage(player, "Wrong Arguments");
-            SendMessage(player, CommandPrefix + " " + ArgumentDescription);
+            SendMessage(player, CommandPrefix + " " + ArgumentDescription.Split('\n').FirstOrDefault() + "\nUse /bh help for more info.");
         }
     }
 }
