@@ -212,6 +212,8 @@ namespace Bountyhunter.Commands
             AddLine(builder, "• Bounty Received", Formater.FormatCurrency(participant.BountyReceived), Rankings.Rank("bountyReceived", participant, faction));
             AddLine(builder, "• Bounty Claimed", Formater.FormatCurrency(participant.BountyClaimed), Rankings.Rank("bountyClaimed", participant, faction));
             AddLine(builder, "• Current Bounty", Formater.FormatCurrency(participant.BountyWorth), Rankings.Rank("bounty", participant, faction));
+            AddLine(builder, "• Kill-Value", Formater.FormatCurrency(participant.KillValue), Rankings.Rank("killValue", participant, faction));
+            AddLine(builder, "• Damage-Value", Formater.FormatCurrency(participant.DamageValue), Rankings.Rank("damageValue", participant, faction));
             builder.Append("\n");
         }
 

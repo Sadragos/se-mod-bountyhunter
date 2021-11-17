@@ -85,6 +85,12 @@ namespace Bountyhunter.Store
                     case "bounty":
                         rank.Participants = rank.Participants.OrderByDescending(p => p.BountyWorth).ToList();
                         break;
+                    case "killValue":
+                        rank.Participants = rank.Participants.OrderByDescending(p => p.KillValue).ToList();
+                        break;
+                    case "damageValue":
+                        rank.Participants = rank.Participants.OrderByDescending(p => p.DamageValue).ToList();
+                        break;
                 }
 
             }

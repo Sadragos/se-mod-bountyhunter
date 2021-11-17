@@ -114,9 +114,47 @@ namespace Bountyhunter.Store.Proto
                 if (!string.IsNullOrEmpty(FactionTag))
                 {
                     Faction faction = Participants.GetFaction(FactionTag, false);
-                    if(!faction.Id.Equals(Id))
+                    if (!faction.Id.Equals(Id))
                     {
                         sum += faction.BountyWorth;
+                    }
+                }
+                return sum;
+            }
+        }
+
+        [ProtoIgnore]
+        [XmlIgnore]
+        public float KillValue
+        {
+            get
+            {
+                float sum = Bounties.Sum(b => b.BountyType.Equals(EBountyType.Kill) ? b.PointWorth : 0); ;
+                if (!string.IsNullOrEmpty(FactionTag))
+                {
+                    Faction faction = Participants.GetFaction(FactionTag, false);
+                    if (!faction.Id.Equals(Id))
+                    {
+                        sum += faction.KillValue;
+                    }
+                }
+                return sum;
+            }
+        }
+
+        [ProtoIgnore]
+        [XmlIgnore]
+        public float DamageValue
+        {
+            get
+            {
+                float sum = Bounties.Sum(b => b.BountyType.Equals(EBountyType.Damage) ? b.PointWorth : 0);
+                if (!string.IsNullOrEmpty(FactionTag))
+                {
+                    Faction faction = Participants.GetFaction(FactionTag, false);
+                    if (!faction.Id.Equals(Id))
+                    {
+                        sum += faction.DamageValue;
                     }
                 }
                 return sum;

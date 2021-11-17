@@ -19,7 +19,7 @@ namespace Bountyhunter.Commands
         public override string ArgumentDescription => "<player/faction> <ranking>" +
             "\nShows a ranking for the given category. " +
             "You can use 'p' or 'f' instead of player or faction as the first argument. Use one of the following categories as ranking:" +
-            "\n- bounty\n   Which head has currently the highest bounty on it." +
+            "\n- bounty\n   Which head has currently the highest total bounty on it." +
             "\n- kills\n   Shows who has killed the most players." +
             "\n- deaths\n   Shows who died the most." +
             "\n- kdratio\n   Shows who has the best kill-death-ratio. " +
@@ -28,7 +28,9 @@ namespace Bountyhunter.Commands
             "\n- damageRatio\n   Shows who has the best damagae ratio." +
             "\n- bountyPlaced\n   Shows who has placed the most bounties in total." +
             "\n- bountyReceived\n   Shows, on which had was placed the most bounty in total." +
-            "\n- bountyClaimed\n   Shows who has earned the most bounties in total.";
+            "\n- bountyClaimed\n   Shows who has earned the most bounties in total." +
+            "\n- killValue\n   Shows which kill is worth the most." +
+            "\n- damageValue\n   Shows which damage is worth the most.";
 
         public override void HandleCommand(IMyPlayer player, string[] arguments)
         {
@@ -88,6 +90,12 @@ namespace Bountyhunter.Commands
                     break;
                 case "bounty":
                     title += "current Bounty";
+                    break;
+                case "killValue":
+                    title += "current Kill-Value";
+                    break;
+                case "damageValue":
+                    title += "current Damage-Value";
                     break;
                 default:
                     WrongArguments(player);
@@ -169,6 +177,20 @@ namespace Bountyhunter.Commands
                     foreach (Participant p in Rankings.GetRanking(ranking, faction))
                     {
                         AppendLine(sb, index++, p.ToString(), Formater.FormatCurrency(p.BountyWorth), monospace);
+                        if (index >= limit) break;
+                    }
+                    break;
+                case "killValue":
+                    foreach (Participant p in Rankings.GetRanking(ranking, faction))
+                    {
+                        AppendLine(sb, index++, p.ToString(), Formater.FormatCurrency(p.KillValue), monospace);
+                        if (index >= limit) break;
+                    }
+                    break;
+                case "damageValue":
+                    foreach (Participant p in Rankings.GetRanking(ranking, faction))
+                    {
+                        AppendLine(sb, index++, p.ToString(), Formater.FormatCurrency(p.DamageValue), monospace);
                         if (index >= limit) break;
                     }
                     break;

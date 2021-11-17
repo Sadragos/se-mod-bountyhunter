@@ -33,6 +33,10 @@ namespace Bountyhunter.Store.Proto
 
         [XmlIgnore]
         [ProtoIgnore]
-        public float Remaining {  get { return Value - Claimed;  } }
+        public float Remaining => Value - Claimed;
+
+        [XmlIgnore]
+        [ProtoIgnore]
+        public float TotalValue => Value * Values.ItemValue(ItemId);
     }
 }

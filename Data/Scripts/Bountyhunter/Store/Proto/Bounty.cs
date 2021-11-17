@@ -34,6 +34,13 @@ namespace Bountyhunter.Store.Proto
         [ProtoMember(6)]
         public BountyItem RewardItem = new BountyItem(Values.SC_ITEM);
 
+        [XmlIgnore]
+        [ProtoIgnore]
+        public float PointWorth => TotalValue / Count;
+
+        [XmlIgnore]
+        [ProtoIgnore]
+        public float TotalValue =>  RewardItem.TotalValue;
 
         public void RecalculateWorth()
         {
