@@ -50,6 +50,8 @@ There are several Rankings and Lists and Infos, that can be used to show almost 
 - <pre>/bh rank (faction/player) bountyPlaced</pre> shows a ranking of who has put up the most bounty
 - <pre>/bh rank (faction/player) bountyClaimed</pre> shows a ranking of who has claimed the most bounty
 - <pre>/bh rank (faction/player) bounty</pre> shows who has the highest bounty on his head
+- <pre>/bh rank (faction/player) killValue</pre> shows which kill is worth the most
+- <pre>/bh rank (faction/player) damageValue</pre> shows which damage is worth the most
 
 ## Admin Commands
 - <pre>/bh save</pre> Stores all changed the the savefiles
