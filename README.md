@@ -1,6 +1,8 @@
 # Bountyhunter
 The Epsilon Bountyhunter Guild is proud to present you the second generation of Bountyhunting! Additionally to the well established "kill"-bounty on faction members or single individuals you can now put up literally anything as a bounty on kills and even on Griddamage.
 
+New: The Bountystatistics are now reset every month by deafult (configurable). Records of past month are saved as XML and can be used by other services to provide a leaderboard.
+
 
 
 ## Commands
@@ -59,3 +61,4 @@ There are several Rankings and Lists and Infos, that can be used to show almost 
 - <pre>/bh recalculate (all/ores/components/blocks)</pre> can be used to Recalculate component, ore and blockvalues based on Ingodvalues
 - <pre>/bh ban (player) (time) (m/h/d) (reason)</pre> Suspends a players ability to claim bounties for the given time. If time is 0 an existing ban will be lifted. m = Minutes, h = hours, d = days.
 - <pre>/bh changevalue (item/block) (searchtext) (value) (enabledAsBounty)</pre>Changes the value of an Item or a Block. You can use the same item/block search parameters as in the /bh value command. enabledAsBounty can be true/false. If not given the value will not be changed.
+- <pre>/bh reset !!! (filename)</pre>Add the three !!! to really make sure, this is not a mistake. This will reset all Bountyhunter Rankings to 0 while keeping all active bounties active. Filename is optional year-month will be used by default.
