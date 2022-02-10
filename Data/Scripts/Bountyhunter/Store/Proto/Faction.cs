@@ -13,6 +13,8 @@ namespace Bountyhunter.Store.Proto
         [ProtoMember(12)]
         public List<string> Members = new List<string>();
 
+        
+
         [ProtoIgnore]
         [XmlIgnore]
         public List<Hunter> Hunters
@@ -26,6 +28,11 @@ namespace Bountyhunter.Store.Proto
                 }
                 return result;
             }
+        }
+
+        public override bool Relevant()
+        {
+            return Bounties.Count > 0;
         }
     }
 }

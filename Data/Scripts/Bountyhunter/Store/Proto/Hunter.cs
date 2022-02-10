@@ -108,6 +108,13 @@ namespace Bountyhunter.Store.Proto
             return KillList;
         }
 
+        public override bool Relevant()
+        {
+            return Bounties.Count > 0 || ClaimableBounty.Count > 0 || Banned || Graced;
+        }
+
+        [ProtoIgnore]
+        [XmlIgnore]
         public List<Item> Payout
         {
             get

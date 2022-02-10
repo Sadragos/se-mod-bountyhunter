@@ -67,6 +67,7 @@ namespace Bountyhunter.Utils
                 _writer.WriteLine( _cache.Append( text ) );
                 _writer.Flush( );
                 _cache.Clear( );
+                VRage.Utils.MyLog.Default.WriteLine(text);
             }
             catch
             {

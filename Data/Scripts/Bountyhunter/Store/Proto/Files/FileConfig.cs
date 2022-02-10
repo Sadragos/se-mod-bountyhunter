@@ -121,5 +121,14 @@ namespace Bountyhunter.Store.Proto.Files
 
         [ProtoMember(30)]
         public int BountyDelaySeconds = 60;
+
+        [ProtoMember(31)]
+        public bool MonthlyReset = true;
+
+        [ProtoMember(32)]
+        public bool KeepMonthlyHistory = true;
+
+        [ProtoMember(33)]
+        public DateTime LastReset = DateTime.Now;
     }
 }

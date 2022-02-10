@@ -242,19 +242,10 @@ namespace Bountyhunter.Commands
                     existingBounties = pTarget.Bounties.Count > 0;
                     pTarget.Bounties.Add(bounty);
                     pTarget.BountyReceived += bountyValue;
-                    if (!string.IsNullOrEmpty(pTarget.FactionTag))
-                    {
-                        Participants.GetFaction(pTarget.FactionTag).BountyReceived += bountyValue;
-                    }
                     break;
             }
             
             me.BountyPlaced += bountyValue;
-            
-            if(!string.IsNullOrEmpty(me.FactionTag))
-            {
-                Participants.GetFaction(me.FactionTag).BountyPlaced += bountyValue;
-            }
 
             Utilities.ShowDialog(player.SteamUserId, "Bounty placed", "You set a bounty of " + Formater.FormatNumber(rewardItem.Value) + " " + payment.ToString() + " on " + targetString + ". " + takenFrom);
             me.LastBountySet = DateTime.Now;

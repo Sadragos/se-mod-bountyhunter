@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Bountyhunter.Store.Proto
 {
-    public class Participant
+    public abstract class Participant
     {
         [ProtoMember(1)]
         [XmlAttribute]
@@ -176,5 +176,30 @@ namespace Bountyhunter.Store.Proto
         {
             return new List<Death>();
         }
+
+
+        internal void Reset()
+        {
+            Kills = 0;
+            Deaths = 0;
+            BountyPlaced = 0;
+            BountyReceived = 0;
+            BountyClaimed = 0;
+            DamageDone = 0;
+            DamageReceived = 0;
+        }
+
+        internal void Add(Participant toAdd)
+        {
+            Kills += toAdd.Kills;
+            Deaths += toAdd.Deaths;
+            BountyPlaced += toAdd.BountyPlaced;
+            BountyReceived += toAdd.BountyReceived;
+            BountyClaimed += toAdd.BountyClaimed;
+            DamageDone += toAdd.DamageDone;
+            DamageReceived += toAdd.DamageReceived;
+        }
+
+        public abstract bool Relevant();
     }
 }

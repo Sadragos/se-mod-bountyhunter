@@ -60,13 +60,18 @@ namespace Bountyhunter.Store
 
         public static void Save()
         {
+            Save("Participants.xml");
+        }
+
+        public static void Save(string filename)
+        {
             try
             {
-                Dict2Instance();
                 Logging.Instance.WriteLine("Serializing Participants to XML... ");
+                Dict2Instance();
                 string xml = MyAPIGateway.Utilities.SerializeToXML(Instance);
-                Logging.Instance.WriteLine("Writing Participants to disk... ");
-                TextWriter writer = MyAPIGateway.Utilities.WriteFileInWorldStorage("Participants.xml", typeof(FileParticipants));
+                Logging.Instance.WriteLine("Writing Participants to disk as "+ filename + "... ");
+                TextWriter writer = MyAPIGateway.Utilities.WriteFileInWorldStorage(filename, typeof(FileParticipants));
                 writer.Write(xml);
                 writer.Flush();
                 writer.Close();
@@ -77,13 +82,13 @@ namespace Bountyhunter.Store
             }
         }
 
-        private static void Dict2Instance()
+        public static void Dict2Instance()
         {
             Instance.Factions = Factions.Values.ToList();
             Instance.Players = Players.Values.ToList();
         }
 
-        private static void Instance2Dict()
+        public static void Instance2Dict()
         {
             Factions.Clear();
             foreach (Faction f in Instance.Factions)
@@ -192,6 +197,12 @@ namespace Bountyhunter.Store
                 }
                 fact.Name = myFaction.Name;
                 fact.FactionTag = myFaction.Tag;
+                fact.Kills = 0;
+                fact.Deaths = 0;
+                fact.DamageDone = 0;
+                fact.DamageReceived = 0;
+                fact.BountyPlaced = 0;
+                fact.BountyClaimed = 0;
             }
             foreach (long l in Removes) Factions.Remove(l);
             Removes.Clear();
@@ -215,7 +226,14 @@ namespace Bountyhunter.Store
                 } else
                 {
                     hunter.FactionTag = faction.Tag;
-                    GetFaction(faction).Members.Add(hunter.Name);
+                    Faction fact = GetFaction(faction);
+                    fact.Members.Add(hunter.Name);
+                    fact.Kills += hunter.Kills;
+                    fact.Deaths += hunter.Deaths;
+                    fact.DamageDone += hunter.DamageDone;
+                    fact.DamageReceived += hunter.DamageReceived;
+                    fact.BountyPlaced += hunter.BountyPlaced;
+                    fact.BountyClaimed += hunter.BountyClaimed;
                 }
 
                 if(oldFaction != hunter.FactionTag)

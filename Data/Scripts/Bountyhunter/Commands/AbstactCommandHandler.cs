@@ -51,7 +51,7 @@ namespace Bountyhunter.Commands
 
         protected void SendMessage(IMyPlayer player, string errorMessage)
         {
-            Utilities.ShowChatMessage(errorMessage, player.IdentityId);
+            if(player != null) Utilities.ShowChatMessage(errorMessage, player.IdentityId);
         }
 
         public string[] GetArguments(string arguments)

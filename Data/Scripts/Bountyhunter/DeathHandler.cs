@@ -35,86 +35,92 @@ namespace Bountyhunter
 
         private static void HandleBlockDamage(IMySlimBlock mySlimBlock, MyDamageInformation info)
         {
-
-            //Logging.Instance.WriteLine("Block "+mySlimBlock.BlockDefinition.ToString()+"  Destroyed by " + info.AttackerId + " at " + mySlimBlock.FatBlock.GetPosition());
-
-            if (!Config.Instance.CountGrindingAsDestroy && "Grind".Equals(info.Type.String))
+            try
             {
-                //Logging.Instance.WriteLine("  ABORT: Grind check failed");
-                return;
+                //Logging.Instance.WriteLine("Block "+mySlimBlock.BlockDefinition.ToString()+"  Destroyed by " + info.AttackerId + " at " + mySlimBlock.FatBlock.GetPosition());
+
+                if (!Config.Instance.CountGrindingAsDestroy && "Grind".Equals(info.Type.String))
+                {
+                    //Logging.Instance.WriteLine("  ABORT: Grind check failed");
+                    return;
+                }
+                //Logging.Instance.WriteLine("  Grind check passed.");
+
+                IMyIdentity identity = Utilities.SlimToIdentity(mySlimBlock);
+                if (identity == null)
+                {
+                    //Logging.Instance.WriteLine("  ABORT: Unknown Blockowner");
+                    return;
+                }
+                //Logging.Instance.WriteLine("  BO " + identity.DisplayName);
+
+                IdentityInfo victim = GetIdentity(identity);
+                if (victim.Hunter == null)
+                {
+                    //Logging.Instance.WriteLine("  ABORT: Unknown Victim");
+                    return;
+                }
+                //Logging.Instance.WriteLine("  Victim Hunter found");
+                Vector3D pos = Vector3D.Zero;
+
+                // We only need the position if the attacker is zero.
+                if (info.AttackerId == 0) mySlimBlock.ComputeWorldCenter(out pos);
+
+                KillerInfo attacker = GetKiller(info, pos);
+                if (attacker.Info.Hunter == null)
+                {
+                    //Logging.Instance.WriteLine("  ABORT: Unknown Attacker");
+                    return;
+                }
+                //Logging.Instance.WriteLine("  Attacker " + attacker.Info.Hunter.ToString());
+
+                if (attacker.Info.Hunter.Graced || attacker.Info.Hunter.Banned)
+                {
+                    return;
+                }
+
+                // For blocks only count PVP Damage (because of repairs etc.)
+                if (attacker.Info.Identity.IdentityId.Equals(victim.Identity.IdentityId)
+                    || (attacker.Info.Faction != null && !attacker.Info.Faction.IsEnemy(victim.Identity.IdentityId)))
+                {
+                    //Logging.Instance.WriteLine("  ABORT: Selfharm or Allied");
+                    return;
+                }
+                //Logging.Instance.WriteLine("  No Self or Allied harm.");
+
+                float damageDone = info.Amount / mySlimBlock.MaxIntegrity;
+
+
+                float bounty = 0;
+                float value = Values.BlockValue(mySlimBlock.BlockDefinition.ToString()) * damageDone;
+                //Logging.Instance.WriteLine("  BlockValue " + value);
+
+                // TODO Value of Cargo
+
+                victim.Hunter.DamageReceived += value;
+                attacker.Info.Hunter.DamageDone += value;
+                //Logging.Instance.WriteLine("  Attributed Damage");
+
+                bounty += victim.Hunter.ClaimBounty(attacker.Info.Hunter, EBountyType.Damage, value);
+                //Logging.Instance.WriteLine("  Claimed Personal Bounty");
+                if (victim.Faction != null)
+                {
+                    Faction faction = Participants.GetFaction(victim.Faction);
+                    bounty += faction.ClaimBounty(attacker.Info.Hunter, EBountyType.Damage, value);
+                    //Logging.Instance.WriteLine("  Claimed Faction Bounty");
+                }
+                else
+                {
+                    //Logging.Instance.WriteLine("  No Faction for Factionbounties");
+                }
+
+
+                NotifyBounty(bounty, attacker);
+                //Logging.Instance.WriteLine("  Notification");
+            } catch (Exception e)
+            {
+                Logging.Instance.WriteLine("Bountyhunt ERROR! " + e.ToString());
             }
-            //Logging.Instance.WriteLine("  Grind check passed.");
-
-            IMyIdentity identity = Utilities.SlimToIdentity(mySlimBlock);
-            if (identity == null) 
-            {
-                //Logging.Instance.WriteLine("  ABORT: Unknown Blockowner");
-                return;
-            }
-            //Logging.Instance.WriteLine("  BO " + identity.DisplayName);
-
-            IdentityInfo victim = GetIdentity(identity);
-            if (victim.Hunter == null)
-            {
-                //Logging.Instance.WriteLine("  ABORT: Unknown Victim");
-                return;
-            }
-            //Logging.Instance.WriteLine("  Victim Hunter found");
-            Vector3D pos = Vector3D.Zero;
-            
-            // We only need the position if the attacker is zero.
-            if(info.AttackerId == 0) mySlimBlock.ComputeWorldCenter(out pos);
-
-            KillerInfo attacker = GetKiller(info, pos);
-            if (attacker.Info.Hunter == null)
-            {
-                //Logging.Instance.WriteLine("  ABORT: Unknown Attacker");
-                return;
-            }
-            //Logging.Instance.WriteLine("  Attacker " + attacker.Info.Hunter.ToString());
-
-            if(attacker.Info.Hunter.Graced || attacker.Info.Hunter.Banned)
-            {
-                return;
-            }
-
-            // For blocks only count PVP Damage (because of repairs etc.)
-            if (attacker.Info.Identity.IdentityId.Equals(victim.Identity.IdentityId) 
-                || (attacker.Info.Faction != null && !attacker.Info.Faction.IsEnemy(victim.Identity.IdentityId)))
-            {
-                //Logging.Instance.WriteLine("  ABORT: Selfharm or Allied");
-                return;
-            }
-            //Logging.Instance.WriteLine("  No Self or Allied harm.");
-
-            float damageDone = info.Amount / mySlimBlock.MaxIntegrity;
-           
-
-            float bounty = 0;
-            float value = Values.BlockValue(mySlimBlock.BlockDefinition.ToString()) * damageDone;
-            //Logging.Instance.WriteLine("  BlockValue " + value);
-
-            // TODO Value of Cargo
-
-            victim.Hunter.DamageReceived += value;
-            attacker.Info.Hunter.DamageDone += value;
-            //Logging.Instance.WriteLine("  Attributed Damage");
-
-            bounty += victim.Hunter.ClaimBounty(attacker.Info.Hunter, EBountyType.Damage, value);
-            //Logging.Instance.WriteLine("  Claimed Personal Bounty");
-            if (victim.Faction != null)
-            {
-                Faction faction = Participants.GetFaction(victim.Faction);
-                bounty += faction.ClaimBounty(attacker.Info.Hunter, EBountyType.Damage, value);
-                //Logging.Instance.WriteLine("  Claimed Faction Bounty");
-            } else
-            {
-                //Logging.Instance.WriteLine("  No Faction for Factionbounties");
-            }
-            
-
-            NotifyBounty(bounty, attacker);
-            //Logging.Instance.WriteLine("  Notification");
         }
 
         internal static void AfterDamage(object target, MyDamageInformation info)
@@ -127,101 +133,103 @@ namespace Bountyhunter
 
         private static void HandlePlayerDeath(IMyCharacter myCharacter, MyDamageInformation info)
         {
-            IMyIdentity identity = Utilities.EntityToIdentity(myCharacter);
-            if (identity == null) return;
-            IdentityInfo victim = GetIdentity(identity);
-
-            KillerInfo attacker = GetKiller(info, myCharacter.GetPosition());
-
-            string reason = null;
-
-            // Workaround for suicide
-            if (info.Amount == 1000)
+            try
             {
-                reason = "Suicide";
-                if (!Config.Instance.CountSuicides) return;
-            }
+                IMyIdentity identity = Utilities.EntityToIdentity(myCharacter);
+                if (identity == null) return;
+                IdentityInfo victim = GetIdentity(identity);
 
-            // This will be an NPC - ignore it.
-            if (reason == null && (info.Type.ToString() == "" || victim.Player.DisplayName == ""))
-                return;
+                KillerInfo attacker = GetKiller(info, myCharacter.GetPosition());
 
-            reason = info.Type.String;
-            if (reason.Equals("Environment"))
-            {
-                if (attacker.Entity == null) reason = "Accident";
-                else if (attacker.Entity is IMyFloatingObject) reason = "Floating Object";
-                else if (attacker.Entity is IMyCubeGrid) reason = "Grid";
-                else if (attacker.Entity is IMyThrust) reason = "Thrust";
-                else if (attacker.Entity is IMyWarhead) reason = "Nuke";
-                else if (attacker.Entity.ToString().ToLower().Contains("missile")) reason = "Rocket";
-                else reason = "Accident";
-            }
+                string reason = null;
 
-            if (reason.Equals("Suicide") || (attacker.Info.Identity != null && attacker.Info.Identity.IdentityId.Equals(identity.IdentityId)))
-            {
-                attacker.IsAllied = true;
-                attacker.IsSameFaction = true;
-                attacker.Selfinflicted = true;
-            }
-            else if (attacker.Info.Faction != null && victim.Faction != null)
-            {
-                if (attacker.Info.Faction.FactionId.Equals(victim.Faction.FactionId))
+                // Workaround for suicide
+                if (info.Amount == 1000)
+                {
+                    reason = "Suicide";
+                    if (!Config.Instance.CountSuicides) return;
+                }
+
+                // This will be an NPC - ignore it.
+                if (reason == null && (info.Type.ToString() == "" || victim.Player.DisplayName == ""))
+                    return;
+
+                reason = info.Type.String;
+                if (reason.Equals("Environment"))
+                {
+                    if (attacker.Entity == null) reason = "Accident";
+                    else if (attacker.Entity is IMyFloatingObject) reason = "Floating Object";
+                    else if (attacker.Entity is IMyCubeGrid) reason = "Grid";
+                    else if (attacker.Entity is IMyThrust) reason = "Thrust";
+                    else if (attacker.Entity is IMyWarhead) reason = "Nuke";
+                    else if (attacker.Entity.ToString().ToLower().Contains("missile")) reason = "Rocket";
+                    else reason = "Accident";
+                }
+
+                if (reason.Equals("Suicide") || (attacker.Info.Identity != null && attacker.Info.Identity.IdentityId.Equals(identity.IdentityId)))
                 {
                     attacker.IsAllied = true;
                     attacker.IsSameFaction = true;
-                } else if(!attacker.Info.Faction.IsEnemy(victim.Identity.IdentityId))
-                {
-                    attacker.IsAllied = true;
+                    attacker.Selfinflicted = true;
                 }
-            }
-
-            string renamedReason = Killmessages.Instance.GetName(reason);
-
-            float bounty = 0;
-            if (!attacker.Info.IsBot 
-                && !attacker.Selfinflicted 
-                && attacker.Info.Hunter != null 
-                && (!attacker.IsAllied || Config.Instance.ClaimBountiesFromAlliesAndNeutrals) 
-                && !attacker.Info.Hunter.Graced
-                && !attacker.Info.Hunter.Banned)
-            {
-
-                bounty += victim.Hunter.ClaimBounty(attacker.Info.Hunter, EBountyType.Kill);
-                if (victim.Faction != null) {
-                    Faction faction = Participants.GetFaction(victim.Faction);
-                    bounty += faction.ClaimBounty(attacker.Info.Hunter, EBountyType.Kill);
-                }
-            }
-
-            NotifyBounty(bounty, attacker);
-
-            
-            if(!attacker.Selfinflicted && attacker.Info.Identity != null)
-            {
-                victim.Hunter.AddDeath(renamedReason, attacker.Info.Identity.DisplayName, bounty);
- 
-                if(!attacker.Info.IsBot && attacker.Info.Hunter != null) attacker.Info.Hunter.AddKill(renamedReason, victim.Hunter.Name, bounty);
-                if (!attacker.Info.IsBot && !string.IsNullOrEmpty(attacker.Info.Hunter.FactionTag))
+                else if (attacker.Info.Faction != null && victim.Faction != null)
                 {
-                    Participants.GetFaction(attacker.Info.Faction).BountyClaimed += bounty;
-                }
-            } else
-            {
-                victim.Hunter.AddDeath(renamedReason, null);
-            }
-
-            if(Config.Instance.KillFeed)
-            {
-                string message = Killmessages.Instance.GetMessage(reason, victim.Identity.DisplayName, (attacker.Info.Identity != null && !attacker.Selfinflicted) ? attacker.Info.Identity.DisplayName : null);
-                if (message != null)
-                {
-                    if (Config.Instance.IncludeBountiesInKillFeed && bounty > 0 && attacker.Info.Hunter != null)
+                    if (attacker.Info.Faction.FactionId.Equals(victim.Faction.FactionId))
                     {
-                        message += " " + attacker.Info.Hunter.Name + " earned a Bounty of " + Formater.FormatCurrency(bounty) + ".";
+                        attacker.IsAllied = true;
+                        attacker.IsSameFaction = true;
                     }
-                    Utilities.ShowChatMessage(message);
+                    else if (!attacker.Info.Faction.IsEnemy(victim.Identity.IdentityId))
+                    {
+                        attacker.IsAllied = true;
+                    }
                 }
+
+                string renamedReason = Killmessages.Instance.GetName(reason);
+                Faction victimFaction = victim.Faction != null ? Participants.GetFaction(victim.Faction) : null;
+                float bounty = 0;
+                if (!attacker.Info.IsBot
+                    && !attacker.Selfinflicted
+                    && attacker.Info.Hunter != null
+                    && (!attacker.IsAllied || Config.Instance.ClaimBountiesFromAlliesAndNeutrals)
+                    && !attacker.Info.Hunter.Graced
+                    && !attacker.Info.Hunter.Banned)
+                {
+
+                    bounty += victim.Hunter.ClaimBounty(attacker.Info.Hunter, EBountyType.Kill);
+                    if (victimFaction != null)
+                        bounty += victimFaction.ClaimBounty(attacker.Info.Hunter, EBountyType.Kill);
+                }
+
+                NotifyBounty(bounty, attacker);
+
+
+                if (!attacker.Selfinflicted && attacker.Info.Identity != null)
+                {
+                    victim.Hunter.AddDeath(renamedReason, attacker.Info.Identity.DisplayName, bounty);
+
+                    if (!attacker.Info.IsBot && attacker.Info.Hunter != null) attacker.Info.Hunter.AddKill(renamedReason, victim.Hunter.Name, bounty);
+                }
+                else
+                {
+                    victim.Hunter.AddDeath(renamedReason, null);
+                }
+
+                if (Config.Instance.KillFeed)
+                {
+                    string message = Killmessages.Instance.GetMessage(reason, victim.Identity.DisplayName, (attacker.Info.Identity != null && !attacker.Selfinflicted) ? attacker.Info.Identity.DisplayName : null);
+                    if (message != null)
+                    {
+                        if (Config.Instance.IncludeBountiesInKillFeed && bounty > 0 && attacker.Info.Hunter != null)
+                        {
+                            message += " " + attacker.Info.Hunter.Name + " earned a Bounty of " + Formater.FormatCurrency(bounty) + ".";
+                        }
+                        Utilities.ShowChatMessage(message);
+                    }
+                }
+            }catch (Exception e)
+            {
+                Logging.Instance.WriteLine("Bountyhunt ERROR! " + e.ToString());
             }
         }
 

@@ -82,11 +82,21 @@ namespace Bountyhunter
                 CommandHandlers.Add(new SaveCommand());
                 CommandHandlers.Add(new BanCommand());
 
+                CommandHandlers.Add(new ResetCommand());
+
 
                 AbstactCommandHandler reloadHandler = CommandHandlers.Find(ch => ch is ReloadCommand);
                 if (reloadHandler != null)
                 {
                     reloadHandler.HandleCommand(null, null);
+                }
+                if (Config.Instance.MonthlyReset && DateTime.Now.Month != Config.Instance.LastReset.Month)
+                {
+                    AbstactCommandHandler resetHandler = CommandHandlers.Find(ch => ch is ResetCommand);
+                    if (resetHandler != null)
+                    {
+                        resetHandler.HandleCommand(null, new string[] { "!!!" });
+                    }
                 }
             }
 
