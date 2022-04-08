@@ -1,100 +1,241 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{FFC34FB2-6DD3-4325-96F0-1189C31CFE6B}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Bountyhunter</RootNamespace>
+    <AssemblyName>Bountyhunter</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
-
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
   <ItemGroup>
+    <None Include="App.config" />
+    <None Include="Data\.keepme" />
+    <None Include="Data\Prefabs\LargeLootBox.sbc" />
+    <None Include="Data\Prefabs\MassiveLootBox.sbc" />
+    <None Include="Data\Prefabs\MediumLootBox.sbc" />
+    <None Include="Data\Prefabs\SmallLootBox.sbc" />
+    <None Include="Data\Scripts\.keepme" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ExampleConfigs\Config.xml" />
+    <Content Include="ExampleConfigs\ItemBlockValues.xml" />
+    <Content Include="ExampleConfigs\Killmessages.xml" />
+    <Content Include="ExampleConfigs\Participants.xml" />
+    <Content Include="thumb.jpg" />
+    <Content Include="metadata.mod" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Data\Scripts\Bountyhunter\Commands\AbstactCommandHandler.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Commands\BanCommand.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Commands\ChangeValueCommand.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Commands\ClaimableCommand.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Commands\ClaimCommand.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Commands\HelpCommand.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Commands\MeCommand.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Commands\NewBountyCommand.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Commands\RankingCommand.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Commands\RecalculateCommand.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Commands\ReloadCommand.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Commands\ResetCommand.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Commands\SaveCommand.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Commands\ShowCommand.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Commands\ValueCommand.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Commands\WelcomeCommand.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Core.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\DeathHandler.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\GameLogic\ExplosionInfo.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\GameLogic\RocketTracker.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\GameLogic\WarheadTracker.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Store\Config.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Store\Killmessages.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Store\Participants.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Store\Proto\BlockConfig.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Store\Proto\Bounty.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Store\Proto\BountyItem.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Store\Proto\CauseOfDeath.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Store\Proto\ClientServerMessage.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Store\Proto\Death.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Store\Proto\DeathMessage.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Store\Proto\Faction.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Store\Proto\Files\FileConfig.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Store\Proto\Files\FileMessages.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Store\Proto\Files\FileParticipants.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Store\Proto\Files\FileValues.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Store\Proto\Hunter.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Store\Proto\Item.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Store\Proto\ItemConfig.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Store\Proto\Participant.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Store\Rankings.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Store\Values.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Utils\Formater.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Utils\Logging.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Utils\LootboxSpawner.cs" />
+    <Compile Include="Data\Scripts\Bountyhunter\Utils\Utilities.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="EmptyKeys.UserInterface">
+      <HintPath>..\se-tools\libs\EmptyKeys.UserInterface.dll</HintPath>
+    </Reference>
+    <Reference Include="EmptyKeys.UserInterface.Core">
+      <HintPath>..\se-tools\libs\EmptyKeys.UserInterface.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="EOSSDK">
+      <HintPath>..\se-tools\libs\EOSSDK.dll</HintPath>
+    </Reference>
+    <Reference Include="GameAnalytics.Mono">
+      <HintPath>..\se-tools\libs\GameAnalytics.Mono.dll</HintPath>
+    </Reference>
     <Reference Include="ProtoBuf.Net">
-      <HintPath>D:\GIT\se-tools\libs\ProtoBuf.Net.dll</HintPath>
+      <HintPath>..\se-tools\libs\ProtoBuf.Net.dll</HintPath>
     </Reference>
     <Reference Include="ProtoBuf.Net.Core">
-      <HintPath>D:\GIT\se-tools\libs\ProtoBuf.Net.Core.dll</HintPath>
+      <HintPath>..\se-tools\libs\ProtoBuf.Net.Core.dll</HintPath>
     </Reference>
     <Reference Include="Sandbox.Common">
-      <HintPath>D:\GIT\se-tools\libs\Sandbox.Common.dll</HintPath>
+      <HintPath>..\se-tools\libs\Sandbox.Common.dll</HintPath>
     </Reference>
     <Reference Include="Sandbox.Game">
-      <HintPath>D:\GIT\se-tools\libs\Sandbox.Game.dll</HintPath>
+      <HintPath>..\se-tools\libs\Sandbox.Game.dll</HintPath>
     </Reference>
     <Reference Include="Sandbox.Game.XmlSerializers">
-      <HintPath>D:\GIT\se-tools\libs\Sandbox.Game.XmlSerializers.dll</HintPath>
+      <HintPath>..\se-tools\libs\Sandbox.Game.XmlSerializers.dll</HintPath>
     </Reference>
     <Reference Include="Sandbox.Graphics">
-      <HintPath>D:\GIT\se-tools\libs\Sandbox.Graphics.dll</HintPath>
+      <HintPath>..\se-tools\libs\Sandbox.Graphics.dll</HintPath>
     </Reference>
     <Reference Include="Sandbox.RenderDirect">
-      <HintPath>D:\GIT\se-tools\libs\Sandbox.RenderDirect.dll</HintPath>
+      <HintPath>..\se-tools\libs\Sandbox.RenderDirect.dll</HintPath>
     </Reference>
     <Reference Include="SpaceEngineers.Game">
-      <HintPath>D:\GIT\se-tools\libs\SpaceEngineers.Game.dll</HintPath>
+      <HintPath>..\..\..\..\..\source\repos\Sadragos\se-tools\libs\SpaceEngineers.Game.dll</HintPath>
     </Reference>
     <Reference Include="SpaceEngineers.ObjectBuilders">
-      <HintPath>D:\GIT\se-tools\libs\SpaceEngineers.ObjectBuilders.dll</HintPath>
+      <HintPath>..\..\..\..\..\source\repos\Sadragos\se-tools\libs\SpaceEngineers.ObjectBuilders.dll</HintPath>
     </Reference>
     <Reference Include="SpaceEngineers.ObjectBuilders.XmlSerializers">
-      <HintPath>D:\GIT\se-tools\libs\SpaceEngineers.ObjectBuilders.XmlSerializers.dll</HintPath>
+      <HintPath>..\..\..\..\..\source\repos\Sadragos\se-tools\libs\SpaceEngineers.ObjectBuilders.XmlSerializers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Buffers">
+      <HintPath>..\se-tools\libs\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Collections.Immutable">
+      <HintPath>..\se-tools\libs\System.Collections.Immutable.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Annotations">
+      <HintPath>..\se-tools\libs\System.ComponentModel.Annotations.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite">
+      <HintPath>..\se-tools\libs\System.Data.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory">
+      <HintPath>..\se-tools\libs\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics.Vectors">
+      <HintPath>..\se-tools\libs\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reflection.Metadata">
+      <HintPath>..\se-tools\libs\System.Reflection.Metadata.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe">
+      <HintPath>..\se-tools\libs\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Encoding.CodePages">
+      <HintPath>..\se-tools\libs\System.Text.Encoding.CodePages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions">
+      <HintPath>..\se-tools\libs\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="VRage">
-      <HintPath>D:\GIT\se-tools\libs\VRage.dll</HintPath>
+      <HintPath>..\se-tools\libs\VRage.dll</HintPath>
     </Reference>
     <Reference Include="VRage.Ansel">
-      <HintPath>D:\GIT\se-tools\libs\VRage.Ansel.dll</HintPath>
+      <HintPath>..\se-tools\libs\VRage.Ansel.dll</HintPath>
     </Reference>
     <Reference Include="VRage.Audio">
-      <HintPath>D:\GIT\se-tools\libs\VRage.Audio.dll</HintPath>
+      <HintPath>..\se-tools\libs\VRage.Audio.dll</HintPath>
+    </Reference>
+    <Reference Include="VRage.EOS">
+      <HintPath>..\se-tools\libs\VRage.EOS.dll</HintPath>
+    </Reference>
+    <Reference Include="VRage.EOS.XmlSerializers">
+      <HintPath>..\se-tools\libs\VRage.EOS.XmlSerializers.dll</HintPath>
     </Reference>
     <Reference Include="VRage.Game">
-      <HintPath>D:\GIT\se-tools\libs\VRage.Game.dll</HintPath>
+      <HintPath>..\se-tools\libs\VRage.Game.dll</HintPath>
     </Reference>
     <Reference Include="VRage.Game.XmlSerializers">
-      <HintPath>D:\GIT\se-tools\libs\VRage.Game.XmlSerializers.dll</HintPath>
+      <HintPath>..\se-tools\libs\VRage.Game.XmlSerializers.dll</HintPath>
     </Reference>
     <Reference Include="VRage.Input">
-      <HintPath>D:\GIT\se-tools\libs\VRage.Input.dll</HintPath>
+      <HintPath>..\se-tools\libs\VRage.Input.dll</HintPath>
     </Reference>
     <Reference Include="VRage.Library">
-      <HintPath>D:\GIT\se-tools\libs\VRage.Library.dll</HintPath>
+      <HintPath>..\se-tools\libs\VRage.Library.dll</HintPath>
     </Reference>
     <Reference Include="VRage.Math">
-      <HintPath>D:\GIT\se-tools\libs\VRage.Math.dll</HintPath>
+      <HintPath>..\se-tools\libs\VRage.Math.dll</HintPath>
     </Reference>
     <Reference Include="VRage.Math.XmlSerializers">
-      <HintPath>D:\GIT\se-tools\libs\VRage.Math.XmlSerializers.dll</HintPath>
+      <HintPath>..\se-tools\libs\VRage.Math.XmlSerializers.dll</HintPath>
     </Reference>
     <Reference Include="VRage.Mod.Io">
-      <HintPath>D:\GIT\se-tools\libs\VRage.Mod.Io.dll</HintPath>
+      <HintPath>..\se-tools\libs\VRage.Mod.Io.dll</HintPath>
     </Reference>
     <Reference Include="VRage.NativeAftermath">
-      <HintPath>D:\GIT\se-tools\libs\VRage.NativeAftermath.dll</HintPath>
+      <HintPath>..\..\..\..\..\source\repos\Sadragos\se-tools\libs\VRage.NativeAftermath.dll</HintPath>
     </Reference>
     <Reference Include="VRage.NativeWrapper">
-      <HintPath>D:\GIT\se-tools\libs\VRage.NativeWrapper.dll</HintPath>
+      <HintPath>..\..\..\..\..\source\repos\Sadragos\se-tools\libs\VRage.NativeWrapper.dll</HintPath>
     </Reference>
     <Reference Include="VRage.Network">
-      <HintPath>D:\GIT\se-tools\libs\VRage.Network.dll</HintPath>
+      <HintPath>..\..\..\..\..\source\repos\Sadragos\se-tools\libs\VRage.Network.dll</HintPath>
     </Reference>
     <Reference Include="VRage.Platform.Windows">
-      <HintPath>D:\GIT\se-tools\libs\VRage.Platform.Windows.dll</HintPath>
+      <HintPath>..\..\..\..\..\source\repos\Sadragos\se-tools\libs\VRage.Platform.Windows.dll</HintPath>
     </Reference>
     <Reference Include="VRage.Render">
-      <HintPath>D:\GIT\se-tools\libs\VRage.Render.dll</HintPath>
+      <HintPath>..\..\..\..\..\source\repos\Sadragos\se-tools\libs\VRage.Render.dll</HintPath>
     </Reference>
     <Reference Include="VRage.Render11">
-      <HintPath>D:\GIT\se-tools\libs\VRage.Render11.dll</HintPath>
+      <HintPath>..\..\..\..\..\source\repos\Sadragos\se-tools\libs\VRage.Render11.dll</HintPath>
     </Reference>
     <Reference Include="VRage.Scripting">
-      <HintPath>D:\GIT\se-tools\libs\VRage.Scripting.dll</HintPath>
+      <HintPath>..\..\..\..\..\source\repos\Sadragos\se-tools\libs\VRage.Scripting.dll</HintPath>
     </Reference>
     <Reference Include="VRage.Steam">
-      <HintPath>D:\GIT\se-tools\libs\VRage.Steam.dll</HintPath>
+      <HintPath>..\..\..\..\..\source\repos\Sadragos\se-tools\libs\VRage.Steam.dll</HintPath>
     </Reference>
     <Reference Include="VRage.UserInterface">
-      <HintPath>D:\GIT\se-tools\libs\VRage.UserInterface.dll</HintPath>
+      <HintPath>..\..\..\..\..\source\repos\Sadragos\se-tools\libs\VRage.UserInterface.dll</HintPath>
     </Reference>
     <Reference Include="VRage.XmlSerializers">
-      <HintPath>D:\GIT\se-tools\libs\VRage.XmlSerializers.dll</HintPath>
+      <HintPath>..\..\..\..\..\source\repos\Sadragos\se-tools\libs\VRage.XmlSerializers.dll</HintPath>
     </Reference>
   </ItemGroup>
-
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

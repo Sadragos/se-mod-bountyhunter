@@ -93,7 +93,7 @@ namespace Bountyhunter.Commands
             } else if (TargetType.Equals(ETargetType.Faction))
             {
                 IMyFaction targetFaction = Utilities.GetFactionByTag(targetString);
-                if (targetFaction == null || targetFaction.IsEveryoneNpc())
+                if (targetFaction == null)
                 {
                     SendMessage(player, "No Faction with the Tag " + targetString + " could be found.");
                     return;

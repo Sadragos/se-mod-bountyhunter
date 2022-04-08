@@ -240,16 +240,22 @@ namespace Bountyhunter
 
         public void UpdateBeforeEverySecond()
         {
-            DeathHandler.CleanupExplosions();
-            DeathHandler.CleanupBounties();
+            if (MyAPIGateway.Session.IsServer)
+            {
+                DeathHandler.CleanupExplosions();
+                DeathHandler.CleanupBounties();
+            }
         }
 
         public void UpdateBeforeEveryMinute()
         {
-            DeathHandler.UpdateIdentityCache();
-            Participants.RefreshHunterFactionData();
-            Participants.UpdateOnlineTime();
-            Participants.ReimburseBounties();
+            if (MyAPIGateway.Session.IsServer)
+            {
+                DeathHandler.UpdateIdentityCache();
+                Participants.RefreshHunterFactionData();
+                Participants.UpdateOnlineTime();
+                Participants.ReimburseBounties();
+            }
         }
 
         // Overrides
