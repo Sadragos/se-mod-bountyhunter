@@ -42,6 +42,18 @@ namespace Bountyhunter.Commands
             // Bounty Type
             bounty.BountyType = arguments[0].ToLower().Equals("kill") || arguments[0].ToLower().Equals("k") ? EBountyType.Kill : EBountyType.Damage;
 
+            if(bounty.BountyType.Equals(EBountyType.Kill) && !Config.Instance.EnableKillMissions)
+            {
+                SendMessage(player, "Kill-Missions are disabled.");
+                return;
+            }
+
+            if(bounty.BountyType.Equals(EBountyType.Damage) && !Config.Instance.EnableKillMissions)
+            {
+                SendMessage(player, "Damage-Missions are disabled.");
+                return;
+            }
+
             // Target Type
             ETargetType TargetType = arguments[1].ToLower().Equals("player") || arguments[1].ToLower().Equals("p") ? ETargetType.Player : ETargetType.Faction;
 

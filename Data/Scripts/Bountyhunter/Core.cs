@@ -60,11 +60,6 @@ namespace Bountyhunter
             AddMessageHandler( );
             if (MyAPIGateway.Multiplayer.IsServer ) 
             {
-
-                MyAPIGateway.Session.DamageSystem.RegisterDestroyHandler(0, DeathHandler.DestroyHandler);
-                MyAPIGateway.Session.DamageSystem.RegisterAfterDamageHandler(0, DeathHandler.AfterDamage);
-                MyVisualScriptLogicProvider.PrefabSpawnedDetailed += LootboxSpawner.NewSpawn;
-
                 // CommandHandlers
                 CommandHandlers.Add(new HelpCommand());
                 CommandHandlers.Add(new WelcomeCommand());
@@ -90,6 +85,7 @@ namespace Bountyhunter
                 {
                     reloadHandler.HandleCommand(null, null);
                 }
+
                 if (Config.Instance.MonthlyReset && DateTime.Now.Month != Config.Instance.LastReset.Month)
                 {
                     AbstactCommandHandler resetHandler = CommandHandlers.Find(ch => ch is ResetCommand);
@@ -97,6 +93,13 @@ namespace Bountyhunter
                     {
                         resetHandler.HandleCommand(null, new string[] { "!!!" });
                     }
+                }
+
+                MyVisualScriptLogicProvider.PrefabSpawnedDetailed += LootboxSpawner.NewSpawn;
+                MyAPIGateway.Session.DamageSystem.RegisterDestroyHandler(0, DeathHandler.DestroyHandler);
+
+                if(Config.Instance.EnableDamageMission) { 
+                    MyAPIGateway.Session.DamageSystem.RegisterAfterDamageHandler(0, DeathHandler.AfterDamage);
                 }
             }
 

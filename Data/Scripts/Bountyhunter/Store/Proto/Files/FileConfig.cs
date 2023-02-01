@@ -43,92 +43,98 @@ namespace Bountyhunter.Store.Proto.Files
         [ProtoMember(4)]
         public bool EnableItemBounties = true;
 
-        [ProtoMember(5)]
-        public bool TakeCreditFromBank = true;
+        [ProtoMember(4)]
+        public bool EnableKillMissions = true;
 
-        [ProtoMember(6)]
-        public bool CreditsAsItem = false;
+        [ProtoMember(5)]
+        public bool EnableDamageMission = true;
 
         [ProtoMember(7)]
+        public bool TakeCreditFromBank = true;
+
+        [ProtoMember(8)]
+        public bool CreditsAsItem = false;
+
+        [ProtoMember(9)]
         public bool SpawnRewardDropPods = false;
 
 
-        [ProtoMember(8)]
+        [ProtoMember(10)]
         public string CurrencyName = " SC";
 
-        [ProtoMember(9)]
+        [ProtoMember(11)]
         public bool PlaceBountiesOnSelf = true;
 
-        [ProtoMember(10)]
+        [ProtoMember(12)]
         public bool PlaceBountiesOnAllies = true;
 
-        [ProtoMember(11)]
+        [ProtoMember(13)]
         public bool ClaimBountiesFromAlliesAndNeutrals = false;
 
-        [ProtoMember(12)]
+        [ProtoMember(14)]
         public int DeathListEntries = 10;
 
-        [ProtoMember(13)]
+        [ProtoMember(15)]
         public bool KillFeed = true;
 
-        [ProtoMember(14)]
+        [ProtoMember(16)]
         public bool IncludeBountiesInKillFeed = true;
 
-        [ProtoMember(15)]
+        [ProtoMember(17)]
         public bool CountSuicides = false;
 
-        [ProtoMember(16)]
+        [ProtoMember(18)]
         public float FloatAmountBuffer = 0.000001f;
 
-        [ProtoMember(17)]
+        [ProtoMember(19)]
         public float MinPayout = 0.01f;
 
-        [ProtoMember(18)]
+        [ProtoMember(20)]
         public bool AnnouncyBounties = true;
 
-        [ProtoMember(19)]
+        [ProtoMember(21)]
         public bool AnnouncyBountiesDeatils = true;
 
-        [ProtoMember(20)]
+        [ProtoMember(22)]
         public bool AnnouncyBountiesWithName = true;
 
-        [ProtoMember(21)]
+        [ProtoMember(23)]
         public bool CountGrindingAsDestroy = false;
 
-        [ProtoMember(22)]
+        [ProtoMember(24)]
         public int RankingRefreshSeconds = 60;
 
-        [ProtoMember(23)]
+        [ProtoMember(25)]
         public bool ShowLastLogin = true;
 
-        [ProtoMember(24)]
+        [ProtoMember(26)]
         public bool ShowOnlineTime = true;
 
-        [ProtoMember(25)]
+        [ProtoMember(27)]
         public int FactionChangeGraceTimeMinutes = 1440;
 
-        [ProtoMember(26)]
+        [ProtoMember(28)]
         public int GridValueMinOwnershipPercent = 60;
 
-        [ProtoMember(27)]
+        [ProtoMember(29)]
         public int MinItemAmount = 1;
 
-        [ProtoMember(28)]
+        [ProtoMember(30)]
         public int MaxItemAmount = 10000000;
 
-        [ProtoMember(29)]
+        [ProtoMember(31)]
         public int ReimburseBountiesAfterMinutes = 10080;
 
-        [ProtoMember(30)]
+        [ProtoMember(32)]
         public int BountyDelaySeconds = 60;
 
-        [ProtoMember(31)]
+        [ProtoMember(33)]
         public bool MonthlyReset = true;
 
-        [ProtoMember(32)]
+        [ProtoMember(34)]
         public bool KeepMonthlyHistory = true;
 
-        [ProtoMember(33)]
+        [ProtoMember(35)]
         public DateTime LastReset = DateTime.Now;
     }
 }
